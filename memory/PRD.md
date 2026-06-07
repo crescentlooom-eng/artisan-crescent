@@ -30,13 +30,20 @@ Build a full luxury fashion e-commerce website for "Crescent Loom" — slow fash
 3. **Essential Tee** · ₹299 · sizes M/XL · 2 variants (Black #0B0E1A, White #F5F0E8)
 
 ## Implemented
-- Editorial homepage, shop with category filters (Polo/Designer/Basics), product detail with variant swatches + size guide
-- Slide-in cart drawer, Razorpay/demo checkout, Google OAuth, Account, Wishlist
-- Admin panel with **VariantEditor**: per-variant name/hex/image upload (drag-drop, multi-file)
-- Emergent object storage integration: /api/admin/upload + /api/files/{id} proxy
+- Editorial homepage with real product imagery in the chapters grid (Polo / Prism / Essential)
+- Shop with category filters (Polo / Designer / Basics), product detail with variant swatches + size guide
+- Slide-in cart drawer, Razorpay LIVE checkout, Google OAuth, Account, Wishlist
+- Admin panel: Pieces + Orders + **Loom Credits** tabs (variant editor, file upload via object storage)
+- **Loom Credits** loyalty system (Feb 2026 add-on):
+  - 1 card per paid order, 1 card = ₹5, min 3 to redeem
+  - Customer profile section (balance, value, eligibility, history)
+  - Checkout redeem input with live discount preview + validation
+  - Admin: summary stats (issued/redeemed/outstanding/discount given), per-customer table, manual ± adjust modal, redeemed-orders log
 
 ## Pending / Backlog
-- P0: Razorpay live keys (user to provide)
-- P0: User to upload variant images via admin panel
+- P0: User to upload 2 more poses per Prism print + Polo variants if desired
 - P1: Per-variant color hex picker (instead of hex string)
-- P2: Newsletter signup, multi-currency, GST breakdown, order detail view + admin status updates
+- P2: Newsletter signup, multi-currency, GST breakdown
+- P2: Order detail view + admin status updates
+- P2: Razorpay webhook for redundant payment confirmation
+- P3: Loom Credits — paginate history once balance grows large; tighten redeemed-txn transactional integrity if Razorpay throws mid-create
