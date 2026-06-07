@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { api, productImage, expandForCatalog } from "@/lib/api";
+import { productImage, expandForCatalog } from "@/lib/api";
+import { listProducts } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 import useScrollReveal from "@/hooks/useScrollReveal";
 
@@ -13,14 +14,8 @@ export default function HomePage() {
   useScrollReveal();
 
   useEffect(() => {
-    (async () => {
-      const [allRes, featRes] = await Promise.all([
-        api.get("/products", { params: { new_arrival: true } }),
-        api.get("/products", { params: { featured: true } }),
-      ]);
-      setProducts(allRes.data);
-      setFeatured(featRes.data);
-    })();
+    setProducts(listProducts({ new_arrival: true }));
+    setFeatured(listProducts({ featured: true }));
   }, []);
 
   const marqueeItems = [...products, ...products];

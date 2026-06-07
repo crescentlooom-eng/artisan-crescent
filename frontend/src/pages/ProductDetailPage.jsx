@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams, Link, useSearchParams } from "react-router-dom";
 import { Heart, Minus, Plus } from "lucide-react";
-import { api, formatINR, productImage } from "@/lib/api";
+import { formatINR, productImage } from "@/lib/api";
+import { getProductBySlug, listProducts } from "@/data/products";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import {
@@ -22,19 +23,18 @@ export default function ProductDetailPage() {
   const { has, toggle } = useWishlist();
 
   useEffect(() => {
-    (async () => {
-      const r = await api.get(`/products/${slug}`);
-      setProduct(r.data);
-      setSize(r.data.sizes?.[0] || null);
+    const p = getProductBySlug(slug);
+    setProduct(p);
+    if (p) {
+      setSize(p.sizes?.[0] || null);
       const requestedVariant = searchParams.get("variant");
       const initialIdx = requestedVariant
-        ? Math.max(0, (r.data.variants || []).findIndex((v) => v.id === requestedVariant))
+        ? Math.max(0, (p.variants || []).findIndex((v) => v.id === requestedVariant))
         : 0;
       setVariantIdx(initialIdx);
       setActiveImg(0);
-      const all = await api.get("/products", { params: { category: r.data.category } });
-      setRelated(all.data.filter((p) => p.id !== r.data.id).slice(0, 4));
-    })();
+      setRelated(listProducts({ category: p.category }).filter((x) => x.id !== p.id).slice(0, 4));
+    }
   }, [slug, searchParams]);
 
   const variant = product?.variants?.[variantIdx];

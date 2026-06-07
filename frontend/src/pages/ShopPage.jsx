@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { api, expandForCatalog } from "@/lib/api";
+import { listProducts } from "@/data/products";
+import { expandForCatalog } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
 import useScrollReveal from "@/hooks/useScrollReveal";
 
@@ -27,12 +28,10 @@ export default function ShopPage() {
   const q = params.get("q") || "";
 
   useEffect(() => {
-    (async () => {
-      setLoading(true);
-      const res = await api.get("/products", { params: { category: category === "all" ? undefined : category, q: q || undefined } });
-      setProducts(res.data);
-      setLoading(false);
-    })();
+    setLoading(true);
+    const items = listProducts({ category: category === "all" ? undefined : category, q: q || undefined });
+    setProducts(items);
+    setLoading(false);
   }, [category, q]);
 
   useScrollReveal([products]);
