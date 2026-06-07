@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { api } from "@/lib/api";
+import { api, expandForCatalog } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
 import useScrollReveal from "@/hooks/useScrollReveal";
 
@@ -38,7 +38,7 @@ export default function ShopPage() {
   useScrollReveal([products]);
 
   const sorted = useMemo(() => {
-    const list = [...products];
+    const list = expandForCatalog(products);
     if (sort === "price-asc") list.sort((a, b) => a.price - b.price);
     if (sort === "price-desc") list.sort((a, b) => b.price - a.price);
     return list;

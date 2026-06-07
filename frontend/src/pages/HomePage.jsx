@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { api, productImage } from "@/lib/api";
+import { api, productImage, expandForCatalog } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
 import useScrollReveal from "@/hooks/useScrollReveal";
 
@@ -147,7 +147,7 @@ export default function HomePage() {
               <Link to="/shop" className="text-[11px] tracking-[0.3em] uppercase gold-underline text-[#F5F0E8]/85">View All</Link>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-14">
-              {featured.slice(0, 4).map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
+              {expandForCatalog(featured).slice(0, 8).map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
             </div>
           </div>
         </section>

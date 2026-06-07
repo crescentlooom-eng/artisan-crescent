@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useSearchParams } from "react-router-dom";
 import { Heart, Minus, Plus } from "lucide-react";
 import { api, formatINR, productImage } from "@/lib/api";
 import { useCart } from "@/context/CartContext";
@@ -11,6 +11,7 @@ import { toast } from "sonner";
 
 export default function ProductDetailPage() {
   const { slug } = useParams();
+  const [searchParams] = useSearchParams();
   const [product, setProduct] = useState(null);
   const [size, setSize] = useState(null);
   const [qty, setQty] = useState(1);
@@ -25,12 +26,16 @@ export default function ProductDetailPage() {
       const r = await api.get(`/products/${slug}`);
       setProduct(r.data);
       setSize(r.data.sizes?.[0] || null);
-      setVariantIdx(0);
+      const requestedVariant = searchParams.get("variant");
+      const initialIdx = requestedVariant
+        ? Math.max(0, (r.data.variants || []).findIndex((v) => v.id === requestedVariant))
+        : 0;
+      setVariantIdx(initialIdx);
       setActiveImg(0);
       const all = await api.get("/products", { params: { category: r.data.category } });
       setRelated(all.data.filter((p) => p.id !== r.data.id).slice(0, 4));
     })();
-  }, [slug]);
+  }, [slug, searchParams]);
 
   const variant = product?.variants?.[variantIdx];
   const images = useMemo(() => {
