@@ -1,0 +1,55 @@
+{
+  "summary": "Admin Dashboard end-to-end testing. Backend: 37/37 pytest cases passing across /admin-auth/login (success/wrong-pw/wrong-email), /admin-auth/me (Bearer + no-token), 9 admin endpoints all returning 401/403 without auth, dashboard stats shape, revenue series for day(24)/week(7)/month(30), orders search across 4 windows + q/status filters, status update validation (invalid status -> 400, missing order -> 404), CSV export with correct content-type and attachment headers, customers list + 404 detail, loom credits summary/per-user/redeemed-orders, adjust validation (zero rejected, user-not-found 404), storefront /products + /payments/config (demo mode confirmed) + guest /payments/create-order in demo mode, and an E2E test that creates an order then admin updates its status to 'packed' and verifies via search + CSV. Frontend: /admin unauth redirect -> /admin/login, login form renders, wrong creds shows error, correct creds redirect to /admin, all stat cards present (Today/Week/Month/Pending/Customers), revenue chart with 24h/7d/30d toggle, sidebar nav for Dashboard/Orders/Customers/Loom Credits works, Sign Out returns to /admin/login, storefront / loads with Navbar, admin chrome (sidebar + Sign Out) separated from storefront Navbar/Footer. CSV button + search input present on /admin/orders with filter buttons functional.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "AdminShell sidebar 'Pieces' link",
+        "issue": "Clicking 'Pieces' in admin sidebar navigates to /login (storefront login) instead of an admin product-editor route. Either the link points to a route that's still guarded by legacy Google-OAuth user auth (and admin JWT doesn't satisfy it), or no admin-pieces page exists. Other 4 sidebar links (Dashboard/Orders/Customers/Loom Credits) all work correctly.",
+        "selector": "a:has-text('Pieces') in AdminShell sidebar",
+        "priority": "MEDIUM"
+      },
+      {
+        "component": "AdminDashboardPage revenue chart",
+        "issue": "Recharts emits console warning 'The width(-1) and height(-1) of chart should be greater than 0' on first paint and on tab switching. Chart renders correctly visually — cosmetic only. Likely needs an explicit min-width/min-height on the ResponsiveContainer wrapper.",
+        "selector": "Revenue chart container in AdminDashboardPage.jsx",
+        "priority": "LOW"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_admin_dashboard.py",
+    "/app/test_reports/pytest/admin_dashboard_results.xml"
+  ],
+  "action_items": [
+    "Wire the 'Pieces' sidebar link in AdminShell to a proper admin product editor route (or remove it). Currently it routes the user to /login, which is confusing for an authenticated admin.",
+    "(Optional) Add explicit min-height/min-width on Recharts ResponsiveContainer in AdminDashboardPage.jsx to suppress the 'width(-1)' console warning on first paint."
+  ],
+  "critical_code_review_comments": [
+    "admin_auth.seed_admin re-hashes the password whenever the env password no longer verifies — this is convenient for recovery but means rotating ADMIN_PASSWORD in .env silently rewrites the DB on every restart; consider logging at WARNING level or gating behind an explicit flag.",
+    "/api/admin-auth/login sets cookie with secure=True, samesite='none' which is correct for cross-origin preview but will break on plain-HTTP dev servers — token is also returned in JSON body so frontend can fall back to Authorization header (good).",
+    "Lockout in admin_auth._is_locked_out is keyed by '{ip}:{email}'. If an attacker rotates IPs (or sits behind a load balancer that varies X-Forwarded-For), lockout is bypassed. Acceptable for an internal admin tool; document the limitation.",
+    "require_admin in server.py accepts EITHER the new admin_auth JWT OR a legacy Google-OAuth user with is_admin — this dual path is by design but means revoking the admin user in admin_users still allows the legacy OAuth path. Worth a comment in code.",
+    "/api/admin/dashboard/revenue does string comparison of ISO timestamps (created_at >= start.isoformat()) which works because all created_at strings are UTC ISO with the same shape. If a future code path inserts a non-UTC or naive datetime string, the filter silently misses rows. Consider normalizing on write.",
+    "/api/admin/orders.csv loads up to 5000 orders in memory and serializes to a StringIO. Fine for now, but for a larger catalog stream the CSV with StreamingResponse.",
+    "POST /payments/create-order persists the order doc and the negative-balance redeemed txn BEFORE Razorpay returns successfully. In live mode an upstream RZP failure would leave a phantom order + redeemed txn in DB. In demo mode (current setup) this is not reachable. Same comment carried from iteration_2."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_admin_dashboard.py (new)"
+  ],
+  "success_rate": {
+    "backend": "100% (37/37)",
+    "frontend": "95% (18/19 flows — Pieces sidebar link routes to /login instead of an admin route)"
+  },
+  "test_credentials": "Admin: crescent.looom@gmail.com / Crescentloom@2026 (already in /app/memory/test_credentials.md). Auto-seeded on backend startup from .env.",
+  "seed_data_creation": "Backend E2E test created 2 guest orders via /api/payments/create-order in demo mode (one for the demo-mode test, one for the E2E flow). Both are visible on the dashboard as ₹798 total revenue (2 x ₹399 Textured Polo Tee). These can be cleared by deleting orders where shipping.full_name starts with 'TEST_'.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Admin Dashboard is fully functional. Backend test file at /app/backend/tests/test_admin_dashboard.py covers admin-auth, all admin endpoints (orders/customers/loom/dashboard/CSV), auth guard parameterized across 9 endpoints, and a create-order -> admin-update-status E2E. To re-run: pytest /app/backend/tests/test_admin_dashboard.py -v. Razorpay is in demo mode (no RZP_KEY_ID/SECRET set), so /payments/create-order returns {demo_mode: true, razorpay_order: null}. Telegram/SMTP are fire-and-forget — they will log skip/error but never raise; do not be surprised if real Telegram messages are sent to chat -5102349304 when status updates occur. Two created test orders remain in the DB (TEST_Buyer, TEST_Workflow) for inspection.",
+  "rca of the issue": "Pieces sidebar nav: link target in AdminShell.jsx likely points to a route like /admin/products or /products/new that is wrapped by require_user (cookie session_token) rather than the AdminAuthProvider — so when the user clicks, the storefront's ProtectedRoute kicks in and redirects to /login. Fix: either expose an admin-only Pieces page (CRUD over /api/admin/products) wrapped by AdminAuthProvider, or remove the sidebar entry until that page exists."
+}

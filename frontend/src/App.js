@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
+import { AdminAuthProvider } from "@/context/AdminAuthContext";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -23,6 +24,25 @@ import CheckoutPage from "@/pages/CheckoutPage";
 import AdminPage from "@/pages/AdminPage";
 import AuthCallback from "@/pages/AuthCallback";
 
+import AdminShell from "@/pages/admin/AdminShell";
+import AdminLoginPage from "@/pages/admin/AdminLoginPage";
+import AdminDashboardPage from "@/pages/admin/AdminDashboardPage";
+import AdminOrdersPage from "@/pages/admin/AdminOrdersPage";
+import AdminCustomersPage from "@/pages/admin/AdminCustomersPage";
+import AdminLoomCreditsPage from "@/pages/admin/AdminLoomCreditsPage";
+
+function StorefrontLayout({ children }) {
+  return (
+    <>
+      <CursorDot />
+      <Navbar />
+      <main>{children}</main>
+      <Footer />
+      <CartDrawer />
+    </>
+  );
+}
+
 function AppRouter() {
   const location = useLocation();
   // Handle OAuth callback session_id before normal routing
@@ -31,16 +51,26 @@ function AppRouter() {
   }
   return (
     <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/shop" element={<ShopPage />} />
-      <Route path="/product/:slug" element={<ProductDetailPage />} />
-      <Route path="/about" element={<AboutPage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/account" element={<AccountPage />} />
-      <Route path="/wishlist" element={<WishlistPage />} />
-      <Route path="/checkout" element={<CheckoutPage />} />
-      <Route path="/admin" element={<AdminPage />} />
-      <Route path="*" element={<HomePage />} />
+      {/* Admin (no storefront chrome) */}
+      <Route path="/admin/login" element={<AdminLoginPage />} />
+      <Route path="/admin" element={<AdminShell />}>
+        <Route index element={<AdminDashboardPage />} />
+        <Route path="orders" element={<AdminOrdersPage />} />
+        <Route path="customers" element={<AdminCustomersPage />} />
+        <Route path="loom-credits" element={<AdminLoomCreditsPage />} />
+        <Route path="pieces" element={<AdminPage />} />
+      </Route>
+
+      {/* Storefront */}
+      <Route path="/" element={<StorefrontLayout><HomePage /></StorefrontLayout>} />
+      <Route path="/shop" element={<StorefrontLayout><ShopPage /></StorefrontLayout>} />
+      <Route path="/product/:slug" element={<StorefrontLayout><ProductDetailPage /></StorefrontLayout>} />
+      <Route path="/about" element={<StorefrontLayout><AboutPage /></StorefrontLayout>} />
+      <Route path="/login" element={<StorefrontLayout><LoginPage /></StorefrontLayout>} />
+      <Route path="/account" element={<StorefrontLayout><AccountPage /></StorefrontLayout>} />
+      <Route path="/wishlist" element={<StorefrontLayout><WishlistPage /></StorefrontLayout>} />
+      <Route path="/checkout" element={<StorefrontLayout><CheckoutPage /></StorefrontLayout>} />
+      <Route path="*" element={<StorefrontLayout><HomePage /></StorefrontLayout>} />
     </Routes>
   );
 }
@@ -50,18 +80,14 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <AuthProvider>
-          <CartProvider>
-            <WishlistProvider>
-              <CursorDot />
-              <Navbar />
-              <main>
+          <AdminAuthProvider>
+            <CartProvider>
+              <WishlistProvider>
                 <AppRouter />
-              </main>
-              <Footer />
-              <CartDrawer />
-              <Toaster theme="dark" position="top-center" toastOptions={{ style: { background: "#0B0E1A", color: "#F5F0E8", border: "1px solid rgba(201,169,110,0.2)" } }} />
-            </WishlistProvider>
-          </CartProvider>
+                <Toaster theme="dark" position="top-center" toastOptions={{ style: { background: "#0B0E1A", color: "#F5F0E8", border: "1px solid rgba(201,169,110,0.2)" } }} />
+              </WishlistProvider>
+            </CartProvider>
+          </AdminAuthProvider>
         </AuthProvider>
       </BrowserRouter>
     </div>
