@@ -44,6 +44,8 @@ except Exception:
 EMERGENT_AUTH_URL = os.environ.get('EMERGENT_AUTH_URL', 'https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data')
 ADMIN_EMAILS = {e.strip().lower() for e in os.environ.get('ADMIN_EMAILS', '').split(',') if e.strip()}
 
+import notifications as notif
+
 # ====================== Object Storage ======================
 STORAGE_URL = "https://integrations.emergentagent.com/objstore/api/v1/storage"
 EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY", "")
@@ -262,10 +264,17 @@ async def require_user(request: Request) -> dict:
     return user
 
 async def require_admin(request: Request) -> dict:
-    user = await require_user(request)
-    if not user.get('is_admin'):
-        raise HTTPException(status_code=403, detail="Admin access required")
-    return user
+    """Admin guard — accepts the new email/password admin JWT OR a legacy Google-OAuth user with is_admin=True."""
+    # Try new admin auth first
+    from admin_auth import get_current_admin
+    admin = await get_current_admin(request, db)
+    if admin:
+        return {"user_id": admin["id"], "email": admin["email"], "name": admin.get("name", "Admin"), "is_admin": True, "_admin": True}
+    # Fallback to existing Google-OAuth admin
+    user = await get_current_user(request)
+    if user and user.get("is_admin"):
+        return user
+    raise HTTPException(status_code=403, detail="Admin access required")
 
 # ====================== Auth routes ======================
 @api_router.post("/auth/session")
@@ -332,6 +341,29 @@ async def auth_logout(request: Request, response: Response):
         await db.user_sessions.delete_one({"session_token": token})
     response.delete_cookie("session_token", path="/")
     return {"ok": True}
+
+# ====================== Admin Auth (email + password) ======================
+import admin_auth as adm
+
+@api_router.post("/admin-auth/login")
+async def admin_login(body: adm.AdminLoginReq, request: Request, response: Response):
+    return await adm.login(db, request, response, body)
+
+@api_router.get("/admin-auth/me")
+async def admin_me(request: Request):
+    admin = await adm.get_current_admin(request, db)
+    if not admin:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    return admin
+
+@api_router.post("/admin-auth/logout")
+async def admin_logout(response: Response):
+    adm.logout_cookie(response)
+    return {"ok": True}
+
+@api_router.post("/admin-auth/change-password")
+async def admin_change_password(body: adm.ChangePasswordReq, admin=Depends(require_admin)):
+    return await adm.change_password(db, admin, body)
 
 # ====================== Products ======================
 @api_router.get("/products")
@@ -460,6 +492,9 @@ async def create_payment_order(body: CreatePaymentOrderReq, request: Request):
             reason="redeemed",
             note=f"Redeemed {cards} cards · ₹{int(discount)} off order {order.id[:8]}"
         ).model_dump())
+        notif.fire_and_forget(notif.notify_loom_redeem(doc))
+
+    notif.fire_and_forget(notif.notify_new_order(doc))
 
     return {
         "order": {k: v for k, v in doc.items() if k != '_id'},
@@ -483,6 +518,8 @@ async def verify_payment(body: VerifyPaymentReq):
     order = await db.orders.find_one({"razorpay_order_id": body.razorpay_order_id}, {"_id": 0})
     if order and order.get("user_id"):
         await loom_award_for_order(order["user_id"], order["id"])
+    if order:
+        notif.fire_and_forget(notif.notify_payment(order, True))
     return {"ok": True, "order": order}
 
 @api_router.post("/payments/demo-complete/{order_id}")
@@ -494,6 +531,8 @@ async def demo_complete(order_id: str):
     order = await db.orders.find_one({"id": order_id}, {"_id": 0})
     if order and order.get("user_id"):
         await loom_award_for_order(order["user_id"], order["id"])
+    if order:
+        notif.fire_and_forget(notif.notify_payment(order, True))
     return {"ok": True, "order": order}
 
 @api_router.get("/orders")
@@ -615,6 +654,222 @@ async def admin_redeemed_orders(admin=Depends(require_admin)):
     ).sort("created_at", -1).to_list(500)
     return items
 
+# ====================== Admin: Order Status Workflow ======================
+ORDER_STATUSES = ["pending", "placed", "paid", "packed", "shipped", "out_for_delivery", "delivered", "cancelled"]
+
+class StatusUpdateReq(BaseModel):
+    status: str
+
+@api_router.patch("/admin/orders/{order_id}/status")
+async def admin_update_order_status(order_id: str, body: StatusUpdateReq, admin=Depends(require_admin)):
+    if body.status not in ORDER_STATUSES:
+        raise HTTPException(status_code=400, detail=f"Invalid status. Allowed: {ORDER_STATUSES}")
+    order = await db.orders.find_one({"id": order_id}, {"_id": 0})
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    await db.orders.update_one({"id": order_id}, {"$set": {"status": body.status, "updated_at": datetime.now(timezone.utc).isoformat()}})
+    updated = await db.orders.find_one({"id": order_id}, {"_id": 0})
+    notif.fire_and_forget(notif.notify_status_update(updated, body.status))
+    return {"ok": True, "order": updated}
+
+@api_router.post("/payments/notify-failure")
+async def notify_payment_failure(request: Request):
+    """Called by frontend when Razorpay returns an error so admin gets alerted."""
+    body = await request.json()
+    order_id = body.get("order_id")
+    if order_id:
+        order = await db.orders.find_one({"id": order_id}, {"_id": 0})
+        if order:
+            notif.fire_and_forget(notif.notify_payment(order, False))
+    return {"ok": True}
+
+# ====================== Admin: Dashboard Stats ======================
+def _day_start(dt: datetime) -> datetime:
+    return dt.replace(hour=0, minute=0, second=0, microsecond=0)
+
+@api_router.get("/admin/dashboard/stats")
+async def admin_dashboard_stats(admin=Depends(require_admin)):
+    now = datetime.now(timezone.utc)
+    today = _day_start(now)
+    week_start = today - timedelta(days=now.weekday())
+    month_start = today.replace(day=1)
+
+    async def count_and_sum(since_iso: str):
+        pipe = [
+            {"$match": {"created_at": {"$gte": since_iso}, "status": {"$ne": "cancelled"}}},
+            {"$group": {"_id": None, "count": {"$sum": 1}, "revenue": {"$sum": "$total"}}},
+        ]
+        docs = await db.orders.aggregate(pipe).to_list(1)
+        if docs:
+            return int(docs[0]["count"]), float(docs[0]["revenue"])
+        return 0, 0.0
+
+    today_count, today_rev = await count_and_sum(today.isoformat())
+    week_count, week_rev = await count_and_sum(week_start.isoformat())
+    month_count, month_rev = await count_and_sum(month_start.isoformat())
+
+    pending_count = await db.orders.count_documents({"status": {"$in": ["pending", "placed", "paid", "packed", "shipped", "out_for_delivery"]}})
+    customers_count = await db.users.count_documents({})
+
+    # Most-selling product (across all paid+ orders)
+    pipe = [
+        {"$match": {"status": {"$in": ["paid", "packed", "shipped", "out_for_delivery", "delivered"]}}},
+        {"$unwind": "$items"},
+        {"$group": {"_id": "$items.name", "qty": {"$sum": "$items.quantity"}}},
+        {"$sort": {"qty": -1}},
+        {"$limit": 1},
+    ]
+    docs = await db.orders.aggregate(pipe).to_list(1)
+    top_product = {"name": docs[0]["_id"], "qty": int(docs[0]["qty"])} if docs else None
+
+    # Loom credit totals
+    pipe2 = [
+        {"$group": {
+            "_id": None,
+            "issued": {"$sum": {"$cond": [{"$eq": ["$reason", "earned"]}, "$change", 0]}},
+            "redeemed": {"$sum": {"$cond": [{"$eq": ["$reason", "redeemed"]}, "$change", 0]}},
+        }},
+    ]
+    lc = await db.loom_credit_txns.aggregate(pipe2).to_list(1)
+    loom = {"issued": int(lc[0]["issued"]) if lc else 0, "redeemed": int(-lc[0]["redeemed"]) if lc else 0}
+
+    return {
+        "today": {"orders": today_count, "revenue": today_rev},
+        "week": {"orders": week_count, "revenue": week_rev},
+        "month": {"orders": month_count, "revenue": month_rev},
+        "pending_orders": pending_count,
+        "total_customers": customers_count,
+        "top_product": top_product,
+        "loom_credits": loom,
+    }
+
+@api_router.get("/admin/dashboard/revenue")
+async def admin_revenue_series(window: str = "week", admin=Depends(require_admin)):
+    """Returns a time series of revenue. window = day(24h hourly) | week(7d daily) | month(30d daily)."""
+    now = datetime.now(timezone.utc)
+    if window == "day":
+        bucket_size = timedelta(hours=1)
+        num_buckets = 24
+        fmt = "%H:00"
+    elif window == "month":
+        bucket_size = timedelta(days=1)
+        num_buckets = 30
+        fmt = "%b %d"
+    else:  # week
+        bucket_size = timedelta(days=1)
+        num_buckets = 7
+        fmt = "%a"
+    start = now - bucket_size * num_buckets
+    cursor = db.orders.find(
+        {"created_at": {"$gte": start.isoformat()}, "status": {"$ne": "cancelled"}},
+        {"_id": 0, "created_at": 1, "total": 1},
+    )
+    orders = await cursor.to_list(5000)
+    buckets = []
+    for i in range(num_buckets):
+        b_start = now - bucket_size * (num_buckets - i)
+        buckets.append({"label": b_start.strftime(fmt), "ts": b_start.isoformat(), "revenue": 0.0, "orders": 0})
+    for o in orders:
+        try:
+            t = datetime.fromisoformat(o["created_at"])
+            if t.tzinfo is None:
+                t = t.replace(tzinfo=timezone.utc)
+        except Exception:
+            continue
+        delta = now - t
+        bucket_index = num_buckets - int(delta.total_seconds() / bucket_size.total_seconds()) - 1
+        if 0 <= bucket_index < num_buckets:
+            buckets[bucket_index]["revenue"] += float(o.get("total", 0))
+            buckets[bucket_index]["orders"] += 1
+    return buckets
+
+# ====================== Admin: Customers ======================
+@api_router.get("/admin/customers")
+async def admin_customers(admin=Depends(require_admin)):
+    users = await db.users.find({}, {"_id": 0, "user_id": 1, "name": 1, "email": 1, "picture": 1, "created_at": 1}).to_list(2000)
+    out = []
+    for u in users:
+        uid = u["user_id"]
+        pipe = [
+            {"$match": {"user_id": uid, "status": {"$ne": "cancelled"}}},
+            {"$group": {"_id": None, "orders": {"$sum": 1}, "spent": {"$sum": "$total"}}},
+        ]
+        agg = await db.orders.aggregate(pipe).to_list(1)
+        orders_count = int(agg[0]["orders"]) if agg else 0
+        spent = float(agg[0]["spent"]) if agg else 0.0
+        bal = await loom_balance(uid)
+        phone = ""
+        last_o = await db.orders.find_one({"user_id": uid}, {"_id": 0, "shipping": 1}, sort=[("created_at", -1)])
+        if last_o and last_o.get("shipping"):
+            phone = last_o["shipping"].get("phone", "")
+        out.append({**u, "orders_count": orders_count, "total_spent": spent, "loom_balance": bal, "phone": phone})
+    out.sort(key=lambda x: x["total_spent"], reverse=True)
+    return out
+
+@api_router.get("/admin/customers/{user_id}")
+async def admin_customer_detail(user_id: str, admin=Depends(require_admin)):
+    u = await db.users.find_one({"user_id": user_id}, {"_id": 0})
+    if not u:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    orders = await db.orders.find({"user_id": user_id}, {"_id": 0}).sort("created_at", -1).to_list(500)
+    txns = await db.loom_credit_txns.find({"user_id": user_id}, {"_id": 0}).sort("created_at", -1).to_list(500)
+    bal = await loom_balance(user_id)
+    spent = sum(o.get("total", 0) for o in orders if o.get("status") != "cancelled")
+    return {"user": u, "orders": orders, "loom_balance": bal, "loom_history": txns, "total_spent": spent, "orders_count": len([o for o in orders if o.get("status") != "cancelled"])}
+
+# ====================== Admin: Orders (filter/search/export) ======================
+@api_router.get("/admin/orders/search")
+async def admin_orders_search(
+    admin=Depends(require_admin),
+    window: str = "all",  # today | week | month | all
+    q: Optional[str] = None,
+    status: Optional[str] = None,
+):
+    query: dict = {}
+    now = datetime.now(timezone.utc)
+    if window == "today":
+        query["created_at"] = {"$gte": _day_start(now).isoformat()}
+    elif window == "week":
+        query["created_at"] = {"$gte": (_day_start(now) - timedelta(days=now.weekday())).isoformat()}
+    elif window == "month":
+        query["created_at"] = {"$gte": _day_start(now).replace(day=1).isoformat()}
+    if status and status != "all":
+        query["status"] = status
+    if q:
+        # Search by order id prefix OR customer name (case-insensitive)
+        query["$or"] = [
+            {"id": {"$regex": f"^{q}", "$options": "i"}},
+            {"shipping.full_name": {"$regex": q, "$options": "i"}},
+            {"email": {"$regex": q, "$options": "i"}},
+        ]
+    items = await db.orders.find(query, {"_id": 0}).sort("created_at", -1).to_list(2000)
+    return items
+
+@api_router.get("/admin/orders.csv")
+async def admin_orders_csv(admin=Depends(require_admin)):
+    import csv, io
+    items = await db.orders.find({}, {"_id": 0}).sort("created_at", -1).to_list(5000)
+    buf = io.StringIO()
+    w = csv.writer(buf)
+    w.writerow(["Order ID", "Created", "Status", "Customer", "Email", "Phone", "Address", "City", "State", "Pincode",
+                "Items", "Sizes", "Quantity", "Subtotal", "Loom Discount", "Total", "Razorpay Order", "Razorpay Payment"])
+    for o in items:
+        s = o.get("shipping", {}) or {}
+        items_str = "; ".join(f"{i.get('name','')} (x{i.get('quantity',1)})" for i in o.get("items", []))
+        sizes_str = ", ".join(filter(None, [i.get("size") for i in o.get("items", [])]))
+        qty = sum(i.get("quantity", 0) for i in o.get("items", []))
+        w.writerow([
+            o.get("id",""), o.get("created_at",""), o.get("status",""),
+            s.get("full_name",""), o.get("email",""), s.get("phone",""),
+            s.get("address_line",""), s.get("city",""), s.get("state",""), s.get("pincode",""),
+            items_str, sizes_str, qty,
+            o.get("subtotal", 0), o.get("loom_credits_discount", 0), o.get("total", 0),
+            o.get("razorpay_order_id",""), o.get("razorpay_payment_id",""),
+        ])
+    csv_data = buf.getvalue()
+    return Response(content=csv_data, media_type="text/csv",
+                    headers={"Content-Disposition": f"attachment; filename=crescent-loom-orders-{datetime.now(timezone.utc).strftime('%Y%m%d')}.csv"})
+
 # ====================== File Upload ======================
 class FileRef(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
@@ -716,6 +971,8 @@ SEED_PRODUCTS = [
 @app.on_event("startup")
 async def startup_tasks():
     init_storage()
+    await adm.ensure_indexes(db)
+    await adm.seed_admin(db)
     count = await db.products.count_documents({})
     if count == 0:
         docs = [Product(**p).model_dump() for p in SEED_PRODUCTS]
