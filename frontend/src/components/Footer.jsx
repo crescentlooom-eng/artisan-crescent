@@ -17,10 +17,10 @@ export default function Footer() {
         <div>
           <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E] mb-4">Shop</div>
           <ul className="space-y-2 text-sm text-[#F5F0E8]/75">
-            <li><Link to="/shop?category=outerwear" className="hover:text-[#C9A96E]">Outerwear</Link></li>
-            <li><Link to="/shop?category=tops" className="hover:text-[#C9A96E]">Tops</Link></li>
-            <li><Link to="/shop?category=bottoms" className="hover:text-[#C9A96E]">Bottoms</Link></li>
-            <li><Link to="/shop?category=accessories" className="hover:text-[#C9A96E]">Accessories</Link></li>
+            <li><Link to="/shop?category=polo" className="hover:text-[#C9A96E]">Polo</Link></li>
+            <li><Link to="/shop?category=designer" className="hover:text-[#C9A96E]">Designer</Link></li>
+            <li><Link to="/shop?category=basics" className="hover:text-[#C9A96E]">Basics</Link></li>
+            <li><Link to="/shop" className="hover:text-[#C9A96E]">All Pieces</Link></li>
           </ul>
         </div>
         <div>

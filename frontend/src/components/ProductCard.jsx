@@ -2,11 +2,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Heart } from "lucide-react";
 import { useWishlist } from "@/context/WishlistContext";
-import { formatINR } from "@/lib/api";
+import { formatINR, productImage } from "@/lib/api";
 
 export default function ProductCard({ product, index = 0 }) {
   const { has, toggle } = useWishlist();
   const isWished = has(product.id);
+  const img = productImage(product);
 
   const onWish = async (e) => {
     e.preventDefault();
@@ -25,12 +26,13 @@ export default function ProductCard({ product, index = 0 }) {
       style={{ transitionDelay: `${(index % 8) * 60}ms` }}
     >
       <div className="product-card-img-wrap product-card-halo aspect-[3/4] mb-5 relative">
-        <img
-          src={product.images?.[0]}
-          alt={product.name}
-          loading="lazy"
-          className="w-full h-full object-cover"
-        />
+        {img ? (
+          <img src={img} alt={product.name} loading="lazy" className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-[#8A8FA8] text-xs tracking-[0.3em] uppercase">
+            Awaiting Image
+          </div>
+        )}
         <button
           onClick={onWish}
           data-testid={`product-card-wishlist-${product.slug}`}
@@ -44,6 +46,11 @@ export default function ProductCard({ product, index = 0 }) {
         {product.new_arrival && (
           <div className="absolute top-4 left-4 text-[10px] tracking-[0.25em] uppercase text-[#C9A96E] bg-[#0B0E1A]/60 backdrop-blur-md px-3 py-1">
             New
+          </div>
+        )}
+        {product.variants?.length > 0 && (
+          <div className="absolute bottom-4 left-4 text-[10px] tracking-[0.25em] uppercase text-[#F5F0E8]/85 bg-[#0B0E1A]/60 backdrop-blur-md px-3 py-1">
+            {product.variants.length} {product.variants.length === 1 ? "Variant" : "Variants"}
           </div>
         )}
       </div>

@@ -1,7 +1,7 @@
 # Crescent Loom — PRD
 
 ## Original Problem Statement
-Build a full luxury fashion e-commerce website for "Crescent Loom" — slow fashion, moonlit aesthetic, midnight navy + ivory + brushed gold palette, Cormorant Garamond + DM Sans typography. Multi-page: Home (hero "Woven in Moonlight"), Shop, Product detail, About, Cart drawer. With wishlist, Google login, Razorpay (UPI) payment, admin panel.
+Build a full luxury fashion e-commerce website for "Crescent Loom" — slow fashion, moonlit aesthetic, midnight navy + ivory + brushed gold palette, Cormorant Garamond + DM Sans typography. Multi-page: Home, Shop, Product detail, About, Cart drawer. With wishlist, Google login, Razorpay (UPI) payment, admin panel.
 
 ## User Personas
 - Discerning customer browsing quietly
@@ -10,34 +10,33 @@ Build a full luxury fashion e-commerce website for "Crescent Loom" — slow fash
 
 ## Tech Stack
 - React 19 + Tailwind + shadcn/ui + framer-motion + react-router 7
-- FastAPI + Motor (Mongo) + Razorpay SDK + Emergent OAuth
-- Editorial Unsplash/Pexels imagery for placeholder products
+- FastAPI + Motor (Mongo) + Razorpay SDK + Emergent OAuth + Emergent Object Storage
+- Editorial Unsplash/Pexels imagery for chapters / hero (placeholder until customer brand shoots)
 
 ## Architecture
 - Auth: Emergent Google OAuth, session_token cookie + DB-backed sessions
-- Products: Mongo `products` collection seeded with 8 pieces on first startup
+- Products: variants[] structure — each variant = color/print with its own images
+  - Variant: {id, name, color_hex, images[]}
+  - Product card uses first variant image (or product.images fallback); shows "Awaiting Image" if empty
+- Image upload: Emergent object storage backed by EMERGENT_LLM_KEY; admin uploads -> /api/admin/upload returns public /api/files/{id} url
 - Wishlist: Mongo `wishlist` collection (user_id + product_id)
-- Cart: Client-side (localStorage) until checkout
-- Orders: Mongo `orders` collection; integrated with Razorpay or demo-complete
+- Cart: Client-side (localStorage)
+- Orders: Mongo `orders` collection; Razorpay or demo-complete flow
 - Admin: First sign-in becomes admin; ADMIN_EMAILS env supports more
 
-## Implemented (June 2026)
-- Editorial homepage with hero, marquee new-arrivals strip, asymmetric chapters grid, philosophy quote
-- Shop page with category filters, search, sort, hover-zoom + halo cards
-- Product detail page with gallery, size guide modal (shadcn Dialog), wishlist toggle, related carousel
-- About page with brand story + craft values
-- Slide-in cart drawer (sonner toasts) + Checkout page with shipping form + Razorpay/demo flow
-- Google OAuth login + Account page with order history
-- Wishlist page
-- Admin panel: product CRUD + order list (tabs)
-- Custom dark-dot cursor, gold underline nav animations, scroll-reveal, noise overlay
-- Navbar: centered wordmark, scrolls into frosted glass
+## Catalog (June 2026)
+1. **Textured Polo Tee** · ₹399 · sizes M/L/XL · 6 variants (color images uploaded by admin)
+2. **Prism Wear Tee** · ₹349 · sizes L/XL · 10 designer print variants
+3. **Essential Tee** · ₹299 · sizes M/XL · 2 variants (Black #0B0E1A, White #F5F0E8)
+
+## Implemented
+- Editorial homepage, shop with category filters (Polo/Designer/Basics), product detail with variant swatches + size guide
+- Slide-in cart drawer, Razorpay/demo checkout, Google OAuth, Account, Wishlist
+- Admin panel with **VariantEditor**: per-variant name/hex/image upload (drag-drop, multi-file)
+- Emergent object storage integration: /api/admin/upload + /api/files/{id} proxy
 
 ## Pending / Backlog
-- P0: Razorpay live keys (user to provide RAZORPAY_KEY_ID + SECRET)
-- P1: Real product catalog upload (user said "we'll share later")
-- P1: Newsletter signup
-- P2: Order detail view + admin status updates
-- P2: Reviews / craft stories per product
-- P2: Multi-currency / EUR display
-- P2: GST-inclusive pricing breakdown on checkout
+- P0: Razorpay live keys (user to provide)
+- P0: User to upload variant images via admin panel
+- P1: Per-variant color hex picker (instead of hex string)
+- P2: Newsletter signup, multi-currency, GST breakdown, order detail view + admin status updates

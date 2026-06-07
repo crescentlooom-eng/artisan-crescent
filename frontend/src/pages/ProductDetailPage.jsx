@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Heart, Minus, Plus } from "lucide-react";
-import { api, formatINR } from "@/lib/api";
+import { api, formatINR, productImage } from "@/lib/api";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import {
@@ -14,6 +14,7 @@ export default function ProductDetailPage() {
   const [product, setProduct] = useState(null);
   const [size, setSize] = useState(null);
   const [qty, setQty] = useState(1);
+  const [variantIdx, setVariantIdx] = useState(0);
   const [activeImg, setActiveImg] = useState(0);
   const [related, setRelated] = useState([]);
   const { addItem } = useCart();
@@ -24,19 +25,42 @@ export default function ProductDetailPage() {
       const r = await api.get(`/products/${slug}`);
       setProduct(r.data);
       setSize(r.data.sizes?.[0] || null);
+      setVariantIdx(0);
       setActiveImg(0);
       const all = await api.get("/products", { params: { category: r.data.category } });
       setRelated(all.data.filter((p) => p.id !== r.data.id).slice(0, 4));
     })();
   }, [slug]);
 
+  const variant = product?.variants?.[variantIdx];
+  const images = useMemo(() => {
+    if (!product) return [];
+    if (variant?.images?.length) return variant.images;
+    if (product.images?.length) return product.images;
+    return [];
+  }, [product, variant]);
+
   if (!product) {
     return <div className="pt-40 text-center text-[#8A8FA8] tracking-[0.3em] uppercase text-sm">Loading...</div>;
   }
 
+  const heroImg = images[activeImg] || productImage(product);
+
   const onAdd = () => {
-    addItem(product, { size, quantity: qty });
-    toast.success(`${product.name} added to your bag`, { description: size ? `Size · ${size}` : undefined });
+    const productForCart = {
+      ...product,
+      // pass variant image into cart item
+      images: images.length ? images : [productImage(product)],
+    };
+    const meta = { size, quantity: qty };
+    if (variant) {
+      addItem({ ...productForCart, name: `${product.name} · ${variant.name}` }, meta);
+    } else {
+      addItem(productForCart, meta);
+    }
+    toast.success(`${product.name}${variant ? " · " + variant.name : ""} added to your bag`, {
+      description: size ? `Size · ${size}` : undefined,
+    });
   };
 
   const onWish = async () => {
@@ -58,11 +82,17 @@ export default function ProductDetailPage() {
           {/* Gallery */}
           <div className="lg:col-span-7">
             <div className="product-card-img-wrap aspect-[4/5] w-full mb-4">
-              <img src={product.images[activeImg]} alt={product.name} className="w-full h-full object-cover" />
+              {heroImg ? (
+                <img src={heroImg} alt={product.name} className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-[#8A8FA8] text-xs tracking-[0.3em] uppercase">
+                  Awaiting Image
+                </div>
+              )}
             </div>
-            {product.images.length > 1 && (
-              <div className="grid grid-cols-4 gap-3">
-                {product.images.map((img, i) => (
+            {images.length > 1 && (
+              <div className="grid grid-cols-5 gap-3">
+                {images.map((img, i) => (
                   <button key={i} onClick={() => setActiveImg(i)} data-testid={`product-thumb-${i}`} className={`aspect-square overflow-hidden border ${i === activeImg ? "border-[#C9A96E]" : "border-transparent opacity-70 hover:opacity-100"}`}>
                     <img src={img} alt="" className="w-full h-full object-cover" />
                   </button>
@@ -85,6 +115,39 @@ export default function ProductDetailPage() {
               </div>
             )}
 
+            {/* Variant selector */}
+            {product.variants?.length > 0 && (
+              <div className="mt-10">
+                <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E] mb-3">
+                  Variant · <span className="text-[#F5F0E8]/85">{variant?.name}</span>
+                </div>
+                <div className="grid grid-cols-6 gap-3" data-testid="product-variant-grid">
+                  {product.variants.map((v, i) => {
+                    const thumb = v.images?.[0];
+                    const selected = i === variantIdx;
+                    return (
+                      <button
+                        key={v.id || i}
+                        onClick={() => { setVariantIdx(i); setActiveImg(0); }}
+                        data-testid={`product-variant-${i}`}
+                        title={v.name}
+                        className={`aspect-square overflow-hidden border-2 transition-all ${selected ? "border-[#C9A96E]" : "border-transparent opacity-70 hover:opacity-100"}`}
+                        style={!thumb && v.color_hex ? { backgroundColor: v.color_hex } : undefined}
+                      >
+                        {thumb ? (
+                          <img src={thumb} alt={v.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-[9px] tracking-[0.15em] uppercase text-[#F5F0E8]/70 bg-[#14172A]">
+                            {v.name.replace(/[^0-9]/g, "") || v.name.slice(0,3)}
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Size selector */}
             {product.sizes?.length > 0 && (
               <div className="mt-10">
@@ -101,17 +164,15 @@ export default function ProductDetailPage() {
                       <div className="mt-4 text-sm">
                         <table className="w-full text-left">
                           <thead className="text-[#C9A96E] text-[11px] tracking-[0.2em] uppercase">
-                            <tr><th className="py-2">Size</th><th>Bust</th><th>Waist</th><th>Hip</th></tr>
+                            <tr><th className="py-2">Size</th><th>Chest (in)</th><th>Length (in)</th><th>Shoulder (in)</th></tr>
                           </thead>
                           <tbody className="text-[#F5F0E8]/80">
-                            <tr className="border-t border-[#C9A96E]/15"><td className="py-3">XS</td><td>82</td><td>62</td><td>88</td></tr>
-                            <tr className="border-t border-[#C9A96E]/15"><td className="py-3">S</td><td>86</td><td>66</td><td>92</td></tr>
-                            <tr className="border-t border-[#C9A96E]/15"><td className="py-3">M</td><td>90</td><td>70</td><td>96</td></tr>
-                            <tr className="border-t border-[#C9A96E]/15"><td className="py-3">L</td><td>94</td><td>74</td><td>100</td></tr>
-                            <tr className="border-t border-[#C9A96E]/15"><td className="py-3">XL</td><td>98</td><td>78</td><td>104</td></tr>
+                            <tr className="border-t border-[#C9A96E]/15"><td className="py-3">M</td><td>40</td><td>27</td><td>17</td></tr>
+                            <tr className="border-t border-[#C9A96E]/15"><td className="py-3">L</td><td>42</td><td>28</td><td>18</td></tr>
+                            <tr className="border-t border-[#C9A96E]/15"><td className="py-3">XL</td><td>44</td><td>29</td><td>19</td></tr>
                           </tbody>
                         </table>
-                        <p className="text-[#8A8FA8] text-xs mt-4">All measurements in centimeters. Crescent Loom pieces are cut relaxed; we recommend your usual size.</p>
+                        <p className="text-[#8A8FA8] text-xs mt-4">Measurements are approximate. Garments are cut relaxed; pick your usual size.</p>
                       </div>
                     </DialogContent>
                   </Dialog>
@@ -165,7 +226,7 @@ export default function ProductDetailPage() {
               {related.map((p) => (
                 <Link to={`/product/${p.slug}`} key={p.id} className="group">
                   <div className="product-card-img-wrap product-card-halo aspect-[3/4] mb-4">
-                    <img src={p.images?.[0]} alt={p.name} className="w-full h-full object-cover" />
+                    {productImage(p) ? <img src={productImage(p)} alt={p.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-[#8A8FA8] text-xs tracking-[0.3em] uppercase">Awaiting Image</div>}
                   </div>
                   <div className="font-serif-display text-xl text-[#F5F0E8]">{p.name}</div>
                   <div className="text-sm text-[#F5F0E8]/70 mt-1">{formatINR(p.price)}</div>

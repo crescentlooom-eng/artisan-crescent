@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Request, Response, Depends, Cookie, Header
+from fastapi import FastAPI, APIRouter, HTTPException, Request, Response, Depends, Cookie, Header, UploadFile, File
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -8,6 +8,7 @@ import uuid
 import httpx
 import hmac
 import hashlib
+import requests
 from pathlib import Path
 from pydantic import BaseModel, Field
 from typing import List, Optional
@@ -43,7 +44,77 @@ except Exception:
 EMERGENT_AUTH_URL = os.environ.get('EMERGENT_AUTH_URL', 'https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data')
 ADMIN_EMAILS = {e.strip().lower() for e in os.environ.get('ADMIN_EMAILS', '').split(',') if e.strip()}
 
+# ====================== Object Storage ======================
+STORAGE_URL = "https://integrations.emergentagent.com/objstore/api/v1/storage"
+EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY", "")
+APP_NAME = os.environ.get("APP_NAME", "crescent-loom")
+_storage_key: Optional[str] = None
+
+def init_storage() -> Optional[str]:
+    global _storage_key
+    if _storage_key:
+        return _storage_key
+    if not EMERGENT_LLM_KEY:
+        logger.warning("EMERGENT_LLM_KEY not set — uploads disabled")
+        return None
+    try:
+        r = requests.post(f"{STORAGE_URL}/init", json={"emergent_key": EMERGENT_LLM_KEY}, timeout=30)
+        r.raise_for_status()
+        _storage_key = r.json()["storage_key"]
+        logger.info("Object storage initialized")
+        return _storage_key
+    except Exception as e:
+        logger.error(f"Storage init failed: {e}")
+        return None
+
+def storage_put(path: str, data: bytes, content_type: str) -> dict:
+    key = init_storage()
+    if not key:
+        raise HTTPException(status_code=500, detail="Storage not initialized")
+    r = requests.put(
+        f"{STORAGE_URL}/objects/{path}",
+        headers={"X-Storage-Key": key, "Content-Type": content_type},
+        data=data, timeout=120,
+    )
+    if r.status_code == 403:
+        # key expired, retry once
+        global _storage_key
+        _storage_key = None
+        key = init_storage()
+        r = requests.put(
+            f"{STORAGE_URL}/objects/{path}",
+            headers={"X-Storage-Key": key, "Content-Type": content_type},
+            data=data, timeout=120,
+        )
+    r.raise_for_status()
+    return r.json()
+
+def storage_get(path: str):
+    key = init_storage()
+    if not key:
+        raise HTTPException(status_code=500, detail="Storage not initialized")
+    r = requests.get(f"{STORAGE_URL}/objects/{path}", headers={"X-Storage-Key": key}, timeout=60)
+    if r.status_code == 403:
+        global _storage_key
+        _storage_key = None
+        key = init_storage()
+        r = requests.get(f"{STORAGE_URL}/objects/{path}", headers={"X-Storage-Key": key}, timeout=60)
+    r.raise_for_status()
+    return r.content, r.headers.get("Content-Type", "application/octet-stream")
+
+MIME_BY_EXT = {
+    "jpg": "image/jpeg", "jpeg": "image/jpeg", "png": "image/png",
+    "gif": "image/gif", "webp": "image/webp",
+}
+
 # ====================== Models ======================
+class Variant(BaseModel):
+    id: str = Field(default_factory=lambda: f"v_{uuid.uuid4().hex[:8]}")
+    name: str  # e.g. "Black", "Print 01"
+    color_hex: Optional[str] = None
+    images: List[str] = []
+    in_stock: bool = True
+
 class Product(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str
@@ -51,9 +122,10 @@ class Product(BaseModel):
     category: str  # tops, bottoms, outerwear, accessories
     price: float
     description: str
-    images: List[str] = []
+    images: List[str] = []  # fallback / hero images when no variants
     sizes: List[str] = ["XS", "S", "M", "L", "XL"]
     colors: List[str] = []
+    variants: List[Variant] = []
     material: Optional[str] = None
     in_stock: bool = True
     featured: bool = False
@@ -69,6 +141,7 @@ class ProductCreate(BaseModel):
     images: List[str] = []
     sizes: List[str] = ["XS", "S", "M", "L", "XL"]
     colors: List[str] = []
+    variants: List[Variant] = []
     material: Optional[str] = None
     featured: bool = False
     new_arrival: bool = False
@@ -365,91 +438,107 @@ async def list_all_orders(admin=Depends(require_admin)):
     items = await db.orders.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
     return items
 
+# ====================== File Upload ======================
+class FileRef(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    storage_path: str
+    original_filename: Optional[str] = None
+    content_type: str
+    size: int = 0
+    uploaded_by: Optional[str] = None
+    is_deleted: bool = False
+    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+@api_router.post("/admin/upload")
+async def upload_file(file: UploadFile = File(...), admin=Depends(require_admin)):
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="No filename")
+    ext = (file.filename.rsplit(".", 1)[-1] or "bin").lower()
+    if ext not in MIME_BY_EXT:
+        raise HTTPException(status_code=400, detail="Only jpg/jpeg/png/gif/webp are supported")
+    content_type = file.content_type or MIME_BY_EXT[ext]
+    data = await file.read()
+    if len(data) > 10 * 1024 * 1024:  # 10MB cap
+        raise HTTPException(status_code=400, detail="File too large (max 10MB)")
+    file_id = str(uuid.uuid4())
+    path = f"{APP_NAME}/products/{file_id}.{ext}"
+    result = storage_put(path, data, content_type)
+    ref = FileRef(
+        id=file_id,
+        storage_path=result["path"],
+        original_filename=file.filename,
+        content_type=content_type,
+        size=result.get("size", len(data)),
+        uploaded_by=admin["user_id"],
+    ).model_dump()
+    await db.files.insert_one(ref)
+    backend_base = os.environ.get("PUBLIC_BACKEND_URL", "")
+    public_url = f"/api/files/{file_id}"
+    return {"id": file_id, "url": public_url, "content_type": content_type, "size": ref["size"]}
+
+@api_router.get("/files/{file_id}")
+async def serve_file(file_id: str):
+    ref = await db.files.find_one({"id": file_id, "is_deleted": False}, {"_id": 0})
+    if not ref:
+        raise HTTPException(status_code=404, detail="File not found")
+    data, ct = storage_get(ref["storage_path"])
+    return Response(content=data, media_type=ref.get("content_type", ct), headers={"Cache-Control": "public, max-age=31536000, immutable"})
+
 # ====================== Seed ======================
 SEED_PRODUCTS = [
     {
-        "name": "Crescent Coat", "slug": "crescent-coat", "category": "outerwear",
-        "price": 18500, "description": "A long-line wool blend coat cut to fall like water. Hand-finished seams. Made in limited numbers.",
-        "images": [
-            "https://images.pexels.com/photos/20425010/pexels-photo-20425010.jpeg",
-            "https://images.unsplash.com/photo-1762605135012-56a59a059e60?crop=entropy&cs=srgb&fm=jpg",
+        "name": "Textured Polo Tee",
+        "slug": "textured-polo-tee",
+        "category": "polo",
+        "price": 399,
+        "description": "A structured polo tee in a soft textured weave. Six tonal variants, cut for a quiet, modern silhouette.",
+        "sizes": ["M", "L", "XL"],
+        "material": "Cotton-Polyester blend, structured weave",
+        "featured": True,
+        "new_arrival": True,
+        "images": [],
+        "variants": [
+            {"id": f"v_{uuid.uuid4().hex[:8]}", "name": f"Variant 0{i+1}", "color_hex": None, "images": []}
+            for i in range(6)
         ],
-        "sizes": ["XS", "S", "M", "L"], "colors": ["Ivory", "Midnight"], "material": "80% Wool, 20% Cashmere",
-        "featured": True, "new_arrival": True,
     },
     {
-        "name": "Loom Linen Trousers", "slug": "loom-linen-trousers", "category": "bottoms",
-        "price": 7200, "description": "High-rise linen trousers in a relaxed silhouette. Naturally wrinkled, intentionally worn.",
-        "images": [
-            "https://images.unsplash.com/photo-1762605135012-56a59a059e60?crop=entropy&cs=srgb&fm=jpg",
-            "https://images.pexels.com/photos/29879990/pexels-photo-29879990.jpeg",
+        "name": "Prism Wear Tee",
+        "slug": "prism-wear-tee",
+        "category": "designer",
+        "price": 349,
+        "description": "Ten designer prints across a single relaxed tee silhouette. Each print is a numbered, limited edition.",
+        "sizes": ["L", "XL"],
+        "material": "100% Cotton, soft-handle jersey",
+        "featured": True,
+        "new_arrival": True,
+        "images": [],
+        "variants": [
+            {"id": f"v_{uuid.uuid4().hex[:8]}", "name": f"Print {i+1:02d}", "color_hex": None, "images": []}
+            for i in range(10)
         ],
-        "sizes": ["XS", "S", "M", "L", "XL"], "colors": ["Sand", "Slate"], "material": "100% European Linen",
-        "featured": True, "new_arrival": True,
     },
     {
-        "name": "Waxing Shirt", "slug": "waxing-shirt", "category": "tops",
-        "price": 6400, "description": "An oversized button-down in waxed cotton poplin. Falls with weight, ages with intention.",
-        "images": [
-            "https://images.pexels.com/photos/29879990/pexels-photo-29879990.jpeg",
-            "https://images.unsplash.com/photo-1607300110506-273ab1cf41f8?crop=entropy&cs=srgb&fm=jpg",
+        "name": "Essential Tee",
+        "slug": "essential-tee",
+        "category": "basics",
+        "price": 299,
+        "description": "Our quiet everyday tee. Heavyweight cotton, clean shoulders, washed for softness.",
+        "sizes": ["M", "XL"],
+        "material": "100% Heavyweight Cotton",
+        "featured": True,
+        "new_arrival": True,
+        "images": [],
+        "variants": [
+            {"id": f"v_{uuid.uuid4().hex[:8]}", "name": "Black", "color_hex": "#0B0E1A", "images": []},
+            {"id": f"v_{uuid.uuid4().hex[:8]}", "name": "White", "color_hex": "#F5F0E8", "images": []},
         ],
-        "sizes": ["S", "M", "L", "XL"], "colors": ["Bone", "Slate"], "material": "Waxed Cotton Poplin",
-        "featured": False, "new_arrival": True,
-    },
-    {
-        "name": "Eclipse Wrap", "slug": "eclipse-wrap", "category": "accessories",
-        "price": 9800, "description": "A floor-grazing silk wrap in deep cocoa. Worn over the shoulders or twisted at the waist.",
-        "images": [
-            "https://images.pexels.com/photos/35392914/pexels-photo-35392914.jpeg",
-            "https://images.unsplash.com/photo-1607300110506-273ab1cf41f8?crop=entropy&cs=srgb&fm=jpg",
-        ],
-        "sizes": ["One Size"], "colors": ["Cocoa", "Midnight"], "material": "100% Mulberry Silk",
-        "featured": True, "new_arrival": False,
-    },
-    {
-        "name": "Moonlight Knit", "slug": "moonlight-knit", "category": "tops",
-        "price": 8900, "description": "A weighty merino knit, ribbed and slow. The kind of sweater you reach for at dusk.",
-        "images": [
-            "https://images.unsplash.com/photo-1609062757924-6c2d01b3b422?crop=entropy&cs=srgb&fm=jpg",
-            "https://images.pexels.com/photos/20425010/pexels-photo-20425010.jpeg",
-        ],
-        "sizes": ["XS", "S", "M", "L"], "colors": ["Ivory", "Ash"], "material": "100% Merino Wool",
-        "featured": False, "new_arrival": False,
-    },
-    {
-        "name": "Silken Tide Skirt", "slug": "silken-tide-skirt", "category": "bottoms",
-        "price": 11200, "description": "A bias-cut silk skirt that catches the light like still water.",
-        "images": [
-            "https://images.pexels.com/photos/35392914/pexels-photo-35392914.jpeg",
-            "https://images.pexels.com/photos/20425010/pexels-photo-20425010.jpeg",
-        ],
-        "sizes": ["XS", "S", "M", "L"], "colors": ["Pearl", "Midnight"], "material": "100% Silk Charmeuse",
-        "featured": True, "new_arrival": True,
-    },
-    {
-        "name": "Veil Cashmere Scarf", "slug": "veil-cashmere-scarf", "category": "accessories",
-        "price": 5400, "description": "A weightless cashmere scarf, woven in narrow Italian looms.",
-        "images": [
-            "https://images.unsplash.com/photo-1607300110506-273ab1cf41f8?crop=entropy&cs=srgb&fm=jpg",
-        ],
-        "sizes": ["One Size"], "colors": ["Ivory", "Slate"], "material": "100% Cashmere",
-        "featured": False, "new_arrival": True,
-    },
-    {
-        "name": "Penumbra Trench", "slug": "penumbra-trench", "category": "outerwear",
-        "price": 22500, "description": "A traditional trench rebuilt in cotton-linen canvas. Soft armor for the in-between months.",
-        "images": [
-            "https://images.unsplash.com/photo-1762605135012-56a59a059e60?crop=entropy&cs=srgb&fm=jpg",
-            "https://images.pexels.com/photos/20425010/pexels-photo-20425010.jpeg",
-        ],
-        "sizes": ["S", "M", "L", "XL"], "colors": ["Stone", "Midnight"], "material": "Cotton-Linen Canvas",
-        "featured": True, "new_arrival": False,
     },
 ]
 
 @app.on_event("startup")
-async def seed_products():
+async def startup_tasks():
+    init_storage()
     count = await db.products.count_documents({})
     if count == 0:
         docs = [Product(**p).model_dump() for p in SEED_PRODUCTS]

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useMemo } from "react";
+import { productImage } from "@/lib/api";
 
 const CartCtx = createContext(null);
 const STORAGE_KEY = "cl_cart_v1";
@@ -35,7 +36,7 @@ export const CartProvider = ({ children }) => {
           name: product.name,
           slug: product.slug,
           price: product.price,
-          image: product.images?.[0] || "",
+          image: product.images?.[0] || productImage(product) || "",
           size,
           quantity,
         },

@@ -4,7 +4,7 @@ import { Heart, ShoppingBag } from "lucide-react";
 import { useWishlist } from "@/context/WishlistContext";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
-import { formatINR } from "@/lib/api";
+import { formatINR, productImage } from "@/lib/api";
 
 export default function WishlistPage() {
   const { items, toggle } = useWishlist();
@@ -30,7 +30,7 @@ export default function WishlistPage() {
             <div key={p.id} className="group" data-testid={`wishlist-item-${p.slug}`}>
               <Link to={`/product/${p.slug}`}>
                 <div className="product-card-img-wrap product-card-halo aspect-[3/4] mb-4">
-                  <img src={p.images?.[0]} alt={p.name} className="w-full h-full object-cover" />
+                  <img src={productImage(p)} alt={p.name} className="w-full h-full object-cover" />
                 </div>
               </Link>
               <div className="flex items-start justify-between">

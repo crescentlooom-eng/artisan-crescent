@@ -6,10 +6,9 @@ import useScrollReveal from "@/hooks/useScrollReveal";
 
 const CATEGORIES = [
   { value: "all", label: "All Pieces" },
-  { value: "outerwear", label: "Outerwear" },
-  { value: "tops", label: "Tops" },
-  { value: "bottoms", label: "Bottoms" },
-  { value: "accessories", label: "Accessories" },
+  { value: "polo", label: "Polo" },
+  { value: "designer", label: "Designer" },
+  { value: "basics", label: "Basics" },
 ];
 
 const SORTS = [

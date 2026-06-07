@@ -4,15 +4,16 @@ import { api, formatINR } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 import { Plus, Edit2, Trash2, X } from "lucide-react";
+import VariantEditor from "@/components/admin/VariantEditor";
 
 const EMPTY = {
-  name: "", slug: "", category: "outerwear", price: 0, description: "",
-  images: [], sizes: ["XS", "S", "M", "L", "XL"], colors: [], material: "",
-  featured: false, new_arrival: false,
+  name: "", slug: "", category: "polo", price: 0, description: "",
+  images: [], sizes: ["M", "L", "XL"], colors: [], material: "",
+  variants: [], featured: false, new_arrival: false,
 };
 
 function ProductForm({ initial, onClose, onSaved }) {
-  const [form, setForm] = useState({ ...EMPTY, ...initial });
+  const [form, setForm] = useState({ ...EMPTY, ...initial, variants: initial?.variants || [] });
   const [imageInput, setImageInput] = useState("");
   const set = (k, v) => setForm((s) => ({ ...s, [k]: v }));
 
@@ -22,6 +23,7 @@ function ProductForm({ initial, onClose, onSaved }) {
       price: Number(form.price),
       sizes: typeof form.sizes === "string" ? form.sizes.split(",").map((s) => s.trim()).filter(Boolean) : form.sizes,
       colors: typeof form.colors === "string" ? form.colors.split(",").map((s) => s.trim()).filter(Boolean) : form.colors,
+      variants: form.variants || [],
     };
     try {
       if (initial?.id) await api.put(`/admin/products/${initial.id}`, payload);
@@ -43,7 +45,7 @@ function ProductForm({ initial, onClose, onSaved }) {
 
   return (
     <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-[#0B0E1A] border border-[#C9A96E]/20 max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8">
+      <div className="bg-[#0B0E1A] border border-[#C9A96E]/20 max-w-3xl w-full max-h-[90vh] overflow-y-auto p-8">
         <div className="flex items-center justify-between mb-6">
           <h3 className="font-serif-display text-3xl text-[#F5F0E8]">{initial?.id ? "Edit Piece" : "New Piece"}</h3>
           <button onClick={onClose} className="text-[#8A8FA8] hover:text-[#C9A96E]"><X /></button>
@@ -53,32 +55,27 @@ function ProductForm({ initial, onClose, onSaved }) {
           <div><label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Slug</label><input value={form.slug} onChange={(e) => set("slug", e.target.value)} /></div>
           <div><label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Category</label>
             <select value={form.category} onChange={(e) => set("category", e.target.value)}>
-              <option value="outerwear">Outerwear</option><option value="tops">Tops</option><option value="bottoms">Bottoms</option><option value="accessories">Accessories</option>
+              <option value="polo">Polo / Structured Tees</option>
+              <option value="designer">Designer / Graphic Tees</option>
+              <option value="basics">Basics / Essentials</option>
+              <option value="outerwear">Outerwear</option>
+              <option value="tops">Tops</option>
+              <option value="bottoms">Bottoms</option>
+              <option value="accessories">Accessories</option>
             </select>
           </div>
           <div><label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Price (INR)</label><input type="number" value={form.price} onChange={(e) => set("price", e.target.value)} /></div>
           <div><label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Material</label><input value={form.material || ""} onChange={(e) => set("material", e.target.value)} /></div>
           <div className="col-span-2"><label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Description</label><textarea value={form.description} onChange={(e) => set("description", e.target.value)} rows={3} /></div>
-          <div><label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Sizes (comma-separated)</label><input value={Array.isArray(form.sizes) ? form.sizes.join(", ") : form.sizes} onChange={(e) => set("sizes", e.target.value)} /></div>
-          <div><label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Colors (comma-separated)</label><input value={Array.isArray(form.colors) ? form.colors.join(", ") : form.colors} onChange={(e) => set("colors", e.target.value)} /></div>
-          <div className="col-span-2">
-            <label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Image URLs</label>
-            <div className="flex gap-2 mt-2">
-              <input value={imageInput} onChange={(e) => setImageInput(e.target.value)} placeholder="https://..." />
-              <button onClick={addImage} className="btn-gold px-4">Add</button>
-            </div>
-            <div className="flex gap-2 mt-3 flex-wrap">
-              {(form.images || []).map((img, i) => (
-                <div key={i} className="relative w-20 h-24">
-                  <img src={img} className="w-full h-full object-cover" alt="" />
-                  <button onClick={() => set("images", form.images.filter((_, j) => j !== i))} className="absolute -top-2 -right-2 bg-[#0B0E1A] border border-[#C9A96E]/40 text-[#C9A96E] rounded-full w-5 h-5 text-xs">×</button>
-                </div>
-              ))}
-            </div>
-          </div>
+          <div className="col-span-2"><label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Sizes (comma-separated)</label><input value={Array.isArray(form.sizes) ? form.sizes.join(", ") : form.sizes} onChange={(e) => set("sizes", e.target.value)} /></div>
           <label className="flex items-center gap-2 text-sm text-[#F5F0E8]"><input type="checkbox" className="!w-auto" checked={form.featured} onChange={(e) => set("featured", e.target.checked)} /> Featured</label>
           <label className="flex items-center gap-2 text-sm text-[#F5F0E8]"><input type="checkbox" className="!w-auto" checked={form.new_arrival} onChange={(e) => set("new_arrival", e.target.checked)} /> New Arrival</label>
         </div>
+
+        <div className="mt-6">
+          <VariantEditor variants={form.variants || []} onChange={(v) => set("variants", v)} />
+        </div>
+
         <div className="flex gap-3 mt-8">
           <button onClick={save} data-testid="admin-product-save" className="btn-gold flex-1">Save</button>
           <button onClick={onClose} className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8] px-6">Cancel</button>
@@ -135,7 +132,7 @@ export default function AdminPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
             {products.map((p) => (
               <div key={p.id} className="border border-[#C9A96E]/15 p-4 flex gap-4">
-                <div className="w-20 h-24 bg-[#14172A] overflow-hidden flex-shrink-0">{p.images?.[0] && <img src={p.images[0]} className="w-full h-full object-cover" alt="" />}</div>
+                <div className="w-20 h-24 bg-[#14172A] overflow-hidden flex-shrink-0">{(p.variants?.find(v => v.images?.length)?.images?.[0] || p.images?.[0]) && <img src={p.variants?.find(v => v.images?.length)?.images?.[0] || p.images?.[0]} className="w-full h-full object-cover" alt="" />}</div>
                 <div className="flex-1 min-w-0">
                   <div className="font-serif-display text-lg text-[#F5F0E8] truncate">{p.name}</div>
                   <div className="text-[11px] tracking-[0.2em] uppercase text-[#8A8FA8] mt-1">{p.category} · {formatINR(p.price)}</div>
