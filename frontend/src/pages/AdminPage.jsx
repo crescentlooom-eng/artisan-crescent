@@ -87,7 +87,6 @@ function ProductForm({ initial, onClose, onSaved }) {
 }
 
 export default function AdminPage() {
-  const { user, loading } = useAuth();
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
   const [editing, setEditing] = useState(null); // null = closed, {} = new, product = edit
@@ -99,16 +98,7 @@ export default function AdminPage() {
     setOrders(o.data);
   };
 
-  useEffect(() => { if (user?.is_admin) refresh(); }, [user]);
-
-  if (loading) return <div className="pt-40 text-center text-[#8A8FA8] tracking-[0.3em] uppercase text-sm">Loading...</div>;
-  if (!user) return <Navigate to="/login" replace />;
-  if (!user.is_admin) return (
-    <div className="pt-40 text-center page-fade">
-      <div className="font-serif-display text-4xl text-[#F5F0E8]">Restricted.</div>
-      <p className="text-[#8A8FA8] mt-3">This room is for the atelier.</p>
-    </div>
-  );
+  useEffect(() => { refresh(); }, []);
 
   const del = async (id) => {
     if (!confirm("Delete this piece?")) return;
@@ -118,11 +108,11 @@ export default function AdminPage() {
   };
 
   return (
-    <div data-testid="admin-page" className="page-fade pt-32 pb-24 max-w-7xl mx-auto px-6 md:px-12">
-      <div className="text-[11px] tracking-[0.4em] uppercase text-[#C9A96E] mb-4">Atelier</div>
-      <h1 className="font-serif-display text-5xl md:text-6xl text-[#F5F0E8] leading-[0.95]">House <span className="italic text-[#C9A96E]/90">Administration</span></h1>
+    <div data-testid="admin-page" className="page-fade max-w-7xl">
+      <div className="text-[11px] tracking-[0.4em] uppercase text-[#C9A96E] mb-3">Atelier</div>
+      <h1 className="font-serif-display text-3xl md:text-4xl text-[#F5F0E8]">Pieces</h1>
 
-      <div className="mt-12 flex gap-8 border-b border-[#C9A96E]/15 pb-3 overflow-x-auto">
+      <div className="mt-8 flex gap-8 border-b border-[#C9A96E]/15 pb-3 overflow-x-auto">
         <button onClick={() => setTab("products")} data-testid="admin-tab-products" className={`text-[11px] tracking-[0.3em] uppercase gold-underline whitespace-nowrap ${tab === "products" ? "active text-[#C9A96E]" : "text-[#F5F0E8]/80"}`}>Pieces ({products.length})</button>
         <button onClick={() => setTab("orders")} data-testid="admin-tab-orders" className={`text-[11px] tracking-[0.3em] uppercase gold-underline whitespace-nowrap ${tab === "orders" ? "active text-[#C9A96E]" : "text-[#F5F0E8]/80"}`}>Orders ({orders.length})</button>
         <button onClick={() => setTab("loom")} data-testid="admin-tab-loom" className={`text-[11px] tracking-[0.3em] uppercase gold-underline whitespace-nowrap ${tab === "loom" ? "active text-[#C9A96E]" : "text-[#F5F0E8]/80"}`}>Loom Credits</button>

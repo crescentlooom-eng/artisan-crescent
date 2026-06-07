@@ -39,6 +39,17 @@ Build a full luxury fashion e-commerce website for "Crescent Loom" — slow fash
   - Customer profile section (balance, value, eligibility, history)
   - Checkout redeem input with live discount preview + validation
   - Admin: summary stats (issued/redeemed/outstanding/discount given), per-customer table, manual ± adjust modal, redeemed-orders log
+- **Crescent Loom Atelier — Admin Dashboard at /admin** (Feb 2026):
+  - Email + password login (`/admin/login`) using JWT (separate from Google OAuth)
+  - Auto-seeded admin user from `ADMIN_EMAIL` / `ADMIN_PASSWORD` env on startup
+  - Brute-force lockout (5 attempts / 15 min per IP+email)
+  - Dashboard home: today/week/month orders & revenue, pending orders, customer count, top piece, loom issued/redeemed, revenue area chart (24h / 7d / 30d toggle, Recharts)
+  - Orders section: filter by Today/Week/Month/All + status dropdown + search by id/name/email, status mutation (placed → packed → shipped → out_for_delivery → delivered) with auto-Telegram + customer email notification, CSV export
+  - Customers: searchable table with orders count + total spent + loom balance, click-through detail modal with order history + manual Loom Credit adjust (+/-)
+  - Loom Credits tracker: summary cards (issued/redeemed/outstanding/discount given) + per-customer breakdown + redeemed-orders log
+  - Telegram bot integration intact (token + chat id from env), SMTP via Gmail App Password for status emails to customers
+  - AdminShell wraps `/admin/*` with sidebar nav, isolated from storefront chrome
+
 
 ## Pending / Backlog
 - P0: User to upload 2 more poses per Prism print + Polo variants if desired
