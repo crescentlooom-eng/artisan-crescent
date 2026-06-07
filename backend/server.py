@@ -183,6 +183,8 @@ class Order(BaseModel):
     items: List[OrderItem]
     shipping: ShippingAddress
     subtotal: float
+    loom_credits_redeemed: int = 0
+    loom_credits_discount: float = 0.0
     total: float
     currency: str = "INR"
     status: str = "pending"  # pending, paid, shipped, delivered, cancelled
@@ -193,11 +195,43 @@ class Order(BaseModel):
 class CreatePaymentOrderReq(BaseModel):
     items: List[OrderItem]
     shipping: ShippingAddress
+    loom_credits_redeemed: int = 0
 
 class VerifyPaymentReq(BaseModel):
     razorpay_order_id: str
     razorpay_payment_id: str
     razorpay_signature: str
+
+# ====================== Loom Credits ======================
+LOOM_CREDIT_VALUE_INR = 5
+LOOM_CREDIT_MIN_REDEEM = 3
+
+class LoomCreditTxn(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    order_id: Optional[str] = None
+    change: int  # +1 earned, -N redeemed, +/- admin adjust
+    reason: str  # "earned" | "redeemed" | "admin_adjust"
+    note: Optional[str] = None
+    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+async def loom_balance(user_id: str) -> int:
+    pipe = [
+        {"$match": {"user_id": user_id}},
+        {"$group": {"_id": None, "total": {"$sum": "$change"}}},
+    ]
+    cur = db.loom_credit_txns.aggregate(pipe)
+    docs = await cur.to_list(1)
+    return int(docs[0]["total"]) if docs else 0
+
+async def loom_award_for_order(user_id: str, order_id: str):
+    # Idempotent: only award if no earned txn exists for this order
+    existing = await db.loom_credit_txns.find_one({"order_id": order_id, "reason": "earned"})
+    if existing:
+        return
+    txn = LoomCreditTxn(user_id=user_id, order_id=order_id, change=1, reason="earned",
+                        note="Loom Credit Card included with order").model_dump()
+    await db.loom_credit_txns.insert_one(txn)
 
 # ====================== Auth helpers ======================
 async def get_current_user(request: Request) -> Optional[dict]:
@@ -372,14 +406,33 @@ async def payments_config():
 async def create_payment_order(body: CreatePaymentOrderReq, request: Request):
     user = await get_current_user(request)
     subtotal = sum(it.price * it.quantity for it in body.items)
-    total = subtotal  # no taxes/shipping for now
+
+    # Loom Credits redemption (logged-in users only)
+    cards = max(0, int(body.loom_credits_redeemed or 0))
+    discount = 0.0
+    if cards > 0:
+        if not user:
+            raise HTTPException(status_code=400, detail="Sign in to redeem Loom Credits")
+        if cards < LOOM_CREDIT_MIN_REDEEM:
+            raise HTTPException(status_code=400, detail=f"Minimum {LOOM_CREDIT_MIN_REDEEM} Loom Credit Cards required to redeem")
+        bal = await loom_balance(user['user_id'])
+        if cards > bal:
+            raise HTTPException(status_code=400, detail=f"You only have {bal} Loom Credit Cards")
+        discount = float(cards * LOOM_CREDIT_VALUE_INR)
+
+    total = max(0.0, subtotal - discount)
     amount_paise = int(round(total * 100))
+    if amount_paise < 100:
+        raise HTTPException(status_code=400, detail="Order total must be at least ₹1 after discount")
+
     order = Order(
         user_id=user['user_id'] if user else None,
         email=user['email'] if user else "guest@crescentloom.com",
         items=body.items,
         shipping=body.shipping,
         subtotal=subtotal,
+        loom_credits_redeemed=cards,
+        loom_credits_discount=discount,
         total=total,
     )
     rzp_order = None
@@ -397,6 +450,17 @@ async def create_payment_order(body: CreatePaymentOrderReq, request: Request):
             raise HTTPException(status_code=500, detail=f"Payment gateway error: {str(e)}")
     doc = order.model_dump()
     await db.orders.insert_one(doc)
+
+    # Record redemption transaction immediately so balance reflects pending redemption
+    if cards > 0 and user:
+        await db.loom_credit_txns.insert_one(LoomCreditTxn(
+            user_id=user['user_id'],
+            order_id=order.id,
+            change=-cards,
+            reason="redeemed",
+            note=f"Redeemed {cards} cards · ₹{int(discount)} off order {order.id[:8]}"
+        ).model_dump())
+
     return {
         "order": {k: v for k, v in doc.items() if k != '_id'},
         "razorpay_order": rzp_order,
@@ -417,6 +481,8 @@ async def verify_payment(body: VerifyPaymentReq):
         {"$set": {"status": "paid", "razorpay_payment_id": body.razorpay_payment_id}}
     )
     order = await db.orders.find_one({"razorpay_order_id": body.razorpay_order_id}, {"_id": 0})
+    if order and order.get("user_id"):
+        await loom_award_for_order(order["user_id"], order["id"])
     return {"ok": True, "order": order}
 
 @api_router.post("/payments/demo-complete/{order_id}")
@@ -426,6 +492,8 @@ async def demo_complete(order_id: str):
         raise HTTPException(status_code=400, detail="Demo mode disabled")
     await db.orders.update_one({"id": order_id}, {"$set": {"status": "paid"}})
     order = await db.orders.find_one({"id": order_id}, {"_id": 0})
+    if order and order.get("user_id"):
+        await loom_award_for_order(order["user_id"], order["id"])
     return {"ok": True, "order": order}
 
 @api_router.get("/orders")
@@ -436,6 +504,115 @@ async def list_my_orders(user=Depends(require_user)):
 @api_router.get("/admin/orders")
 async def list_all_orders(admin=Depends(require_admin)):
     items = await db.orders.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
+    return items
+
+# ====================== Loom Credits API ======================
+@api_router.get("/loom-credits/me")
+async def my_loom_credits(user=Depends(require_user)):
+    bal = await loom_balance(user['user_id'])
+    txns = await db.loom_credit_txns.find({"user_id": user['user_id']}, {"_id": 0}).sort("created_at", -1).to_list(500)
+    needed = max(0, LOOM_CREDIT_MIN_REDEEM - bal)
+    return {
+        "balance": bal,
+        "value_inr": bal * LOOM_CREDIT_VALUE_INR,
+        "per_card_inr": LOOM_CREDIT_VALUE_INR,
+        "min_redeem": LOOM_CREDIT_MIN_REDEEM,
+        "can_redeem": bal >= LOOM_CREDIT_MIN_REDEEM,
+        "cards_needed_to_redeem": needed,
+        "history": txns,
+    }
+
+@api_router.get("/admin/loom-credits")
+async def admin_loom_credits(admin=Depends(require_admin)):
+    # Aggregate per user
+    pipe = [
+        {"$group": {
+            "_id": "$user_id",
+            "balance": {"$sum": "$change"},
+            "earned": {"$sum": {"$cond": [{"$eq": ["$reason", "earned"]}, "$change", 0]}},
+            "redeemed": {"$sum": {"$cond": [{"$eq": ["$reason", "redeemed"]}, "$change", 0]}},
+            "adjusted": {"$sum": {"$cond": [{"$eq": ["$reason", "admin_adjust"]}, "$change", 0]}},
+        }},
+    ]
+    rows = await db.loom_credit_txns.aggregate(pipe).to_list(2000)
+    out = []
+    for r in rows:
+        uid = r["_id"]
+        if not uid:
+            continue
+        u = await db.users.find_one({"user_id": uid}, {"_id": 0, "user_id": 1, "name": 1, "email": 1})
+        if not u:
+            continue
+        out.append({
+            "user_id": uid,
+            "name": u.get("name", ""),
+            "email": u.get("email", ""),
+            "balance": int(r["balance"]),
+            "total_earned": int(r["earned"]),
+            "total_redeemed": int(-r["redeemed"]),  # convert from negative
+            "total_adjusted": int(r["adjusted"]),
+        })
+    out.sort(key=lambda x: x["balance"], reverse=True)
+    return out
+
+@api_router.get("/admin/loom-credits/summary")
+async def admin_loom_summary(admin=Depends(require_admin)):
+    pipe = [
+        {"$group": {
+            "_id": None,
+            "issued": {"$sum": {"$cond": [{"$eq": ["$reason", "earned"]}, "$change", 0]}},
+            "redeemed": {"$sum": {"$cond": [{"$eq": ["$reason", "redeemed"]}, "$change", 0]}},
+            "adjusted": {"$sum": {"$cond": [{"$eq": ["$reason", "admin_adjust"]}, "$change", 0]}},
+        }},
+    ]
+    docs = await db.loom_credit_txns.aggregate(pipe).to_list(1)
+    if not docs:
+        return {"issued": 0, "redeemed": 0, "outstanding": 0, "discount_given_inr": 0, "adjusted": 0}
+    d = docs[0]
+    issued = int(d["issued"])
+    redeemed = int(-d["redeemed"])  # convert negative to positive count
+    adjusted = int(d["adjusted"])
+    outstanding = issued + adjusted - redeemed
+    return {
+        "issued": issued,
+        "redeemed": redeemed,
+        "adjusted": adjusted,
+        "outstanding": outstanding,
+        "discount_given_inr": redeemed * LOOM_CREDIT_VALUE_INR,
+    }
+
+class AdminAdjustReq(BaseModel):
+    user_id: str
+    change: int  # may be positive or negative
+    note: Optional[str] = None
+
+@api_router.post("/admin/loom-credits/adjust")
+async def admin_loom_adjust(body: AdminAdjustReq, admin=Depends(require_admin)):
+    if body.change == 0:
+        raise HTTPException(status_code=400, detail="Change must be non-zero")
+    user = await db.users.find_one({"user_id": body.user_id}, {"_id": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    # Don't allow balance to go negative via admin adjust
+    if body.change < 0:
+        bal = await loom_balance(body.user_id)
+        if bal + body.change < 0:
+            raise HTTPException(status_code=400, detail=f"Cannot deduct {-body.change} — user only has {bal}")
+    await db.loom_credit_txns.insert_one(LoomCreditTxn(
+        user_id=body.user_id,
+        change=body.change,
+        reason="admin_adjust",
+        note=body.note or f"Admin adjustment by {admin['email']}",
+    ).model_dump())
+    new_bal = await loom_balance(body.user_id)
+    return {"ok": True, "balance": new_bal}
+
+@api_router.get("/admin/loom-credits/orders")
+async def admin_redeemed_orders(admin=Depends(require_admin)):
+    """Orders where Loom Credits were redeemed."""
+    items = await db.orders.find(
+        {"loom_credits_redeemed": {"$gt": 0}}, {"_id": 0}
+    ).sort("created_at", -1).to_list(500)
     return items
 
 # ====================== File Upload ======================

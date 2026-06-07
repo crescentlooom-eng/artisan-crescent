@@ -1,0 +1,36 @@
+{
+  "summary": "Loom Credits feature end-to-end testing (iteration 2). Backend: 17/17 pytest cases passing across /loom-credits/me, /admin/loom-credits, /admin/loom-credits/summary, /admin/loom-credits/adjust, /admin/loom-credits/orders, and /payments/create-order with redemption (₹15 discount on ₹299, validations for <3 cards, over-balance, no-auth, guest no-redeem, admin-only). Idempotency of loom_award_for_order verified via DB-level check (helper gates on existing earned txn for order_id). Frontend: Account Loom Credits card, guest 'Sign in to redeem' prompt, logged-in checkout section (min-warning, ₹15 discount msg, discount row, total 284), Redeem All button, Admin Loom Credits tab pane + summary + per-user adjust (+2) flow all working and persisted to DB.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "CheckoutPage", "issue": "React warning 'Each child in a list should have a unique key prop' rendered on /checkout. Non-blocking but appears in console for every render.", "selector": "(root render of CheckoutPage children list)", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_loom_credits.py",
+    "/app/test_reports/pytest/loom_results.xml"
+  ],
+  "action_items": [
+    "Optional: fix React 'unique key prop' warning in /app/frontend/src/pages/CheckoutPage.jsx (likely a .map without key in the loom/summary or bag list area). Functionally harmless.",
+    "Optional follow-up from iter1 still open: razorpay is now live, so previously-noted `logger` ordering issue in create_payment_order (server.py around line 449) is now reachable when razorpay throws — recommend hoisting `logger = logging.getLogger(__name__)` to top of file before include_router."
+  ],
+  "critical_code_review_comments": [
+    "loom_award_for_order correctly uses {order_id, reason:'earned'} as the idempotency guard (server.py:229) — safe.",
+    "/api/payments/create-order inserts the 'redeemed' txn AFTER the order is persisted but does not roll back if Razorpay throws later. With Razorpay live now, an upstream RZP failure would leave both the order and a -N redeemed txn in DB. Consider wrapping in a transaction or recording redeemed only after a successful RZP order create + DB insert.",
+    "/api/admin/loom-credits/adjust does not gate balance for *positive* admin_adjusts — fine, but there is no upper-bound sanity check. Acceptable for now.",
+    "Summary aggregate (/admin/loom-credits/summary) maps `redeemed = int(-d['redeemed'])` from a sum of negative 'change' values — depends on convention that redeemed txns are always negative; if a positive redeemed-reason row ever leaks in, this produces a misleading negative. Consider $abs or explicit filter.",
+    "/api/loom-credits/me history list cap is 500. For very active users this could truncate older entries — fine for now, add pagination if user-balance UX needs it."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_loom_credits.py (new)"
+  ],
+  "success_rate": {"backend": "100% (17/17)", "frontend": "100% of tested flows (account card, guest/logged checkout flows, admin tab, admin adjust)"},
+  "test_credentials": "Backend tests create fresh sessions via mongo each run. For ad-hoc retest: insert {users, user_sessions} with is_admin and use Bearer token. Recipe: /app/auth_testing.md. Frontend tests used cookie session_token on artisan-crescent.preview.emergentagent.com (secure=True, sameSite=None, httpOnly=True).",
+  "seed_data_creation": "Created (and cleaned) 1 admin + 1 buyer user per backend session, plus a separate admin/user pair for frontend run. Preserved prior-cycle user loom_test_1780853298762 and its 2 txns as instructed.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Loom Credits feature is fully wired. Backend test file: /app/backend/tests/test_loom_credits.py. Razorpay is LIVE so /payments/create-order really hits Razorpay's test endpoint — tiny ₹299 orders succeed and create real test-mode rzp_order ids (no payment is attempted). /payments/demo-complete returns 400 because razorpay_client is not None — that's expected. Idempotency of loom_award_for_order verified at the helper-gate level (find_one on order_id+reason='earned'). To exercise full award-on-payment, temporarily unset RAZORPAY_KEY_ID/SECRET and call demo-complete (don't do this in prod). Checkout has a React 'unique key' warning that is purely cosmetic.",
+  "rca of the issue": "Initial test failures in iteration_2 were a schema mismatch — tests sent shipping field 'address' but model expects 'address_line'. Fix: renamed key in test fixture. No backend code change needed."
+}

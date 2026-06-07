@@ -22,6 +22,8 @@ export default function CheckoutPage() {
   const navigate = useNavigate();
   const [processing, setProcessing] = useState(false);
   const [config, setConfig] = useState({ enabled: false, key_id: "" });
+  const [loom, setLoom] = useState(null);
+  const [redeemCards, setRedeemCards] = useState(0);
   const [shipping, setShipping] = useState({
     full_name: user?.name || "",
     phone: "",
@@ -37,8 +39,19 @@ export default function CheckoutPage() {
   }, []);
 
   useEffect(() => {
-    if (user) setShipping((s) => ({ ...s, full_name: s.full_name || user.name }));
+    if (user) {
+      api.get("/loom-credits/me").then((r) => setLoom(r.data)).catch(() => setLoom(null));
+      setShipping((s) => ({ ...s, full_name: s.full_name || user.name }));
+    } else {
+      setLoom(null);
+    }
   }, [user]);
+
+  const perCard = loom?.per_card_inr || 5;
+  const minRedeem = loom?.min_redeem || 3;
+  const balance = loom?.balance || 0;
+  const discount = redeemCards >= minRedeem ? redeemCards * perCard : 0;
+  const total = Math.max(0, subtotal - discount);
 
   if (items.length === 0) {
     return (
@@ -67,7 +80,7 @@ export default function CheckoutPage() {
         size: it.size,
         image: it.image,
       }));
-      const res = await api.post("/payments/create-order", { items: orderItems, shipping });
+      const res = await api.post("/payments/create-order", { items: orderItems, shipping, loom_credits_redeemed: redeemCards });
       const { order, razorpay_order, razorpay_key_id, demo_mode } = res.data;
 
       if (demo_mode) {
@@ -136,6 +149,53 @@ export default function CheckoutPage() {
           </section>
 
           <section>
+            <h2 className="font-serif-display text-2xl md:text-3xl text-[#F5F0E8] mb-6">Loom Credits</h2>
+            {!user ? (
+              <div className="border border-[#C9A96E]/20 p-6 text-sm text-[#F5F0E8]/75">
+                <a href="/login" className="text-[#C9A96E] gold-underline">Sign in</a> to redeem Loom Credit Cards collected from past orders.
+              </div>
+            ) : balance === 0 ? (
+              <div className="border border-[#C9A96E]/20 p-6 text-sm text-[#F5F0E8]/75">
+                You have no Loom Credit Cards yet. Each order ships with one — collect {minRedeem} to redeem ₹{minRedeem * perCard} off.
+              </div>
+            ) : (
+              <div className="border border-[#C9A96E]/20 p-6" data-testid="checkout-loom-section">
+                <div className="flex items-baseline justify-between mb-4">
+                  <div>
+                    <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">Your Balance</div>
+                    <div className="font-serif-display text-3xl text-[#F5F0E8] mt-1">{balance} {balance === 1 ? "card" : "cards"} <span className="text-[#8A8FA8] text-lg">· ₹{balance * perCard}</span></div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setRedeemCards(balance)}
+                    className="text-[11px] tracking-[0.3em] uppercase gold-underline text-[#F5F0E8]/80"
+                    data-testid="checkout-loom-redeem-max"
+                  >Redeem All</button>
+                </div>
+                <label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Cards to redeem</label>
+                <input
+                  type="number"
+                  min="0"
+                  max={balance}
+                  value={redeemCards}
+                  onChange={(e) => setRedeemCards(Math.max(0, Math.min(balance, parseInt(e.target.value || "0", 10))))}
+                  data-testid="checkout-loom-cards-input"
+                />
+                {redeemCards > 0 && redeemCards < minRedeem && (
+                  <p className="text-[#8A8FA8] text-xs mt-3" data-testid="checkout-loom-min-warning">
+                    Minimum {minRedeem} cards required — you&rsquo;ll need {minRedeem - redeemCards} more before this discount applies.
+                  </p>
+                )}
+                {redeemCards >= minRedeem && (
+                  <p className="text-[#C9A96E] text-xs mt-3 tracking-[0.2em] uppercase" data-testid="checkout-loom-discount-msg">
+                    ₹{redeemCards * perCard} discount will be applied.
+                  </p>
+                )}
+              </div>
+            )}
+          </section>
+
+          <section>
             <h2 className="font-serif-display text-2xl md:text-3xl text-[#F5F0E8] mb-6">Payment</h2>
             <div className="border border-[#C9A96E]/20 p-6">
               <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E] mb-2">Razorpay · UPI / Cards / Netbanking</div>
@@ -170,8 +230,14 @@ export default function CheckoutPage() {
             <div className="divider-thin my-6" />
             <div className="flex items-center justify-between text-sm text-[#F5F0E8]/85"><span>Subtotal</span><span>{formatINR(subtotal)}</span></div>
             <div className="flex items-center justify-between text-sm text-[#F5F0E8]/85 mt-2"><span>Shipping</span><span>Complimentary</span></div>
+            {discount > 0 && (
+              <div className="flex items-center justify-between text-sm text-[#C9A96E] mt-2" data-testid="checkout-loom-discount-row">
+                <span>Loom Credits ({redeemCards} × ₹{perCard})</span>
+                <span>−{formatINR(discount)}</span>
+              </div>
+            )}
             <div className="divider-thin my-6" />
-            <div className="flex items-center justify-between"><span className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">Total</span><span className="text-2xl text-[#F5F0E8]" data-testid="checkout-total">{formatINR(subtotal)}</span></div>
+            <div className="flex items-center justify-between"><span className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">Total</span><span className="text-2xl text-[#F5F0E8]" data-testid="checkout-total">{formatINR(total)}</span></div>
             <button data-testid="checkout-place-order" onClick={placeOrder} disabled={processing} className="btn-gold w-full mt-8 disabled:opacity-50">
               {processing ? "Processing..." : "Place Order"}
             </button>

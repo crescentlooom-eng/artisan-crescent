@@ -2,13 +2,18 @@ import React, { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { api, formatINR } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
+import LoomCreditsCard from "@/components/LoomCreditsCard";
 
 export default function AccountPage() {
   const { user, loading, logout } = useAuth();
   const [orders, setOrders] = useState([]);
+  const [loom, setLoom] = useState(null);
 
   useEffect(() => {
-    if (user) api.get("/orders").then((r) => setOrders(r.data)).catch(() => {});
+    if (user) {
+      api.get("/orders").then((r) => setOrders(r.data)).catch(() => {});
+      api.get("/loom-credits/me").then((r) => setLoom(r.data)).catch(() => {});
+    }
   }, [user]);
 
   if (loading) return <div className="pt-40 text-center text-[#8A8FA8] tracking-[0.3em] uppercase text-sm">Loading...</div>;
@@ -35,6 +40,10 @@ export default function AccountPage() {
           <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E] mb-2">Orders</div>
           <div className="text-[#F5F0E8]">{orders.length} placed</div>
         </div>
+      </div>
+
+      <div className="mt-10">
+        <LoomCreditsCard data={loom} />
       </div>
 
       {user.is_admin && (

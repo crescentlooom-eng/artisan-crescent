@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 import { Plus, Edit2, Trash2, X } from "lucide-react";
 import VariantEditor from "@/components/admin/VariantEditor";
+import LoomCreditsAdmin from "@/components/admin/LoomCreditsAdmin";
 
 const EMPTY = {
   name: "", slug: "", category: "polo", price: 0, description: "",
@@ -121,9 +122,10 @@ export default function AdminPage() {
       <div className="text-[11px] tracking-[0.4em] uppercase text-[#C9A96E] mb-4">Atelier</div>
       <h1 className="font-serif-display text-5xl md:text-6xl text-[#F5F0E8] leading-[0.95]">House <span className="italic text-[#C9A96E]/90">Administration</span></h1>
 
-      <div className="mt-12 flex gap-8 border-b border-[#C9A96E]/15 pb-3">
-        <button onClick={() => setTab("products")} data-testid="admin-tab-products" className={`text-[11px] tracking-[0.3em] uppercase gold-underline ${tab === "products" ? "active text-[#C9A96E]" : "text-[#F5F0E8]/80"}`}>Pieces ({products.length})</button>
-        <button onClick={() => setTab("orders")} data-testid="admin-tab-orders" className={`text-[11px] tracking-[0.3em] uppercase gold-underline ${tab === "orders" ? "active text-[#C9A96E]" : "text-[#F5F0E8]/80"}`}>Orders ({orders.length})</button>
+      <div className="mt-12 flex gap-8 border-b border-[#C9A96E]/15 pb-3 overflow-x-auto">
+        <button onClick={() => setTab("products")} data-testid="admin-tab-products" className={`text-[11px] tracking-[0.3em] uppercase gold-underline whitespace-nowrap ${tab === "products" ? "active text-[#C9A96E]" : "text-[#F5F0E8]/80"}`}>Pieces ({products.length})</button>
+        <button onClick={() => setTab("orders")} data-testid="admin-tab-orders" className={`text-[11px] tracking-[0.3em] uppercase gold-underline whitespace-nowrap ${tab === "orders" ? "active text-[#C9A96E]" : "text-[#F5F0E8]/80"}`}>Orders ({orders.length})</button>
+        <button onClick={() => setTab("loom")} data-testid="admin-tab-loom" className={`text-[11px] tracking-[0.3em] uppercase gold-underline whitespace-nowrap ${tab === "loom" ? "active text-[#C9A96E]" : "text-[#F5F0E8]/80"}`}>Loom Credits</button>
       </div>
 
       {tab === "products" && (
@@ -175,6 +177,8 @@ export default function AdminPage() {
           ))}
         </div>
       )}
+
+      {tab === "loom" && <LoomCreditsAdmin />}
 
       {editing && <ProductForm initial={editing} onClose={() => setEditing(null)} onSaved={refresh} />}
     </div>
