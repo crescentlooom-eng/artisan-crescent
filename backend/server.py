@@ -46,6 +46,71 @@ ADMIN_EMAILS = {e.strip().lower() for e in os.environ.get('ADMIN_EMAILS', '').sp
 
 import notifications as notif
 
+# ====================== Customer email/password auth helpers ==================
+import bcrypt as _bcrypt
+import jwt as _jwt
+import re as _re
+
+CUSTOMER_JWT_ALGO = "HS256"
+CUSTOMER_JWT_TTL = timedelta(days=30)
+CUSTOMER_LOCKOUT_THRESHOLD = 5
+CUSTOMER_LOCKOUT_WINDOW = timedelta(minutes=15)
+EMAIL_RE = _re.compile(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$")
+
+
+def _hash_pw(p: str) -> str:
+    return _bcrypt.hashpw(p.encode("utf-8"), _bcrypt.gensalt()).decode("utf-8")
+
+
+def _check_pw(p: str, h: str) -> bool:
+    try:
+        return _bcrypt.checkpw(p.encode("utf-8"), h.encode("utf-8"))
+    except Exception:
+        return False
+
+
+def _customer_token(user_id: str, email: str) -> str:
+    payload = {
+        "sub": user_id,
+        "email": email,
+        "type": "customer_access",
+        "exp": datetime.now(timezone.utc) + CUSTOMER_JWT_TTL,
+        "iat": datetime.now(timezone.utc),
+    }
+    return _jwt.encode(payload, os.environ["JWT_SECRET"], algorithm=CUSTOMER_JWT_ALGO)
+
+
+def _set_customer_cookie(response: Response, token: str):
+    response.set_cookie(
+        key="customer_token",
+        value=token,
+        httponly=True,
+        secure=True,
+        samesite="none",
+        path="/",
+        max_age=int(CUSTOMER_JWT_TTL.total_seconds()),
+    )
+
+
+async def _customer_from_jwt(request: Request) -> Optional[dict]:
+    token = request.cookies.get("customer_token")
+    if not token:
+        auth = request.headers.get("Authorization", "")
+        if auth.startswith("Bearer "):
+            token = auth[7:]
+    if not token:
+        return None
+    try:
+        payload = _jwt.decode(token, os.environ["JWT_SECRET"], algorithms=[CUSTOMER_JWT_ALGO])
+        if payload.get("type") != "customer_access":
+            return None
+        return await db.users.find_one({"user_id": payload["sub"]}, {"_id": 0, "password_hash": 0})
+    except (_jwt.ExpiredSignatureError, _jwt.InvalidTokenError):
+        return None
+    except Exception:
+        return None
+
+
 # ====================== Object Storage ======================
 STORAGE_URL = "https://integrations.emergentagent.com/objstore/api/v1/storage"
 EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY", "")
@@ -237,6 +302,11 @@ async def loom_award_for_order(user_id: str, order_id: str):
 
 # ====================== Auth helpers ======================
 async def get_current_user(request: Request) -> Optional[dict]:
+    # 1) Customer JWT (email/password sign-in)
+    user = await _customer_from_jwt(request)
+    if user:
+        return user
+    # 2) Legacy Emergent Google OAuth session_token cookie
     token = request.cookies.get('session_token')
     if not token:
         auth = request.headers.get('Authorization', '')
@@ -254,7 +324,7 @@ async def get_current_user(request: Request) -> Optional[dict]:
         expires_at = expires_at.replace(tzinfo=timezone.utc)
     if expires_at < datetime.now(timezone.utc):
         return None
-    user = await db.users.find_one({"user_id": sess['user_id']}, {"_id": 0})
+    user = await db.users.find_one({"user_id": sess['user_id']}, {"_id": 0, "password_hash": 0})
     return user
 
 async def require_user(request: Request) -> dict:
@@ -340,7 +410,93 @@ async def auth_logout(request: Request, response: Response):
     if token:
         await db.user_sessions.delete_one({"session_token": token})
     response.delete_cookie("session_token", path="/")
+    response.delete_cookie("customer_token", path="/")
     return {"ok": True}
+
+
+# --- Email + password customer auth ------------------------------------------
+class CustomerRegisterReq(BaseModel):
+    email: str
+    password: str
+    name: Optional[str] = None
+
+
+class CustomerLoginReq(BaseModel):
+    email: str
+    password: str
+
+
+async def _customer_locked_out(identifier: str) -> bool:
+    since = datetime.now(timezone.utc) - CUSTOMER_LOCKOUT_WINDOW
+    count = await db.customer_login_attempts.count_documents({
+        "identifier": identifier,
+        "success": False,
+        "ts": {"$gte": since},
+    })
+    return count >= CUSTOMER_LOCKOUT_THRESHOLD
+
+
+async def _record_customer_attempt(identifier: str, success: bool):
+    await db.customer_login_attempts.insert_one({
+        "identifier": identifier,
+        "success": success,
+        "ts": datetime.now(timezone.utc),
+    })
+
+
+@api_router.post("/auth/register")
+async def auth_register(body: CustomerRegisterReq, response: Response):
+    email = (body.email or "").strip().lower()
+    if not EMAIL_RE.match(email):
+        raise HTTPException(status_code=400, detail="Please enter a valid email address")
+    if len(body.password) < 8:
+        raise HTTPException(status_code=400, detail="Password must be at least 8 characters")
+    existing = await db.users.find_one({"email": email})
+    if existing:
+        raise HTTPException(status_code=409, detail="An account with this email already exists. Try signing in.")
+    user_id = f"user_{uuid.uuid4().hex[:12]}"
+    name = (body.name or "").strip() or email.split("@")[0]
+    is_admin = (email in ADMIN_EMAILS) or (await db.users.count_documents({}) == 0)
+    doc = {
+        "user_id": user_id,
+        "email": email,
+        "name": name,
+        "picture": None,
+        "is_admin": is_admin,
+        "password_hash": _hash_pw(body.password),
+        "auth_provider": "password",
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.users.insert_one(doc)
+    token = _customer_token(user_id, email)
+    _set_customer_cookie(response, token)
+    return {
+        "user_id": user_id, "email": email, "name": name, "picture": None,
+        "is_admin": is_admin, "token": token,
+    }
+
+
+@api_router.post("/auth/login")
+async def auth_login_password(body: CustomerLoginReq, request: Request, response: Response):
+    email = (body.email or "").strip().lower()
+    ip = request.client.host if request.client else "?"
+    identifier = f"{ip}:{email}"
+    if await _customer_locked_out(identifier):
+        raise HTTPException(status_code=429, detail="Too many failed attempts. Please try again in 15 minutes.")
+    user = await db.users.find_one({"email": email})
+    if not user or not user.get("password_hash") or not _check_pw(body.password, user["password_hash"]):
+        await _record_customer_attempt(identifier, False)
+        # Distinct hint when account exists via Google only
+        if user and not user.get("password_hash"):
+            raise HTTPException(status_code=401, detail="This account was created with Google. Use 'Continue with Google'.")
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    await _record_customer_attempt(identifier, True)
+    token = _customer_token(user["user_id"], email)
+    _set_customer_cookie(response, token)
+    return {
+        "user_id": user["user_id"], "email": user["email"], "name": user.get("name", ""),
+        "picture": user.get("picture"), "is_admin": bool(user.get("is_admin")), "token": token,
+    }
 
 # ====================== Admin Auth (email + password) ======================
 import admin_auth as adm
