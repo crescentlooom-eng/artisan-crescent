@@ -21,11 +21,16 @@ export default function LoginPage() {
     window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
   };
 
-  const formatError = (detail) => {
-    if (!detail) return "Something went wrong. Please try again.";
-    if (typeof detail === "string") return detail;
-    if (Array.isArray(detail)) return detail.map((e) => e?.msg || JSON.stringify(e)).join(" · ");
-    return String(detail);
+  const formatError = (e) => {
+    const detail = e?.response?.data?.detail;
+    if (detail) {
+      if (typeof detail === "string") return detail;
+      if (Array.isArray(detail)) return detail.map((x) => x?.msg || JSON.stringify(x)).join(" · ");
+      return String(detail);
+    }
+    // No response from server = network/CORS/server-down
+    if (e?.message) return `Network error: ${e.message}. Please refresh and try again.`;
+    return "Something went wrong. Please refresh and try again.";
   };
 
   const submit = async (e) => {
@@ -39,7 +44,9 @@ export default function LoginPage() {
       setUser(r.data);
       navigate("/account", { replace: true });
     } catch (e) {
-      setErr(formatError(e?.response?.data?.detail) || e.message);
+      // eslint-disable-next-line no-console
+      console.error("[auth] failed", e?.response?.status, e?.response?.data, e?.message);
+      setErr(formatError(e));
     } finally {
       setSubmitting(false);
     }
