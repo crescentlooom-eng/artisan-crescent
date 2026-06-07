@@ -84,18 +84,19 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E] mb-3 reveal-up">Chapters</div>
           <h2 className="font-serif-display text-4xl md:text-5xl lg:text-6xl text-[#F5F0E8] max-w-3xl reveal-up" style={{ transitionDelay: "80ms" }}>
-            A quiet wardrobe, told in <span className="italic text-[#C9A96E]/90">three chapters.</span>
+            Three lines. <span className="italic text-[#C9A96E]/90">One quiet wardrobe.</span>
           </h2>
 
           <div className="grid grid-cols-12 gap-6 md:gap-10 mt-16">
             <Link to="/shop?category=polo" data-testid="home-chapter-polo" className="col-span-12 md:col-span-7 group reveal-up">
               <div className="product-card-img-wrap aspect-[4/5] mb-5">
-                <img src="https://images.pexels.com/photos/20425010/pexels-photo-20425010.jpeg" alt="Polo" className="w-full h-full object-cover" />
+                <img src="https://customer-assets.emergentagent.com/job_artisan-crescent/artifacts/aimwehfu_beige%201.png" alt="Textured Polo Tee" className="w-full h-full object-cover" />
               </div>
               <div className="flex items-end justify-between">
                 <div>
                   <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">Chapter I</div>
-                  <div className="font-serif-display text-3xl md:text-4xl text-[#F5F0E8] mt-2">Textured Polos</div>
+                  <div className="font-serif-display text-3xl md:text-4xl text-[#F5F0E8] mt-2">Textured Polo Tee</div>
+                  <div className="text-[11px] tracking-[0.2em] uppercase text-[#8A8FA8] mt-1">Six tonal weaves · ₹399</div>
                 </div>
                 <span className="text-[11px] tracking-[0.3em] uppercase text-[#F5F0E8]/85 gold-underline">Explore</span>
               </div>
@@ -104,12 +105,13 @@ export default function HomePage() {
             <div className="col-span-12 md:col-span-5 flex flex-col gap-10 md:pt-32">
               <Link to="/shop?category=designer" data-testid="home-chapter-designer" className="group reveal-up" style={{ transitionDelay: "100ms" }}>
                 <div className="product-card-img-wrap aspect-[4/5] mb-5">
-                  <img src="https://images.pexels.com/photos/29879990/pexels-photo-29879990.jpeg" alt="Designer" className="w-full h-full object-cover" />
+                  <img src="https://customer-assets.emergentagent.com/job_artisan-crescent/artifacts/t9hvhdc6_designer%20green%201.png" alt="Prism Wear Tee" className="w-full h-full object-cover" />
                 </div>
                 <div className="flex items-end justify-between">
                   <div>
                     <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">Chapter II</div>
-                    <div className="font-serif-display text-3xl text-[#F5F0E8] mt-2">Designer Prints</div>
+                    <div className="font-serif-display text-3xl text-[#F5F0E8] mt-2">Prism Wear Tee</div>
+                    <div className="text-[11px] tracking-[0.2em] uppercase text-[#8A8FA8] mt-1">Ten designer prints · ₹349</div>
                   </div>
                   <span className="text-[11px] tracking-[0.3em] uppercase text-[#F5F0E8]/85 gold-underline">Explore</span>
                 </div>
@@ -118,12 +120,13 @@ export default function HomePage() {
 
             <Link to="/shop?category=basics" data-testid="home-chapter-basics" className="col-span-12 md:col-span-6 md:col-start-4 group reveal-up" style={{ transitionDelay: "200ms" }}>
               <div className="product-card-img-wrap aspect-[5/4] mb-5">
-                <img src="https://images.pexels.com/photos/35392914/pexels-photo-35392914.jpeg" alt="Basics" className="w-full h-full object-cover" />
+                <img src="https://customer-assets.emergentagent.com/job_artisan-crescent/artifacts/dp4xzzoz_plain%20black%201%20.png" alt="Essential Tee" className="w-full h-full object-cover" />
               </div>
               <div className="flex items-end justify-between">
                 <div>
                   <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">Chapter III</div>
-                  <div className="font-serif-display text-3xl text-[#F5F0E8] mt-2">Quiet Essentials</div>
+                  <div className="font-serif-display text-3xl text-[#F5F0E8] mt-2">Essential Tee</div>
+                  <div className="text-[11px] tracking-[0.2em] uppercase text-[#8A8FA8] mt-1">Black & white · ₹299</div>
                 </div>
                 <span className="text-[11px] tracking-[0.3em] uppercase text-[#F5F0E8]/85 gold-underline">Explore</span>
               </div>
