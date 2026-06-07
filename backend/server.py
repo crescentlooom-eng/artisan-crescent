@@ -112,62 +112,29 @@ async def _customer_from_jwt(request: Request) -> Optional[dict]:
 
 
 # ====================== Object Storage ======================
-STORAGE_URL = "https://integrations.emergentagent.com/objstore/api/v1/storage"
-EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY", "")
+# Local filesystem storage — portable to any host (Render, Railway, etc).
+# For ephemeral hosts, mount a persistent disk at STORAGE_DIR or switch to S3.
 APP_NAME = os.environ.get("APP_NAME", "crescent-loom")
-_storage_key: Optional[str] = None
+STORAGE_DIR = Path(os.environ.get("STORAGE_DIR", str(ROOT_DIR / "uploads")))
+STORAGE_DIR.mkdir(parents=True, exist_ok=True)
 
-def init_storage() -> Optional[str]:
-    global _storage_key
-    if _storage_key:
-        return _storage_key
-    if not EMERGENT_LLM_KEY:
-        logger.warning("EMERGENT_LLM_KEY not set — uploads disabled")
-        return None
-    try:
-        r = requests.post(f"{STORAGE_URL}/init", json={"emergent_key": EMERGENT_LLM_KEY}, timeout=30)
-        r.raise_for_status()
-        _storage_key = r.json()["storage_key"]
-        logger.info("Object storage initialized")
-        return _storage_key
-    except Exception as e:
-        logger.error(f"Storage init failed: {e}")
-        return None
+
+def init_storage() -> str:
+    return str(STORAGE_DIR)
+
 
 def storage_put(path: str, data: bytes, content_type: str) -> dict:
-    key = init_storage()
-    if not key:
-        raise HTTPException(status_code=500, detail="Storage not initialized")
-    r = requests.put(
-        f"{STORAGE_URL}/objects/{path}",
-        headers={"X-Storage-Key": key, "Content-Type": content_type},
-        data=data, timeout=120,
-    )
-    if r.status_code == 403:
-        # key expired, retry once
-        global _storage_key
-        _storage_key = None
-        key = init_storage()
-        r = requests.put(
-            f"{STORAGE_URL}/objects/{path}",
-            headers={"X-Storage-Key": key, "Content-Type": content_type},
-            data=data, timeout=120,
-        )
-    r.raise_for_status()
-    return r.json()
+    full = STORAGE_DIR / path
+    full.parent.mkdir(parents=True, exist_ok=True)
+    full.write_bytes(data)
+    return {"path": path, "size": len(data)}
+
 
 def storage_get(path: str):
-    key = init_storage()
-    if not key:
-        raise HTTPException(status_code=500, detail="Storage not initialized")
-    r = requests.get(f"{STORAGE_URL}/objects/{path}", headers={"X-Storage-Key": key}, timeout=60)
-    if r.status_code == 403:
-        global _storage_key
-        _storage_key = None
-        key = init_storage()
-        r = requests.get(f"{STORAGE_URL}/objects/{path}", headers={"X-Storage-Key": key}, timeout=60)
-    r.raise_for_status()
-    return r.content, r.headers.get("Content-Type", "application/octet-stream")
+    full = STORAGE_DIR / path
+    if not full.exists():
+        raise HTTPException(status_code=404, detail="File not found on disk")
+    return full.read_bytes(), "application/octet-stream"
 
 MIME_BY_EXT = {
     "jpg": "image/jpeg", "jpeg": "image/jpeg", "png": "image/png",
