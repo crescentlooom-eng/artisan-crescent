@@ -45,7 +45,7 @@ await page.context.add_cookies([{
   "secure": True,
   "sameSite": "None"
 }])
-await page.goto("https://artisan-crescent.preview.emergentagent.com/account")
+await page.goto("https://crescent-admin-fix.preview.emergentagent.com/account")
 ```
 
 ## Clean

@@ -13,7 +13,7 @@ import uuid
 import pytest
 import requests
 
-BASE_URL = os.environ.get("BACKEND_BASE_URL", "https://artisan-crescent.preview.emergentagent.com").rstrip("/")
+BASE_URL = os.environ.get("BACKEND_BASE_URL", "https://crescent-admin-fix.preview.emergentagent.com").rstrip("/")
 API = f"{BASE_URL}/api"
 
 # Test session token injected into Mongo before running this suite
