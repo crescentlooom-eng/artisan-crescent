@@ -1,0 +1,101 @@
+{
+  "theme": {
+    "mode": "dark",
+    "archetype": "5 (Luxury)",
+    "description": "Cinematic, editorial, slow-luxury. Think The Row meets Toteme with a moonlit mysticism. The brand identity is rooted in artisanal craftsmanship, quiet luxury, and moonlit aesthetics."
+  },
+  "colors": {
+    "primary": "#0B0E1A",
+    "primary_description": "Deep midnight navy - used for primary backgrounds and dark sections.",
+    "secondary": "#F5F0E8",
+    "secondary_description": "Warm ivory/cream - used for primary text, light surfaces, and high contrast elements.",
+    "accent": "#C9A96E",
+    "accent_description": "Brushed gold - used sparingly for buttons, hover underlines, subtle halos, and luxury accents.",
+    "muted": "#8A8FA8",
+    "muted_description": "Soft slate - used for secondary text, borders, and muted UI elements.",
+    "background_gradient": "none - rely on solid #0B0E1A with subtle CSS noise texture overlays."
+  },
+  "typography": {
+    "fonts": {
+      "heading": "Cormorant Garamond, serif",
+      "body": "DM Sans, sans-serif"
+    },
+    "hierarchy": {
+      "h1": "text-5xl sm:text-6xl lg:text-7xl font-light tracking-tight text-[#F5F0E8]",
+      "h2": "text-3xl sm:text-4xl lg:text-5xl font-light tracking-tight text-[#F5F0E8]",
+      "h3": "text-xl sm:text-2xl font-normal text-[#F5F0E8]",
+      "body": "text-base leading-relaxed text-[#F5F0E8]/80",
+      "overline": "text-xs tracking-[0.2em] uppercase text-[#C9A96E]"
+    },
+    "custom_rules": "Headlines must never be bold; use font-light or font-normal to maintain the slow-luxury, editorial feel. Never center-align paragraphs."
+  },
+  "spacing_and_layout": {
+    "philosophy": "Generous Spacing (p-12 to p-32). Focus on negative space to create a premium feel.",
+    "grid_system": "Asymmetrical bento grid for editorial sections. Avoid perfect symmetry. Mix large hero spans with smaller detail shots.",
+    "hero_section": "Full bleed with maximum 40% black overlay (bg-black/40) to let the image breathe. Navbar sits on top with glassmorphism.",
+    "containers": "Max-w-7xl mx-auto px-6 md:px-12."
+  },
+  "interactions_and_motion": {
+    "transitions": "Smooth, slow ease-in-out transitions. transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]",
+    "hover_effects": {
+      "nav_links": "Gold underline animation on hover (scale-x from 0 to 1).",
+      "product_cards": "Hover zoom on image (scale-105) + soft gold glow/halo effect (shadow-[0_0_30px_rgba(201,169,110,0.15)]).",
+      "buttons": "Dark navy buttons with gold text/accents. On hover, slight lift and border glow."
+    },
+    "scroll_effects": "Staggered fade-up for product cards (framer-motion). Navbar shrinks in height and applies backdrop-blur-xl bg-[#0B0E1A]/60 on scroll.",
+    "cursor": "Custom dark dot cursor on desktop (implement globally via fixed div tracking mouse)."
+  },
+  "components": {
+    "navbar": "Sticky fixed top-0 w-full z-50. Logo centered. Links on left (Shop, About). Icons on right (Search, Cart, Account).",
+    "buttons": "Sharp edges or minimal rounded (rounded-sm). bg-[#0B0E1A] border border-[#C9A96E]/50 text-[#C9A96E] hover:bg-[#C9A96E] hover:text-[#0B0E1A] transition-colors duration-300.",
+    "product_card": "No visible card background. Image is the hero. Text below image: Title in serif, price in sans-serif, muted slate. Hovering over image triggers soft gold halo.",
+    "cart_drawer": "Slide-in from right. bg-[#0B0E1A] with frosted glass overlay if possible. Clean item list with elegant typography.",
+    "noise_overlay": "Fixed absolute inset-0 pointer-events-none opacity-20 mix-blend-overlay z-0 (use an SVG filter or small noise PNG) applied to hero and dark sections."
+  },
+  "media": {
+    "logos": {
+      "wordmark": "https://customer-assets.emergentagent.com/job_24c8e302-f443-4113-9597-93d7fedd037d/artifacts/u4a3crws_ChatGPT%20Image%20Jun%202%2C%202026%2C%2009_03_25%20PM.png",
+      "monogram": "https://customer-assets.emergentagent.com/job_24c8e302-f443-4113-9597-93d7fedd037d/artifacts/5mob2a25_ChatGPT%20Image%20Jun%202%2C%202026%2C%2009_09_38%20PM.png"
+    },
+    "hero_background": {
+      "url": "https://images.unsplash.com/photo-1609062757924-6c2d01b3b422?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDJ8MHwxfHNlYXJjaHwxfHxjaW5lbWF0aWMlMjBlZGl0b3JpYWwlMjBmYXNoaW9uJTIwbW9vZHklMjBkYXJrfGVufDB8fHx8MTc4MDgyODI0OHww&ixlib=rb-4.1.0&q=85",
+      "description": "Atmospheric, cinematic portrait of a woman with blowing hair. Moonlit and moody."
+    },
+    "products": [
+      {
+        "name": "Crescent Coat",
+        "url": "https://images.pexels.com/photos/20425010/pexels-photo-20425010.jpeg",
+        "description": "Stylish woman in white/cream coat."
+      },
+      {
+        "name": "Loom Linen Trousers",
+        "url": "https://images.unsplash.com/photo-1762605135012-56a59a059e60?crop=entropy&cs=srgb&fm=jpg",
+        "description": "Minimalist luxury long beige coat/trousers setting."
+      },
+      {
+        "name": "Waxing Shirt",
+        "url": "https://images.pexels.com/photos/29879990/pexels-photo-29879990.jpeg",
+        "description": "Elegant grey coat/shirt in moody studio setting."
+      },
+      {
+        "name": "Eclipse Wrap",
+        "url": "https://images.pexels.com/photos/35392914/pexels-photo-35392914.jpeg",
+        "description": "Woman in luxurious brown silk wrap against dark background."
+      }
+    ],
+    "editorial_and_craft": [
+      {
+        "url": "https://images.unsplash.com/photo-1607300110506-273ab1cf41f8?crop=entropy&cs=srgb&fm=jpg",
+        "description": "White silk on black background, perfect for 'moonlit' fabric texture showcases."
+      },
+      {
+        "url": "https://images.pexels.com/photos/6332002/pexels-photo-6332002.jpeg",
+        "description": "Close up of a traditional wooden loom with threads, ideal for the About/Craft values page."
+      }
+    ]
+  },
+  "testing_attributes": {
+    "convention": "kebab-case, role-based, start with 'data-testid'",
+    "examples": ["data-testid='nav-shop-link'", "data-testid='product-quick-add-button'", "data-testid='cart-drawer-close'"]
+  }
+}
