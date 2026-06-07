@@ -1,0 +1,49 @@
+{
+  "summary": "First iteration end-to-end testing of Crescent Loom (FastAPI + Mongo + React). Backend covered with 24 pytest cases (all passing after one fix). Frontend covered with Playwright across Home, Shop, ProductDetail, Cart, Checkout (demo), Account/Orders, Wishlist (auth-injected) and Admin. One backend bug found and FIXED by tester (Mongo ObjectId returned from POST /api/admin/products). Demo-mode checkout flow verified end-to-end (order auto-completes and appears in Account).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "fixed_during_testing": [
+    {
+      "endpoint": "POST /api/admin/products",
+      "issue": "Returned 500 Internal Server Error because motor's insert_one mutates the dict with a non-serializable ObjectId, which was then returned directly. FastAPI jsonable_encoder failed on ObjectId.",
+      "fix": "Added `prod.pop('_id', None)` after insert_one in /app/backend/server.py before returning.",
+      "verified": "All admin product CRUD tests now pass (create/update/delete)."
+    }
+  ],
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "No action items. All requested features are working. Main agent may proceed.",
+    "Optional improvement: Audit any other admin POST handlers (none currently) for the same insert_one+return pattern to prevent the ObjectId serialization class of bug."
+  ],
+  "critical_code_review_comments": [
+    "/app/backend/server.py:248 had the ObjectId leak pattern (fixed). Recommend always projecting `{_id: 0}` or popping after insert.",
+    "/app/backend/server.py:316 uses `logger.error(...)` inside create_payment_order while `logger` is defined at line 467 (after include_router). Since razorpay_client is None in demo mode this code path isn't hit, but if Razorpay keys are later added the NameError will trigger. Move `logger` initialization to the top of the module.",
+    "Session token in MongoDB user_sessions has no unique index — duplicate inserts during re-auth could accumulate. Consider an index on session_token.",
+    "CORS_ORIGINS defaults to '*' with allow_credentials=True — browsers reject this combination. For prod, pin specific origins.",
+    "/api/payments/demo-complete/{order_id} has no auth/ownership check — anyone with an order_id can mark it paid. Demo-mode only, but worth gating to the order's user."
+  ],
+  "updated_files": [
+    "/app/backend/server.py (single-line fix: pop _id after insert in create_product)",
+    "/app/backend/tests/backend_test.py (new)"
+  ],
+  "success_rate": {
+    "backend": "100% (24/24 pytest passed after fix)",
+    "frontend": "100% of tested flows (Home, Shop+filters, ProductDetail thumbnails/sizes/qty/size-guide, Add-to-cart drawer, Checkout demo-place-order with redirect to /account, Wishlist toggle from product card, Admin tabs+new-product button)"
+  },
+  "test_credentials": "Mongo-injected admin session: email=test.curator@crescentloom.com, session_token=test_session_<timestamp>. Use Authorization: Bearer header or cookie 'session_token' for browser. Recipe in /app/auth_testing.md.",
+  "seed_data_creation": "Created and deleted test admin user/session. Verified 8 seed products remain intact. No production data altered.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend test file lives at /app/backend/tests/backend_test.py and can be re-run with: TEST_SESSION_TOKEN=<token> python -m pytest backend/tests/backend_test.py -v. It auto-cleans created products via the DELETE step but does NOT remove the orders it creates (3 demo orders may accumulate per run — main agent can add a teardown if desired). Hero headline is split across <br/> tags ('Woven in' / 'Moonlight'); match each segment separately in Playwright. Shop sort select is rendered inside a flex header that may be off-screen on small viewports — wait for it to be visible or scroll into view before select_option.",
+  "rca of the issue": "Bug: POST /api/admin/products returned 500. RCA: motor's `db.products.insert_one(prod)` mutates `prod` in-place by injecting an `_id: ObjectId(...)` field. The handler then returned that same dict, and FastAPI's jsonable_encoder cannot serialize bson.ObjectId (TypeError: 'ObjectId' object is not iterable). Mitigation applied: `prod.pop('_id', None)` before return. Long-term fix recommendation: standardize on either projecting `{_id: 0}` from a follow-up find_one, or use a `_clean_doc` helper that strips Mongo internals from any returned document."
+}
