@@ -10,11 +10,9 @@ logger = logging.getLogger(__name__)
 
 TG_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 TG_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")
-SMTP_HOST = os.environ.get("SMTP_HOST", "smtp.gmail.com")
-SMTP_PORT = int(os.environ.get("SMTP_PORT", "587"))
-SMTP_USER = os.environ.get("SMTP_USER", "")
-SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD", "")
+SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY", "")
 SMTP_FROM_NAME = os.environ.get("SMTP_FROM_NAME", "Crescent Loom")
+SMTP_USER = os.environ.get("SMTP_USER", "")  # used as FROM email
 ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "")
 
 
@@ -81,30 +79,35 @@ async def send_telegram(text: str) -> bool:
 
 
 async def send_email(to: str, subject: str, body_text: str, body_html: Optional[str] = None) -> bool:
-    if not (SMTP_USER and SMTP_PASSWORD and to):
-        logger.info("[EMAIL SKIPPED — no creds or recipient] to=%s subject=%s", to, subject)
+    if not (SENDGRID_API_KEY and to):
+        logger.info("[EMAIL SKIPPED — no SendGrid key or recipient] to=%s subject=%s", to, subject)
         return False
+    from_email = SMTP_USER or "crescent.looom@gmail.com"
+    payload = {
+        "personalizations": [{"to": [{"email": to}]}],
+        "from": {"email": from_email, "name": SMTP_FROM_NAME},
+        "subject": subject,
+        "content": [{"type": "text/plain", "value": body_text}],
+    }
+    if body_html:
+        payload["content"].append({"type": "text/html", "value": body_html})
     try:
-        import aiosmtplib
-        msg = EmailMessage()
-        msg["From"] = f"{SMTP_FROM_NAME} <{SMTP_USER}>"
-        msg["To"] = to
-        msg["Subject"] = subject
-        msg.set_content(body_text)
-        if body_html:
-            msg.add_alternative(body_html, subtype="html")
-        await aiosmtplib.send(
-            msg,
-            hostname=SMTP_HOST,
-            port=SMTP_PORT,
-            start_tls=True,
-            username=SMTP_USER,
-            password=SMTP_PASSWORD,
-            timeout=20,
-        )
+        async with httpx.AsyncClient(timeout=20.0) as hc:
+            r = await hc.post(
+                "https://api.sendgrid.com/v3/mail/send",
+                json=payload,
+                headers={
+                    "Authorization": f"Bearer {SENDGRID_API_KEY}",
+                    "Content-Type": "application/json",
+                },
+            )
+        if r.status_code not in (200, 202):
+            logger.error("SendGrid send failed: %s %s", r.status_code, r.text[:200])
+            return False
+        logger.info("Email sent via SendGrid to %s", to)
         return True
     except Exception as e:
-        logger.error("Email send failed: %s", e)
+        logger.error("SendGrid exception: %s", e)
         return False
 
 
@@ -161,5 +164,4 @@ def fire_and_forget(coro):
     try:
         asyncio.create_task(coro)
     except RuntimeError:
-        # Fallback if no running loop
         asyncio.get_event_loop().create_task(coro)
