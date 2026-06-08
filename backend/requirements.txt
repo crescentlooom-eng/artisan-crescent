@@ -13,3 +13,4 @@ httpx
 pydantic
 PyJWT
 aiosmtplib
+razorpay
