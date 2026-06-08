@@ -45,7 +45,7 @@ function ProductForm({ initial, onClose, onSaved }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-start justify-center p-4 overflow-y-auto">
       <div className="bg-[#0B0E1A] border border-[#C9A96E]/20 max-w-3xl w-full max-h-[90vh] overflow-y-auto p-8">
         <div className="flex items-center justify-between mb-6">
           <h3 className="font-serif-display text-3xl text-[#F5F0E8]">{initial?.id ? "Edit Piece" : "New Piece"}</h3>
