@@ -11,7 +11,7 @@ export default function HomePage() {
   const [products, setProducts] = useState([]);
   const [featured, setFeatured] = useState([]);
 
-  useScrollReveal();
+  useScrollReveal([featured]);
 
   useEffect(() => {
     setProducts(listProducts({ new_arrival: true }));
