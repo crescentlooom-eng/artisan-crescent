@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, NavLink, Outlet, Navigate, useNavigate } from "react-router-dom";
 import { useAdminAuth } from "@/context/AdminAuthContext";
 import { LayoutDashboard, ShoppingBag, Users, Sparkle, Package, LogOut, Menu, X } from "lucide-react";
+import CursorDot from "@/components/CursorDot";
 
 const NAV = [
   { to: "/admin", end: true, label: "Dashboard", icon: LayoutDashboard, testId: "adm-nav-dashboard" },
@@ -28,6 +29,7 @@ export default function AdminShell() {
 
   return (
     <div className="min-h-screen bg-[#0B0E1A] flex flex-col md:flex-row" data-testid="admin-shell">
+      <CursorDot />
       {/* Sidebar (desktop) */}
       <aside className="hidden md:flex md:flex-col w-64 border-r border-[#C9A96E]/15 px-6 py-8 sticky top-0 h-screen">
         <Link to="/" className="text-[11px] tracking-[0.4em] uppercase text-[#C9A96E]">Crescent Loom</Link>
