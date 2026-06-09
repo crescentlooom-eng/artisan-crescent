@@ -86,13 +86,17 @@ export default function ReturnPolicyPage() {
           For any queries regarding returns, write to us at{" "}
           <a href="mailto:crescent.looom@gmail.com" className="text-[#C9A96E] gold-underline">
             crescent.looom@gmail.com
-          </a>{" "}
-          or WhatsApp us at{" "}
-          <a href="https://wa.me/91XXXXXXXXXX" className="text-[#C9A96E] gold-underline">
-            +91 XXXXXXXXXX
           </a>
-          .
         </p>
+        <p>Or WhatsApp us at:</p>
+        <ul className="space-y-2 mt-2">
+          {["+91 9810924300", "+91 8810607608", "+91 8920989377"].map((num) => (
+            <li key={num} className="flex items-center gap-3">
+              <span className="text-[#C9A96E]">—</span>
+              <a href={`https://wa.me/91${num.replace(/\D/g,"")}`} className="text-[#C9A96E] gold-underline">{num}</a>
+            </li>
+          ))}
+        </ul>
       </Section>
 
       <div className="mt-16 pt-10 border-t border-[#C9A96E]/15 flex flex-wrap gap-6">
