@@ -23,6 +23,7 @@ import WishlistPage from "@/pages/WishlistPage";
 import CheckoutPage from "@/pages/CheckoutPage";
 import AdminPage from "@/pages/AdminPage";
 import AuthCallback from "@/pages/AuthCallback";
+import ReturnPolicyPage from "@/pages/ReturnPolicyPage";
 
 import AdminShell from "@/pages/admin/AdminShell";
 import AdminLoginPage from "@/pages/admin/AdminLoginPage";
@@ -70,6 +71,7 @@ function AppRouter() {
       <Route path="/account" element={<StorefrontLayout><AccountPage /></StorefrontLayout>} />
       <Route path="/wishlist" element={<StorefrontLayout><WishlistPage /></StorefrontLayout>} />
       <Route path="/checkout" element={<StorefrontLayout><CheckoutPage /></StorefrontLayout>} />
+        <Route path="/returns" element={<StorefrontLayout><ReturnPolicyPage /></StorefrontLayout>} />
       <Route path="*" element={<StorefrontLayout><HomePage /></StorefrontLayout>} />
     </Routes>
   );
