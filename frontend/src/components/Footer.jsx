@@ -30,6 +30,7 @@ export default function Footer() {
             <li><Link to="/wishlist" className="hover:text-[#C9A96E]">Wishlist</Link></li>
             <li><Link to="/account" className="hover:text-[#C9A96E]">Account</Link></li>
             <li><Link to="/returns" className="hover:text-[#C9A96E]">Returns & Exchanges</Link></li>
+            <li><Link to="/shipping" className="hover:text-[#C9A96E]">Shipping Info</Link></li>
           </ul>
         </div>
       </div>
