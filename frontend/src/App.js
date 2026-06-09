@@ -24,6 +24,7 @@ import CheckoutPage from "@/pages/CheckoutPage";
 import AdminPage from "@/pages/AdminPage";
 import AuthCallback from "@/pages/AuthCallback";
 import ReturnPolicyPage from "@/pages/ReturnPolicyPage";
+import ShippingPage from "@/pages/ShippingPage";
 
 import AdminShell from "@/pages/admin/AdminShell";
 import AdminLoginPage from "@/pages/admin/AdminLoginPage";
