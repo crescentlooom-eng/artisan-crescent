@@ -72,6 +72,8 @@ function AppRouter() {
       <Route path="/wishlist" element={<StorefrontLayout><WishlistPage /></StorefrontLayout>} />
       <Route path="/checkout" element={<StorefrontLayout><CheckoutPage /></StorefrontLayout>} />
         <Route path="/returns" element={<StorefrontLayout><ReturnPolicyPage /></StorefrontLayout>} />
+        <Route path="/returns" element={<StorefrontLayout><ReturnPolicyPage /></StorefrontLayout>} />
+        <Route path="/shipping" element={<StorefrontLayout><ShippingPage /></StorefrontLayout>} />
       <Route path="*" element={<StorefrontLayout><HomePage /></StorefrontLayout>} />
     </Routes>
   );
