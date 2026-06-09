@@ -1,0 +1,25 @@
+{
+  "short_name": "Crescent Loom",
+  "name": "Crescent Loom · Crafted in Silence. Worn with Intention.",
+  "description": "Slow-made luxury garments, woven in moonlight.",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0B0E1A",
+  "background_color": "#0B0E1A",
+  "categories": ["shopping", "lifestyle"]
+}
