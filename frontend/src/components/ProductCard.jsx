@@ -3,15 +3,12 @@ import { Link } from "react-router-dom";
 import { Heart } from "lucide-react";
 import { useWishlist } from "@/context/WishlistContext";
 import { formatINR, productImage } from "@/lib/api";
-
 export default function ProductCard({ product, index = 0 }) {
   const { has, toggle } = useWishlist();
-  // For variant cards, wishlist tracks the underlying product, not the synthetic id
   const wishlistKey = product.__isVariantCard ? product.id.split("__")[0] : product.id;
   const wishlistProduct = product.__isVariantCard ? { ...product, id: wishlistKey } : product;
   const isWished = has(wishlistKey);
   const img = productImage(product);
-
   const onWish = async (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -20,7 +17,6 @@ export default function ProductCard({ product, index = 0 }) {
       window.location.href = "/login";
     }
   };
-
   return (
     <Link
       to={`/product/${product.slug}${product.variantId ? `?variant=${product.variantId}` : ""}`}
@@ -61,6 +57,9 @@ export default function ProductCard({ product, index = 0 }) {
         <div className="min-w-0 flex-1">
           <div className="font-serif-display text-lg md:text-xl text-[#F5F0E8] leading-tight truncate">{product.name}</div>
           <div className="text-[11px] tracking-[0.2em] uppercase text-[#8A8FA8] mt-1">{product.category}</div>
+          {product.description && (
+            <div className="text-[12px] text-[#8A8FA8]/80 mt-2 leading-relaxed line-clamp-2">{product.description}</div>
+          )}
         </div>
         <div className="text-sm text-[#F5F0E8]/85 whitespace-nowrap pt-1">{formatINR(product.price)}</div>
       </div>
