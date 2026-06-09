@@ -12,6 +12,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 import CursorDot from "@/components/CursorDot";
+import SplashScreen from "@/components/SplashScreen";
 
 import HomePage from "@/pages/HomePage";
 import ShopPage from "@/pages/ShopPage";
@@ -81,8 +82,10 @@ function AppRouter() {
 }
 
 function App() {
+  const [splash, setSplash] = React.useState(true);
   return (
     <div className="App">
+    {splash && <SplashScreen onComplete={() => setSplash(false)} />}
       <BrowserRouter>
         <AuthProvider>
           <AdminAuthProvider>
