@@ -23,12 +23,13 @@ export default function Footer() {
             <li><Link to="/shop" className="hover:text-[#C9A96E]">All Pieces</Link></li>
           </ul>
         </div>
-        <div>
+       <div>
           <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E] mb-4">House</div>
           <ul className="space-y-2 text-sm text-[#F5F0E8]/75">
             <li><Link to="/about" className="hover:text-[#C9A96E]">About</Link></li>
             <li><Link to="/wishlist" className="hover:text-[#C9A96E]">Wishlist</Link></li>
             <li><Link to="/account" className="hover:text-[#C9A96E]">Account</Link></li>
+            <li><Link to="/returns" className="hover:text-[#C9A96E]">Returns & Exchanges</Link></li>
           </ul>
         </div>
       </div>
