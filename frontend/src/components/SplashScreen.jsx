@@ -6,12 +6,9 @@ export default function SplashScreen({ onComplete }) {
   const [phase, setPhase] = useState("enter"); // enter → shimmer → exit
 
   useEffect(() => {
-    // Phase 1: logo fades in (0-800ms)
-    // Phase 2: shimmer + text (800-2200ms)
-    // Phase 3: fade out (2200-2800ms)
-    const t1 = setTimeout(() => setPhase("shimmer"), 800);
-    const t2 = setTimeout(() => setPhase("exit"), 2200);
-    const t3 = setTimeout(() => onComplete(), 2800);
+    const t1 = setTimeout(() => setPhase("shimmer"), 1000);
+    const t2 = setTimeout(() => setPhase("exit"), 3200);
+    const t3 = setTimeout(() => onComplete(), 3900);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, [onComplete]);
 
@@ -26,81 +23,84 @@ export default function SplashScreen({ onComplete }) {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        transition: "opacity 0.6s ease",
+        transition: "opacity 0.7s ease",
         opacity: phase === "exit" ? 0 : 1,
         pointerEvents: phase === "exit" ? "none" : "all",
       }}
     >
-      {/* Aura glow behind logo */}
+      {/* Aura glow */}
       <div style={{
         position: "absolute",
-        width: "300px",
-        height: "300px",
+        width: "320px",
+        height: "320px",
         borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(201,169,110,0.15) 0%, transparent 70%)",
-        transition: "transform 1.5s ease, opacity 1.5s ease",
-        transform: phase === "shimmer" ? "scale(1.4)" : "scale(1)",
-        opacity: phase === "shimmer" ? 1 : 0.4,
+        background: "radial-gradient(circle, rgba(201,169,110,0.12) 0%, transparent 70%)",
+        transition: "transform 2s ease, opacity 2s ease",
+        transform: phase === "shimmer" ? "scale(1.5)" : "scale(1)",
+        opacity: phase === "shimmer" ? 1 : 0.3,
       }} />
 
       {/* Logo */}
       <div style={{
-        transition: "opacity 0.8s ease, transform 0.8s cubic-bezier(0.25,1,0.5,1)",
+        transition: "opacity 1s ease, transform 1s cubic-bezier(0.25,1,0.5,1)",
         opacity: phase === "enter" ? 0 : 1,
-        transform: phase === "enter" ? "scale(0.85)" : "scale(1)",
+        transform: phase === "enter" ? "scale(0.8)" : "scale(1)",
         position: "relative",
         zIndex: 1,
       }}>
         <img
           src={LOGO_URL}
           alt="Crescent Loom"
-          style={{ width: "120px", height: "120px", objectFit: "contain" }}
+          style={{ width: "110px", height: "110px", objectFit: "contain" }}
         />
       </div>
 
-      {/* Brand name */}
+      {/* Quote */}
       <div style={{
-        marginTop: "24px",
-        transition: "opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s",
-        opacity: phase === "enter" ? 0 : 1,
-        transform: phase === "enter" ? "translateY(12px)" : "translateY(0)",
+        marginTop: "32px",
         position: "relative",
         zIndex: 1,
         textAlign: "center",
+        padding: "0 40px",
+        transition: "opacity 1s ease 0.5s, transform 1s ease 0.5s",
+        opacity: phase === "enter" ? 0 : 1,
+        transform: phase === "enter" ? "translateY(16px)" : "translateY(0)",
       }}>
         <div style={{
           fontFamily: "Georgia, serif",
+          fontStyle: "italic",
           fontWeight: 300,
-          fontSize: "22px",
-          letterSpacing: "0.2em",
-          color: "#F5F0E8",
+          fontSize: "15px",
+          color: "rgba(245,240,232,0.7)",
+          lineHeight: "1.7",
+          letterSpacing: "0.03em",
+        }}>
+          &ldquo;Woven in moonlight,<br/>worn with intention.&rdquo;
+        </div>
+
+        {/* Gold line */}
+        <div style={{
+          margin: "20px auto 0",
+          height: "1px",
+          background: "rgba(201,169,110,0.5)",
+          transition: "width 1.2s ease 0.8s",
+          width: phase === "shimmer" ? "60px" : "0px",
+        }} />
+
+        {/* Tagline */}
+        <div style={{
+          marginTop: "16px",
+          fontFamily: "Georgia, serif",
+          fontSize: "10px",
+          letterSpacing: "0.4em",
           textTransform: "uppercase",
+          color: "#C9A96E",
+          transition: "opacity 1s ease 1s",
+          opacity: phase === "shimmer" ? 1 : 0,
         }}>
           Crescent Loom
         </div>
-        <div style={{
-          fontFamily: "Georgia, serif",
-          fontStyle: "italic",
-          fontSize: "11px",
-          letterSpacing: "0.3em",
-          color: "#C9A96E",
-          marginTop: "6px",
-          transition: "opacity 0.8s ease 0.6s",
-          opacity: phase === "shimmer" ? 1 : 0,
-        }}>
-          Crafted in Silence.
-        </div>
       </div>
-
-      {/* Bottom line */}
-      <div style={{
-        position: "absolute",
-        bottom: "48px",
-        width: "40px",
-        height: "1px",
-        background: "rgba(201,169,110,0.4)",
-        transition: "width 1s ease 0.5s",
-      }} />
     </div>
   );
 }
