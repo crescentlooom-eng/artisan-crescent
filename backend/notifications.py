@@ -61,6 +61,95 @@ def _order_summary_lines(order: dict, prefix_emoji: str, title: str) -> str:
     return "\n".join(lines)
 
 
+def _customer_confirmation_html(order: dict) -> str:
+    shipping = order.get("shipping", {})
+    cust_name = shipping.get("full_name", "Friend")
+    order_id = order.get("id", "")[:8].upper()
+    items = order.get("items", [])
+    discount = order.get("loom_credits_discount", 0) or 0
+    addr = ", ".join(filter(None, [
+        shipping.get("address_line"),
+        shipping.get("city"),
+        shipping.get("state"),
+        shipping.get("pincode"),
+    ]))
+
+    items_rows = ""
+    for item in items:
+        size_info = f" · {item.get('size')}" if item.get("size") else ""
+        items_rows += f"""
+        <tr>
+          <td style="padding:12px 0;border-bottom:1px solid rgba(201,169,110,0.1);color:#F5F0E8;font-size:14px">
+            {item.get('name','')}
+            <span style="color:#8A8FA8;font-size:12px">{size_info}</span>
+          </td>
+          <td style="padding:12px 0;border-bottom:1px solid rgba(201,169,110,0.1);color:#8A8FA8;font-size:13px;text-align:center">x{item.get('quantity',1)}</td>
+          <td style="padding:12px 0;border-bottom:1px solid rgba(201,169,110,0.1);color:#F5F0E8;font-size:14px;text-align:right">{_format_inr(item.get('price',0) * item.get('quantity',1))}</td>
+        </tr>
+        """
+
+    discount_row = ""
+    if discount > 0:
+        discount_row = f"""
+        <tr>
+          <td colspan="2" style="padding:8px 0;color:#C9A96E;font-size:13px">Loom Credits ({order.get('loom_credits_redeemed',0)} cards)</td>
+          <td style="padding:8px 0;color:#C9A96E;font-size:13px;text-align:right">-{_format_inr(discount)}</td>
+        </tr>
+        """
+
+    return f"""<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#0B0E1A;font-family:Georgia,serif">
+  <div style="max-width:580px;margin:0 auto;background:#0B0E1A;padding:48px 32px">
+    <div style="border-bottom:1px solid rgba(201,169,110,0.2);padding-bottom:24px;margin-bottom:32px">
+      <div style="font-size:11px;letter-spacing:0.4em;text-transform:uppercase;color:#C9A96E">Crescent Loom</div>
+      <div style="font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:#8A8FA8;margin-top:4px">Crafted in Silence. Worn with Intention.</div>
+    </div>
+    <h1 style="font-family:Georgia,serif;font-weight:300;font-size:38px;line-height:1.1;color:#F5F0E8;margin:0 0 8px">Order <em style="color:#C9A96E">Confirmed</em></h1>
+    <p style="font-size:14px;color:#8A8FA8;margin:0 0 32px;letter-spacing:0.05em">#{order_id}</p>
+    <p style="font-size:15px;line-height:1.7;color:#F5F0E8;opacity:0.85;margin:0 0 8px">Dear {cust_name},</p>
+    <p style="font-size:14px;line-height:1.7;color:#F5F0E8;opacity:0.7;margin:0 0 32px">Thank you for your order. We have received your payment and your pieces are being prepared with care. You will receive another update once your order is dispatched.</p>
+    <div style="background:rgba(201,169,110,0.05);border:1px solid rgba(201,169,110,0.15);padding:24px;margin-bottom:24px">
+      <div style="font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:#C9A96E;margin-bottom:16px">Your Order</div>
+      <table style="width:100%;border-collapse:collapse">
+        <thead>
+          <tr>
+            <th style="text-align:left;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#8A8FA8;padding-bottom:8px;border-bottom:1px solid rgba(201,169,110,0.2);font-weight:400">Item</th>
+            <th style="text-align:center;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#8A8FA8;padding-bottom:8px;border-bottom:1px solid rgba(201,169,110,0.2);font-weight:400">Qty</th>
+            <th style="text-align:right;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#8A8FA8;padding-bottom:8px;border-bottom:1px solid rgba(201,169,110,0.2);font-weight:400">Price</th>
+          </tr>
+        </thead>
+        <tbody>{items_rows}{discount_row}</tbody>
+        <tfoot>
+          <tr>
+            <td colspan="2" style="padding:16px 0 0;font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:#C9A96E">Total</td>
+            <td style="padding:16px 0 0;font-size:20px;color:#F5F0E8;text-align:right">{_format_inr(order.get('total',0))}</td>
+          </tr>
+          <tr>
+            <td colspan="3" style="padding:4px 0 0;font-size:12px;color:#8A8FA8;text-align:right">Free Shipping · Delhi NCR</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <div style="background:rgba(201,169,110,0.05);border:1px solid rgba(201,169,110,0.15);padding:24px;margin-bottom:32px">
+      <div style="font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:#C9A96E;margin-bottom:12px">Delivering To</div>
+      <div style="font-size:14px;color:#F5F0E8;line-height:1.7">
+        <strong>{shipping.get('full_name','')}</strong><br/>
+        {addr}<br/>
+        <span style="color:#8A8FA8">{shipping.get('phone','')}</span>
+      </div>
+    </div>
+    <div style="border-left:2px solid rgba(201,169,110,0.4);padding-left:16px;margin-bottom:32px">
+      <p style="font-size:13px;color:#F5F0E8;opacity:0.7;margin:0;line-height:1.7">We ship via <strong style="color:#F5F0E8">Delhivery</strong>. Your tracking details will be shared once the order is dispatched — typically within 1-2 business days.</p>
+    </div>
+    <p style="font-size:13px;color:#8A8FA8;line-height:1.7;margin:0 0 32px">Questions? WhatsApp us at <a href="https://wa.me/919810924300" style="color:#C9A96E;text-decoration:none">+91 98109 24300</a> or email <a href="mailto:crescent.looom@gmail.com" style="color:#C9A96E;text-decoration:none">crescent.looom@gmail.com</a></p>
+    <div style="border-top:1px solid rgba(201,169,110,0.15);padding-top:24px;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:#8A8FA8">Crescent Loom · Delhi NCR · crescentloom.store</div>
+  </div>
+</body>
+</html>"""
+
+
 async def send_telegram(text: str) -> bool:
     if not (TG_TOKEN and TG_CHAT_ID):
         logger.info("[TG SKIPPED — no creds] %s", text[:80])
@@ -126,6 +215,36 @@ async def notify_payment(order: dict, success: bool):
     text = _order_summary_lines(order, emoji, title)
     await send_telegram(text)
 
+    # Customer order confirmation email on successful payment
+    if success:
+        cust_email = order.get("email")
+        if cust_email and "@" in cust_email and cust_email != "guest@crescentloom.com":
+            cust_name = (order.get("shipping") or {}).get("full_name", "Friend")
+            order_id = order.get("id", "")[:8].upper()
+            items_text = "\n".join(
+                f"  - {i.get('name','')} (Size: {i.get('size','—')}) x{i.get('quantity',1)} — {_format_inr(i.get('price',0) * i.get('quantity',1))}"
+                for i in order.get("items", [])
+            )
+            shipping = order.get("shipping", {})
+            body_text = (
+                f"Dear {cust_name},\n\n"
+                f"Your order #{order_id} has been confirmed!\n\n"
+                f"ORDER DETAILS:\n{items_text}\n\n"
+                f"Total: {_format_inr(order.get('total', 0))}\n"
+                f"Shipping: Free · Delhi NCR\n\n"
+                f"Delivering to: {shipping.get('address_line','')}, {shipping.get('city','')}, {shipping.get('pincode','')}\n\n"
+                f"We'll send you tracking details once your order is dispatched.\n\n"
+                f"Crafted in Silence. Worn with Intention.\n— Crescent Loom\n"
+                f"crescentloom.store"
+            )
+            html = _customer_confirmation_html(order)
+            await send_email(
+                cust_email,
+                f"Order Confirmed #{order_id} — Crescent Loom",
+                body_text,
+                html,
+            )
+
 
 async def notify_loom_redeem(order: dict):
     text = _order_summary_lines(order, "🎁", "Loom Credits Redeemed")
@@ -135,7 +254,6 @@ async def notify_loom_redeem(order: dict):
 async def notify_status_update(order: dict, new_status: str):
     text = _order_summary_lines(order, "📦", f"Status → {new_status.replace('_',' ').title()}")
     await send_telegram(text)
-    # Customer email
     cust_email = order.get("email")
     if cust_email and "@" in cust_email and cust_email != "guest@crescentloom.com":
         nice_status = new_status.replace("_", " ").title()
@@ -152,7 +270,7 @@ async def notify_status_update(order: dict, new_status: str):
           <div style="font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:#C9A96E;margin-bottom:24px">Crescent Loom</div>
           <h1 style="font-family:Georgia,serif;font-weight:300;font-size:36px;line-height:1.1;color:#F5F0E8;margin:0 0 16px">Your order is now <em style="color:#C9A96E">{nice_status}</em></h1>
           <p style="font-size:14px;line-height:1.7;color:#F5F0E8;opacity:0.85">Dear {cust_name or 'Friend'},</p>
-          <p style="font-size:14px;line-height:1.7;color:#F5F0E8;opacity:0.85">Your order <strong>#{order.get('id','')[:8]}</strong> — {items} — has been updated to <strong style="color:#C9A96E">{nice_status}</strong>.</p>
+          <p style="font-size:14px;line-height:1.7;color:#F5F0E8;opacity:0.85">Your order <strong>#{order.get('id','')[:8]}</strong> - {items} - has been updated to <strong style="color:#C9A96E">{nice_status}</strong>.</p>
           <div style="border-top:1px solid rgba(201,169,110,0.25);margin-top:32px;padding-top:24px;font-size:11px;letter-spacing:0.25em;text-transform:uppercase;color:#8A8FA8">Crafted in Silence. Worn with Intention.</div>
         </div>
         """
