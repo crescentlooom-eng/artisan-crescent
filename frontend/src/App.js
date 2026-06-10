@@ -12,6 +12,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 import CursorDot from "@/components/CursorDot";
+import PageTransition from "@/components/PageTransition";
 import SplashScreen from "@/components/SplashScreen";
 
 import HomePage from "@/pages/HomePage";
@@ -39,7 +40,7 @@ function StorefrontLayout({ children }) {
     <>
       <CursorDot />
       <Navbar />
-      <main>{children}</main>
+      <main><PageTransition>{children}</PageTransition></main>
       <Footer />
       <CartDrawer />
     </>
