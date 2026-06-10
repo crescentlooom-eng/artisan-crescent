@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams, Link, useSearchParams } from "react-router-dom";
-import { Heart, Minus, Plus } from "lucide-react";
-import { formatINR, productImage } from "@/lib/api";
+import { Heart, Minus, Plus, Star } from "lucide-react";
+import { formatINR, productImage, api } from "@/lib/api";
 import { getProductBySlug, listProducts } from "@/data/products";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
@@ -9,6 +9,153 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+
+function StarRating({ value, onChange, size = 20 }) {
+  const [hover, setHover] = useState(0);
+  return (
+    <div className="flex gap-1">
+      {[1,2,3,4,5].map((star) => (
+        <button
+          key={star}
+          type="button"
+          onClick={() => onChange && onChange(star)}
+          onMouseEnter={() => onChange && setHover(star)}
+          onMouseLeave={() => onChange && setHover(0)}
+          className="transition-colors"
+        >
+          <Star
+            size={size}
+            fill={(hover || value) >= star ? "#C9A96E" : "none"}
+            stroke={(hover || value) >= star ? "#C9A96E" : "#8A8FA8"}
+          />
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function ReviewsSection({ slug }) {
+  const [reviews, setReviews] = useState([]);
+  const [average, setAverage] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState({ rating: 0, reviewer_name: "", title: "", body: "" });
+  const [submitting, setSubmitting] = useState(false);
+
+  const fetchReviews = async () => {
+    try {
+      const r = await api.get(`/reviews/${slug}`);
+      setReviews(r.data.reviews);
+      setAverage(r.data.average);
+      setTotal(r.data.total);
+    } catch (e) {}
+  };
+
+  useEffect(() => { fetchReviews(); }, [slug]);
+
+  const submit = async () => {
+    if (!form.rating) return toast.error("Please select a rating");
+    if (!form.reviewer_name.trim()) return toast.error("Please enter your name");
+    if (form.body.trim().length < 10) return toast.error("Review must be at least 10 characters");
+    setSubmitting(true);
+    try {
+      await api.post("/reviews", { ...form, product_slug: slug });
+      toast.success("Review submitted!");
+      setForm({ rating: 0, reviewer_name: "", title: "", body: "" });
+      setShowForm(false);
+      fetchReviews();
+    } catch (e) {
+      toast.error(e?.response?.data?.detail || "Could not submit review");
+    }
+    setSubmitting(false);
+  };
+
+  return (
+    <div className="mt-32 border-t border-[#C9A96E]/15 pt-16">
+      <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
+        <div>
+          <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E] mb-2">Customer Reviews</div>
+          <div className="flex items-center gap-4">
+            <h3 className="font-serif-display text-3xl md:text-4xl text-[#F5F0E8]">
+              {total > 0 ? (
+                <><span className="italic text-[#C9A96E]/90">{average}</span> out of 5</>
+              ) : (
+                "No reviews yet"
+              )}
+            </h3>
+            {total > 0 && (
+              <div className="flex items-center gap-2">
+                <StarRating value={Math.round(average)} size={16} />
+                <span className="text-[#8A8FA8] text-sm">({total})</span>
+              </div>
+            )}
+          </div>
+        </div>
+        <button onClick={() => setShowForm(!showForm)} className="btn-gold">
+          {showForm ? "Cancel" : "Write a Review"}
+        </button>
+      </div>
+
+      {/* Review Form */}
+      {showForm && (
+        <div className="border border-[#C9A96E]/20 p-8 mb-12 bg-[#0D1020]">
+          <h4 className="font-serif-display text-2xl text-[#F5F0E8] mb-6">Your Review</h4>
+          <div className="space-y-6">
+            <div>
+              <label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8] block mb-3">Rating</label>
+              <StarRating value={form.rating} onChange={(v) => setForm(f => ({ ...f, rating: v }))} size={24} />
+            </div>
+            <div>
+              <label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Your Name</label>
+              <input value={form.reviewer_name} onChange={(e) => setForm(f => ({ ...f, reviewer_name: e.target.value }))} placeholder="e.g. Rahul M." />
+            </div>
+            <div>
+              <label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Title (optional)</label>
+              <input value={form.title} onChange={(e) => setForm(f => ({ ...f, title: e.target.value }))} placeholder="e.g. Perfect fit" />
+            </div>
+            <div>
+              <label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Review</label>
+              <textarea value={form.body} onChange={(e) => setForm(f => ({ ...f, body: e.target.value }))} rows={4} placeholder="Tell us about your experience..." />
+            </div>
+            <button onClick={submit} disabled={submitting} className="btn-gold disabled:opacity-50">
+              {submitting ? "Submitting..." : "Submit Review"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Reviews List */}
+      {reviews.length === 0 ? (
+        <div className="text-[#8A8FA8] text-sm text-center py-12">
+          Be the first to review this piece.
+        </div>
+      ) : (
+        <div className="space-y-8">
+          {reviews.map((r) => (
+            <div key={r.id} className="border-b border-[#C9A96E]/10 pb-8">
+              <div className="flex items-start justify-between gap-4 mb-3">
+                <div>
+                  <div className="flex items-center gap-3 mb-1">
+                    <StarRating value={r.rating} size={14} />
+                    {r.verified && (
+                      <span className="text-[10px] tracking-[0.2em] uppercase text-[#C9A96E] border border-[#C9A96E]/30 px-2 py-0.5">Verified</span>
+                    )}
+                  </div>
+                  {r.title && <div className="font-serif-display text-lg text-[#F5F0E8]">{r.title}</div>}
+                </div>
+                <div className="text-right text-xs text-[#8A8FA8] whitespace-nowrap">
+                  <div>{r.reviewer_name}</div>
+                  <div>{new Date(r.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</div>
+                </div>
+              </div>
+              <p className="text-[#F5F0E8]/75 text-sm leading-relaxed">{r.body}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function ProductDetailPage() {
   const { slug } = useParams();
@@ -54,7 +201,6 @@ export default function ProductDetailPage() {
   const onAdd = () => {
     const productForCart = {
       ...product,
-      // pass variant image into cart item
       images: images.length ? images : [productImage(product)],
     };
     const meta = { size, quantity: qty };
@@ -217,6 +363,9 @@ export default function ProductDetailPage() {
             </div>
           </div>
         </div>
+
+        {/* Reviews */}
+        <ReviewsSection slug={slug} />
 
         {/* You May Also Like */}
         {related.length > 0 && (
