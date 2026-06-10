@@ -1160,8 +1160,10 @@ async def create_review(body: ReviewCreate, request: Request):
     await db.reviews.insert_one(review)
     return {k: v for k, v in review.items() if k != "_id"}
 
-@api_router.delete("/admin/reviews/{review_id}")
-async def delete_review(review_id: str, admin=Depends(require_admin)):
+@api_router.get("/admin/reviews")
+async def admin_get_all_reviews(admin=Depends(require_admin)):
+    reviews = await db.reviews.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    return reviewsasync def delete_review(review_id: str, admin=Depends(require_admin)):
     await db.reviews.delete_one({"id": review_id})
     return {"ok": True}
 
