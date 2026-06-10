@@ -1101,6 +1101,70 @@ async def startup_tasks():
         docs = [Product(**p).model_dump() for p in SEED_PRODUCTS]
         await db.products.insert_many(docs)
         logger.info(f"Seeded {len(docs)} products")
+        # Add these to server.py after the existing models section
+
+class ReviewCreate(BaseModel):
+    product_slug: str
+    rating: int  # 1-5
+    title: Optional[str] = None
+    body: str
+    reviewer_name: str
+
+class Review(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    product_slug: str
+    rating: int
+    title: Optional[str] = None
+    body: str
+    reviewer_name: str
+    user_id: Optional[str] = None
+    verified: bool = False
+    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+# Add these routes to server.py
+
+@api_router.get("/reviews/{product_slug}")
+async def get_reviews(product_slug: str):
+    reviews = await db.reviews.find(
+        {"product_slug": product_slug},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    total = len(reviews)
+    avg = round(sum(r["rating"] for r in reviews) / total, 1) if total else 0
+    return {"reviews": reviews, "total": total, "average": avg}
+
+@api_router.post("/reviews")
+async def create_review(body: ReviewCreate, request: Request):
+    if not (1 <= body.rating <= 5):
+        raise HTTPException(status_code=400, detail="Rating must be between 1 and 5")
+    if len(body.body.strip()) < 10:
+        raise HTTPException(status_code=400, detail="Review must be at least 10 characters")
+    user = await get_current_user(request)
+    verified = False
+    if user:
+        order = await db.orders.find_one({
+            "user_id": user["user_id"],
+            "status": {"$in": ["paid", "shipped", "delivered"]},
+            "items.name": {"$regex": body.product_slug.replace("-", " "), "$options": "i"}
+        })
+        verified = order is not None
+    review = Review(
+        product_slug=body.product_slug,
+        rating=body.rating,
+        title=body.title,
+        body=body.body,
+        reviewer_name=body.reviewer_name,
+        user_id=user["user_id"] if user else None,
+        verified=verified,
+    ).model_dump()
+    await db.reviews.insert_one(review)
+    return {k: v for k, v in review.items() if k != "_id"}
+
+@api_router.delete("/admin/reviews/{review_id}")
+async def delete_review(review_id: str, admin=Depends(require_admin)):
+    await db.reviews.delete_one({"id": review_id})
+    return {"ok": True}
+
 
 # Include router
 app.include_router(api_router)
