@@ -66,16 +66,16 @@ export default function SplashScreen({ onComplete }) {
         opacity: phase === "enter" ? 0 : 1,
         transform: phase === "enter" ? "translateY(16px)" : "translateY(0)",
       }}>
-        <div style={{
+       <div style={{
           fontFamily: "Georgia, serif",
           fontStyle: "italic",
           fontWeight: 300,
-          fontSize: "15px",
-          color: "rgba(245,240,232,0.7)",
+          fontSize: "16px",
+          color: "rgba(245,240,232,0.8)",
           lineHeight: "1.7",
           letterSpacing: "0.03em",
         }}>
-          &ldquo;Woven in moonlight,<br/>worn with intention.&rdquo;
+          &ldquo;Clothing that feels like coming home.&rdquo;
         </div>
 
         {/* Gold line */}
