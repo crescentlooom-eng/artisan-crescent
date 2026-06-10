@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import { api, formatINR } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
-import { Plus, Edit2, Trash2, X } from "lucide-react";
+import { Plus, Edit2, Trash2, X, Star } from "lucide-react";
 import VariantEditor from "@/components/admin/VariantEditor";
 import LoomCreditsAdmin from "@/components/admin/LoomCreditsAdmin";
 
@@ -37,16 +37,9 @@ function ProductForm({ initial, onClose, onSaved }) {
     }
   };
 
-  const addImage = () => {
-    if (imageInput.trim()) {
-      set("images", [...(form.images || []), imageInput.trim()]);
-      setImageInput("");
-    }
-  };
-
   return (
     <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-start justify-center p-4 overflow-y-auto">
-      <div className="bg-[#0B0E1A] border border-[#C9A96E]/20 max-w-3xl w-full max-h-[90vh] overflow-y-auto p-8">
+      <div className="bg-[#0B0E1A] border border-[#C9A96E]/20 max-w-3xl w-full p-8 my-4">
         <div className="flex items-center justify-between mb-6">
           <h3 className="font-serif-display text-3xl text-[#F5F0E8]">{initial?.id ? "Edit Piece" : "New Piece"}</h3>
           <button onClick={onClose} className="text-[#8A8FA8] hover:text-[#C9A96E]"><X /></button>
@@ -72,11 +65,9 @@ function ProductForm({ initial, onClose, onSaved }) {
           <label className="flex items-center gap-2 text-sm text-[#F5F0E8]"><input type="checkbox" className="!w-auto" checked={form.featured} onChange={(e) => set("featured", e.target.checked)} /> Featured</label>
           <label className="flex items-center gap-2 text-sm text-[#F5F0E8]"><input type="checkbox" className="!w-auto" checked={form.new_arrival} onChange={(e) => set("new_arrival", e.target.checked)} /> New Arrival</label>
         </div>
-
         <div className="mt-6">
           <VariantEditor variants={form.variants || []} onChange={(v) => set("variants", v)} />
         </div>
-
         <div className="flex gap-3 mt-8">
           <button onClick={save} data-testid="admin-product-save" className="btn-gold flex-1">Save</button>
           <button onClick={onClose} className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8] px-6">Cancel</button>
@@ -86,10 +77,78 @@ function ProductForm({ initial, onClose, onSaved }) {
   );
 }
 
+function ReviewsTab() {
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchReviews = async () => {
+    setLoading(true);
+    try {
+      const r = await api.get("/admin/reviews");
+      setReviews(r.data);
+    } catch (e) {
+      toast.error("Could not load reviews");
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => { fetchReviews(); }, []);
+
+  const deleteReview = async (id) => {
+    if (!confirm("Delete this review?")) return;
+    try {
+      await api.delete(`/admin/reviews/${id}`);
+      toast.success("Review deleted");
+      fetchReviews();
+    } catch (e) {
+      toast.error("Could not delete review");
+    }
+  };
+
+  if (loading) return <div className="text-[#8A8FA8] text-sm mt-8">Loading reviews...</div>;
+
+  return (
+    <div className="mt-8">
+      <div className="text-[#8A8FA8] text-sm mb-6">{reviews.length} total reviews</div>
+      {reviews.length === 0 ? (
+        <div className="text-[#8A8FA8] text-sm">No reviews yet.</div>
+      ) : (
+        <div className="space-y-4">
+          {reviews.map((r) => (
+            <div key={r.id} className="border border-[#C9A96E]/15 p-5">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2 flex-wrap">
+                    <div className="flex gap-0.5">
+                      {[1,2,3,4,5].map((s) => (
+                        <Star key={s} size={13} fill={r.rating >= s ? "#C9A96E" : "none"} stroke={r.rating >= s ? "#C9A96E" : "#8A8FA8"} />
+                      ))}
+                    </div>
+                    <span className="text-[11px] tracking-[0.2em] uppercase text-[#C9A96E]">{r.product_slug}</span>
+                    {r.verified && <span className="text-[10px] tracking-[0.2em] uppercase text-[#C9A96E] border border-[#C9A96E]/30 px-2 py-0.5">Verified</span>}
+                  </div>
+                  {r.title && <div className="font-serif-display text-lg text-[#F5F0E8] mb-1">{r.title}</div>}
+                  <p className="text-[#F5F0E8]/75 text-sm leading-relaxed mb-2">{r.body}</p>
+                  <div className="text-xs text-[#8A8FA8]">
+                    {r.reviewer_name} · {new Date(r.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                  </div>
+                </div>
+                <button onClick={() => deleteReview(r.id)} className="text-red-400 hover:text-red-300 flex-shrink-0">
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function AdminPage() {
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
-  const [editing, setEditing] = useState(null); // null = closed, {} = new, product = edit
+  const [editing, setEditing] = useState(null);
   const [tab, setTab] = useState("products");
 
   const refresh = async () => {
@@ -113,9 +172,10 @@ export default function AdminPage() {
       <h1 className="font-serif-display text-3xl md:text-4xl text-[#F5F0E8]">Pieces</h1>
 
       <div className="mt-8 flex gap-8 border-b border-[#C9A96E]/15 pb-3 overflow-x-auto">
-        <button onClick={() => setTab("products")} data-testid="admin-tab-products" className={`text-[11px] tracking-[0.3em] uppercase gold-underline whitespace-nowrap ${tab === "products" ? "active text-[#C9A96E]" : "text-[#F5F0E8]/80"}`}>Pieces ({products.length})</button>
-        <button onClick={() => setTab("orders")} data-testid="admin-tab-orders" className={`text-[11px] tracking-[0.3em] uppercase gold-underline whitespace-nowrap ${tab === "orders" ? "active text-[#C9A96E]" : "text-[#F5F0E8]/80"}`}>Orders ({orders.length})</button>
-        <button onClick={() => setTab("loom")} data-testid="admin-tab-loom" className={`text-[11px] tracking-[0.3em] uppercase gold-underline whitespace-nowrap ${tab === "loom" ? "active text-[#C9A96E]" : "text-[#F5F0E8]/80"}`}>Loom Credits</button>
+        <button onClick={() => setTab("products")} className={`text-[11px] tracking-[0.3em] uppercase gold-underline whitespace-nowrap ${tab === "products" ? "active text-[#C9A96E]" : "text-[#F5F0E8]/80"}`}>Pieces ({products.length})</button>
+        <button onClick={() => setTab("orders")} className={`text-[11px] tracking-[0.3em] uppercase gold-underline whitespace-nowrap ${tab === "orders" ? "active text-[#C9A96E]" : "text-[#F5F0E8]/80"}`}>Orders ({orders.length})</button>
+        <button onClick={() => setTab("loom")} className={`text-[11px] tracking-[0.3em] uppercase gold-underline whitespace-nowrap ${tab === "loom" ? "active text-[#C9A96E]" : "text-[#F5F0E8]/80"}`}>Loom Credits</button>
+        <button onClick={() => setTab("reviews")} className={`text-[11px] tracking-[0.3em] uppercase gold-underline whitespace-nowrap ${tab === "reviews" ? "active text-[#C9A96E]" : "text-[#F5F0E8]/80"}`}>Reviews</button>
       </div>
 
       {tab === "products" && (
@@ -129,8 +189,8 @@ export default function AdminPage() {
                   <div className="font-serif-display text-lg text-[#F5F0E8] truncate">{p.name}</div>
                   <div className="text-[11px] tracking-[0.2em] uppercase text-[#8A8FA8] mt-1">{p.category} · {formatINR(p.price)}</div>
                   <div className="flex gap-2 mt-3">
-                    <button onClick={() => setEditing(p)} data-testid={`admin-edit-${p.slug}`} className="text-[#C9A96E] hover:text-[#F5F0E8]"><Edit2 size={14} /></button>
-                    <button onClick={() => del(p.id)} data-testid={`admin-delete-${p.slug}`} className="text-[#C9A96E] hover:text-[#F5F0E8]"><Trash2 size={14} /></button>
+                    <button onClick={() => setEditing(p)} className="text-[#C9A96E] hover:text-[#F5F0E8]"><Edit2 size={14} /></button>
+                    <button onClick={() => del(p.id)} className="text-[#C9A96E] hover:text-[#F5F0E8]"><Trash2 size={14} /></button>
                   </div>
                 </div>
               </div>
@@ -169,6 +229,7 @@ export default function AdminPage() {
       )}
 
       {tab === "loom" && <LoomCreditsAdmin />}
+      {tab === "reviews" && <ReviewsTab />}
 
       {editing && <ProductForm initial={editing} onClose={() => setEditing(null)} onSaved={refresh} />}
     </div>
