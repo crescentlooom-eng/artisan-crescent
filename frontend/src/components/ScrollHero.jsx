@@ -8,7 +8,7 @@ const PRODUCTS = [
     price: "₹399",
     slug: "textured-polo-tee",
     tag: "Chapter I",
-    frames: Array.from({length:12}, (_,i) => `/tshirts/polo_${String(i).padStart(2,'0')}.jpg`),
+    frames: Array.from({length:12}, (_,i) => `/polo_${String(i).padStart(2,'0')}.jpg`),
   },
   {
     name: "Prism Wear Tee",
@@ -16,7 +16,7 @@ const PRODUCTS = [
     price: "₹349",
     slug: "prism-wear-tee",
     tag: "Chapter II",
-    frames: Array.from({length:12}, (_,i) => `/tshirts/prism_${String(i).padStart(2,'0')}.jpg`),
+    frames: Array.from({length:12}, (_,i) => `/prism_${String(i).padStart(2,'0')}.jpg`),
   },
   {
     name: "Essential Tee",
@@ -24,7 +24,7 @@ const PRODUCTS = [
     price: "₹299",
     slug: "essential-tee",
     tag: "Chapter III",
-    frames: Array.from({length:12}, (_,i) => `/tshirts/essential_${String(i).padStart(2,'0')}.jpg`),
+    frames: Array.from({length:12}, (_,i) => `/essential_${String(i).padStart(2,'0')}.jpg`),
   },
 ];
 
