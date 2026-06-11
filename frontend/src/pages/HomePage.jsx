@@ -4,6 +4,7 @@ import { productImage, expandForCatalog } from "@/lib/api";
 import { listProducts } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 import useScrollReveal from "@/hooks/useScrollReveal";
+import ScrollHero from "@/components/ScrollHero";
 
 const HERO_BG = "https://images.unsplash.com/photo-1609062757924-6c2d01b3b422?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDJ8MHwxfHNlYXJjaHwxfHxjaW5lbWF0aWMlMjBlZGl0b3JpYWwlMjBmYXNoaW9uJTIwbW9vZHklMjBkYXJrfGVufDB8fHx8MTc4MDgyODI0OHww&ixlib=rb-4.1.0&q=85";
 
@@ -22,27 +23,7 @@ export default function HomePage() {
 
   return (
     <div data-testid="home-page" className="page-fade">
-      {/* HERO */}
-      <section className="relative h-[100svh] w-full overflow-hidden">
-        <img src={HERO_BG} alt="" className="absolute inset-0 w-full h-full object-cover scale-105" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0B0E1A]/60 via-[#0B0E1A]/30 to-[#0B0E1A]" />
-        <div className="aura absolute -top-40 -right-40 h-[700px] w-[700px] rounded-full bg-[#C9A96E] opacity-10 blur-3xl" />
-        <div className="noise-overlay" />
-        <div className="relative z-10 h-full max-w-7xl mx-auto px-6 md:px-12 flex flex-col justify-end pb-24 md:pb-32">
-          <div className="text-[11px] tracking-[0.4em] uppercase text-[#C9A96E] mb-6 reveal-up">Autumn / Winter — Volume IV</div>
-          <h1 className="font-serif-display text-[#F5F0E8] text-5xl sm:text-7xl lg:text-[8rem] leading-[0.95] reveal-up" style={{ transitionDelay: "120ms" }}>
-            Woven in<br/>
-            <span className="italic text-[#C9A96E]/90">Moonlight</span>
-          </h1>
-          <p className="text-[#F5F0E8]/80 max-w-md mt-8 text-base md:text-lg leading-relaxed reveal-up" style={{ transitionDelay: "240ms" }}>
-            A quiet wardrobe. Cut from natural fibers, made in small numbers, intended to last beyond the season.
-          </p>
-          <div className="mt-10 flex flex-wrap gap-4 reveal-up" style={{ transitionDelay: "360ms" }}>
-            <Link to="/shop" data-testid="home-hero-shop-cta" className="btn-gold">Enter the Collection</Link>
-            <Link to="/about" data-testid="home-hero-about-cta" className="text-[11px] tracking-[0.3em] uppercase text-[#F5F0E8]/85 gold-underline self-center">Our Philosophy</Link>
-          </div>
-        </div>
-      </section>
+      <ScrollHero />
 
       {/* MARQUEE NEW ARRIVALS */}
       <section className="py-20 md:py-28 border-y border-[#C9A96E]/10 bg-[#0B0E1A] overflow-hidden">
