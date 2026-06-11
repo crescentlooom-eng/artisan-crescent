@@ -4,7 +4,7 @@ import { productImage, expandForCatalog } from "@/lib/api";
 import { listProducts } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 import useScrollReveal from "@/hooks/useScrollReveal";
-import ScrollHero from "@/components/ScrollHero";
+import Hero from "@/components/Hero";
 
 const HERO_BG = "https://images.unsplash.com/photo-1609062757924-6c2d01b3b422?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDJ8MHwxfHNlYXJjaHwxfHxjaW5lbWF0aWMlMjBlZGl0b3JpYWwlMjBmYXNoaW9uJTIwbW9vZHklMjBkYXJrfGVufDB8fHx8MTc4MDgyODI0OHww&ixlib=rb-4.1.0&q=85";
 
@@ -23,7 +23,7 @@ export default function HomePage() {
 
   return (
     <div data-testid="home-page" className="page-fade">
-      <ScrollHero />
+      <Hero />
 
       {/* MARQUEE NEW ARRIVALS */}
       <section className="py-20 md:py-28 border-y border-[#C9A96E]/10 bg-[#0B0E1A] overflow-hidden">
