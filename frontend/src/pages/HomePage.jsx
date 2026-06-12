@@ -5,8 +5,7 @@ import { listProducts } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 import useScrollReveal from "@/hooks/useScrollReveal";
 import Hero from "@/components/Hero";
-
-const HERO_BG = "https://images.unsplash.com/photo-1609062757924-6c2d01b3b422?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDJ8MHwxfHNlYXJjaHwxfHxjaW5lbWF0aWMlMjBlZGl0b3JpYWwlMjBmYXNoaW9uJTIwbW9vZHklMjBkYXJrfGVufDB8fHx8MTc4MDgyODI0OHww&ixlib=rb-4.1.0&q=85";
+import ChapterCard from "@/components/ChapterCard";
 
 export default function HomePage() {
   const [products, setProducts] = useState([]);
@@ -55,7 +54,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* EDITORIAL ASYMMETRIC GRID */}
+      {/* CHAPTERS SECTION */}
       <section className="py-24 md:py-36 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E] mb-3 reveal-up">Chapters</div>
@@ -64,49 +63,49 @@ export default function HomePage() {
           </h2>
 
           <div className="grid grid-cols-12 gap-6 md:gap-10 mt-16">
-            <Link to="/shop?category=polo" data-testid="home-chapter-polo" className="col-span-12 md:col-span-7 group reveal-up">
-              <div className="product-card-img-wrap aspect-[4/5] mb-5">
-                <img src="https://customer-assets.emergentagent.com/job_artisan-crescent/artifacts/aimwehfu_beige%201.png" alt="Textured Polo Tee" className="w-full h-full object-cover" />
-              </div>
-              <div className="flex items-end justify-between">
-                <div>
-                  <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">Chapter I</div>
-                  <div className="font-serif-display text-3xl md:text-4xl text-[#F5F0E8] mt-2">Textured Polo Tee</div>
-                  <div className="text-[11px] tracking-[0.2em] uppercase text-[#8A8FA8] mt-1">Six tonal weaves · ₹399</div>
-                </div>
-                <span className="text-[11px] tracking-[0.3em] uppercase text-[#F5F0E8]/85 gold-underline">Explore</span>
-              </div>
-            </Link>
-
-            <div className="col-span-12 md:col-span-5 flex flex-col gap-10 md:pt-32">
-              <Link to="/shop?category=designer" data-testid="home-chapter-designer" className="group reveal-up" style={{ transitionDelay: "100ms" }}>
-                <div className="product-card-img-wrap aspect-[4/5] mb-5">
-                  <img src="https://customer-assets.emergentagent.com/job_artisan-crescent/artifacts/t9hvhdc6_designer%20green%201.png" alt="Prism Wear Tee" className="w-full h-full object-cover" />
-                </div>
-                <div className="flex items-end justify-between">
-                  <div>
-                    <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">Chapter II</div>
-                    <div className="font-serif-display text-3xl text-[#F5F0E8] mt-2">Prism Wear Tee</div>
-                    <div className="text-[11px] tracking-[0.2em] uppercase text-[#8A8FA8] mt-1">Ten designer prints · ₹349</div>
-                  </div>
-                  <span className="text-[11px] tracking-[0.3em] uppercase text-[#F5F0E8]/85 gold-underline">Explore</span>
-                </div>
-              </Link>
+            {/* Chapter I */}
+            <div className="col-span-12 md:col-span-7 reveal-up">
+              <ChapterCard
+                to="/shop?category=polo"
+                imgSrc="https://customer-assets.emergentagent.com/job_artisan-crescent/artifacts/aimwehfu_beige%201.png"
+                imgAlt="Textured Polo Tee"
+                chapter="Chapter I"
+                title="Textured Polo Tee"
+                subtitle="Six tonal weaves · ₹399"
+                aspectClass="aspect-[4/5]"
+                delay={0}
+              />
             </div>
 
-            <Link to="/shop?category=basics" data-testid="home-chapter-basics" className="col-span-12 md:col-span-6 md:col-start-4 group reveal-up" style={{ transitionDelay: "200ms" }}>
-              <div className="product-card-img-wrap aspect-[5/4] mb-5">
-                <img src="https://customer-assets.emergentagent.com/job_artisan-crescent/artifacts/dp4xzzoz_plain%20black%201%20.png" alt="Essential Tee" className="w-full h-full object-cover" />
+            {/* Chapter II */}
+            <div className="col-span-12 md:col-span-5 flex flex-col gap-10 md:pt-32">
+              <div className="reveal-up" style={{ transitionDelay: "100ms" }}>
+                <ChapterCard
+                  to="/shop?category=designer"
+                  imgSrc="https://customer-assets.emergentagent.com/job_artisan-crescent/artifacts/t9hvhdc6_designer%20green%201.png"
+                  imgAlt="Prism Wear Tee"
+                  chapter="Chapter II"
+                  title="Prism Wear Tee"
+                  subtitle="Ten designer prints · ₹349"
+                  aspectClass="aspect-[4/5]"
+                  delay={200}
+                />
               </div>
-              <div className="flex items-end justify-between">
-                <div>
-                  <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">Chapter III</div>
-                  <div className="font-serif-display text-3xl text-[#F5F0E8] mt-2">Essential Tee</div>
-                  <div className="text-[11px] tracking-[0.2em] uppercase text-[#8A8FA8] mt-1">Black & white · ₹299</div>
-                </div>
-                <span className="text-[11px] tracking-[0.3em] uppercase text-[#F5F0E8]/85 gold-underline">Explore</span>
-              </div>
-            </Link>
+            </div>
+
+            {/* Chapter III */}
+            <div className="col-span-12 md:col-span-6 md:col-start-4 reveal-up" style={{ transitionDelay: "200ms" }}>
+              <ChapterCard
+                to="/shop?category=basics"
+                imgSrc="https://customer-assets.emergentagent.com/job_artisan-crescent/artifacts/dp4xzzoz_plain%20black%201%20.png"
+                imgAlt="Essential Tee"
+                chapter="Chapter III"
+                title="Essential Tee"
+                subtitle="Black & white · ₹299"
+                aspectClass="aspect-[5/4]"
+                delay={400}
+              />
+            </div>
           </div>
         </div>
       </section>
