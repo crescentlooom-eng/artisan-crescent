@@ -188,52 +188,26 @@ export default function MobileHero() {
 
       {/* Always visible bottom content */}
       <div className="absolute bottom-0 left-0 right-0 pb-16 px-8 z-10">
-        {/* Tagline — always visible */}
-        <div
-          className="font-serif-display text-5xl text-[#F5F0E8] leading-tight mb-2"
-          style={{
-            opacity: revealed ? 1 : 0.15,
-            transition: "opacity 1.2s ease",
-          }}
-        >
-          Beyond
-        </div>
-        <div
-          className="font-serif-display text-5xl italic text-[#C9A96E] leading-tight mb-6"
-          style={{
-            opacity: revealed ? 1 : 0.15,
-            transition: "opacity 1.4s ease",
-          }}
-        >
-          Comparison.
-        </div>
-
-        {/* Subtext */}
-        <p
-          className="text-[#F5F0E8]/65 text-sm leading-relaxed mb-8 max-w-xs"
-          style={{
-            opacity: revealed ? 1 : 0,
-            transition: "opacity 1.6s ease",
-          }}
-        >
-          Timeless essentials designed with intention.
-        </p>
-
-        {/* CTA Button */}
-        <div
-          className="pointer-events-auto"
-          style={{
-            opacity: revealed ? 1 : 0.2,
-            transition: "opacity 1.8s ease",
-          }}
-        >
-          <Link
-            to="/shop"
-            className="inline-block text-[11px] tracking-[0.35em] uppercase text-[#0B0E1A] bg-[#C9A96E] px-10 py-4 hover:bg-[#B8914A] active:bg-[#A07840] transition-colors"
-            onClick={e => e.stopPropagation()}
-          >
-            Shop Now
-          </Link>
+        {/* All content hidden until tap */}
+        <div style={{ opacity: revealed ? 1 : 0, transition: "opacity 1.2s ease" }}>
+          <div className="font-serif-display text-5xl text-[#F5F0E8] leading-tight mb-2">
+            Beyond
+          </div>
+          <div className="font-serif-display text-5xl italic text-[#C9A96E] leading-tight mb-5">
+            Comparison.
+          </div>
+          <p className="text-[#F5F0E8]/65 text-sm leading-relaxed mb-8 max-w-xs">
+            Timeless essentials designed with intention.
+          </p>
+          <div className="pointer-events-auto">
+            <Link
+              to="/shop"
+              className="inline-block text-[11px] tracking-[0.35em] uppercase text-[#0B0E1A] bg-[#C9A96E] px-10 py-4 hover:bg-[#B8914A] active:bg-[#A07840] transition-colors"
+              onClick={e => e.stopPropagation()}
+            >
+              Shop Now
+            </Link>
+          </div>
         </div>
       </div>
     </section>
