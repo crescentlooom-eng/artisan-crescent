@@ -101,8 +101,8 @@ export default function MagneticHero() {
         const dx = mx - p.x;
         const dy = my - p.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        const magnetRadius = p.ambient ? 80 : 140;
-        const force = p.ambient ? 0.012 : 0.03;
+        const magnetRadius = p.ambient ? 120 : 200;
+        const force = p.ambient ? 0.025 : 0.07;
 
         if (dist < magnetRadius && dist > 0) {
           const strength = ((magnetRadius - dist) / magnetRadius) * force;
@@ -147,8 +147,13 @@ export default function MagneticHero() {
     window.addEventListener("resize", resize);
 
     const handleMouse = (e) => {
-      mouseRef.current = { x: e.clientX, y: e.clientY };
+      const rect = canvas.getBoundingClientRect();
+      mouseRef.current = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      };
     };
+    canvas.addEventListener("mousemove", handleMouse);
     window.addEventListener("mousemove", handleMouse);
 
     // Start dark, fade in
@@ -160,6 +165,7 @@ export default function MagneticHero() {
       cancelAnimationFrame(animRef.current);
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", handleMouse);
+      canvas.removeEventListener("mousemove", handleMouse);
     };
   }, []);
 
