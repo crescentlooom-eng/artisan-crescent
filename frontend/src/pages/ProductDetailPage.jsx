@@ -286,7 +286,7 @@ export default function ProductDetailPage() {
                           setVariantIdx(i);
                           setActiveImg(0);
                           const outOfStock = v.out_of_stock_sizes || [];
-                          if (size && outOfStock.includes(size)) {
+                          if (!size || outOfStock.includes(size)) {
                             const firstAvailable = (product.sizes || []).find((s) => !outOfStock.includes(s)) || null;
                             setSize(firstAvailable);
                           }
