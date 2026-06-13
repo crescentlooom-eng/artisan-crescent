@@ -21,51 +21,82 @@ export default function MagneticHero() {
       const W = canvas.width;
       const H = canvas.height;
       const cx = W / 2;
-      const cy = H / 2;
+      const cy = H / 2 - 20;
       const particles = [];
 
-      // Crescent moon shape
-      const total = 280;
-      for (let i = 0; i < total; i++) {
-        const angle = (i / total) * Math.PI * 2;
-        const layer = Math.floor(i / 40);
-        const radius = 80 + layer * 22 + Math.random() * 12;
+      // Tshirt silhouette outline points
+      // Scale based on screen size
+      const scale = Math.min(W, H) * 0.35 / 100;
 
-        // Outer circle
-        const ox = cx + Math.cos(angle) * radius;
-        const oy = cy + Math.sin(angle) * radius;
+      // Define tshirt outline as a path of points (normalized -100 to 100)
+      const tshirtPath = [
+        // Start at left collar
+        [-22, -45], [-15, -52], [0, -55], [15, -52], [22, -45],
+        // Right shoulder to right sleeve
+        [35, -42], [55, -48], [70, -35], [78, -20], [70, -8],
+        [55, -15], [42, -22],
+        // Right side down to hem
+        [45, 10], [48, 35], [50, 60], [50, 80],
+        // Bottom hem right to left
+        [25, 82], [0, 83], [-25, 82], [-50, 80],
+        // Left side up
+        [-50, 60], [-48, 35], [-45, 10],
+        // Left sleeve
+        [-42, -22], [-55, -15], [-70, -8], [-78, -20], [-70, -35],
+        [-55, -48], [-35, -42],
+        // Back to start
+        [-22, -45],
+      ];
 
-        // Inner offset circle (creates crescent cutout)
-        const innerRadius = radius * 0.72;
-        const offsetX = cx + 38;
-        const innerX = offsetX + Math.cos(angle) * innerRadius;
-        const innerY = cy + Math.sin(angle) * innerRadius;
-
-        // Only keep points outside the inner circle = crescent shape
-        const distFromInner = Math.sqrt(
-          Math.pow(ox - offsetX, 2) + Math.pow(oy - cy, 2)
-        );
-
-        if (distFromInner > innerRadius - 10) {
-          const gold = Math.random();
-          particles.push({
-            x: ox,
-            y: oy,
-            originX: ox,
-            originY: oy,
-            size: Math.random() * 2.2 + 0.5,
-            color:
-              gold > 0.7
-                ? `rgba(201,169,110,${Math.random() * 0.6 + 0.4})`
-                : gold > 0.4
-                ? `rgba(245,240,232,${Math.random() * 0.5 + 0.3})`
-                : `rgba(184,145,74,${Math.random() * 0.4 + 0.3})`,
-            vx: 0,
-            vy: 0,
-            mass: Math.random() * 0.4 + 0.6,
-          });
+      // Sample points along the path with interpolation for smooth distribution
+      const samples = [];
+      const pointsPerSegment = 14;
+      for (let i = 0; i < tshirtPath.length - 1; i++) {
+        const [x1, y1] = tshirtPath[i];
+        const [x2, y2] = tshirtPath[i + 1];
+        for (let j = 0; j < pointsPerSegment; j++) {
+          const t = j / pointsPerSegment;
+          samples.push([
+            x1 + (x2 - x1) * t,
+            y1 + (y2 - y1) * t,
+          ]);
         }
       }
+
+      // Add some fill points inside the tshirt for density
+      const fillPoints = [];
+      for (let i = 0; i < 90; i++) {
+        const x = (Math.random() - 0.5) * 90;
+        const y = -30 + Math.random() * 100;
+        // Rough bounds check - keep within general tshirt body area
+        if (Math.abs(x) < 48 || y < 0) {
+          fillPoints.push([x, y]);
+        }
+      }
+
+      const allPoints = [...samples, ...fillPoints];
+
+      allPoints.forEach(([px, py]) => {
+        const x = cx + px * scale;
+        const y = cy + py * scale;
+        const gold = Math.random();
+        particles.push({
+          x,
+          y,
+          originX: x,
+          originY: y,
+          size: Math.random() * 2.2 + 0.5,
+          color:
+            gold > 0.7
+              ? `rgba(201,169,110,${Math.random() * 0.6 + 0.4})`
+              : gold > 0.4
+              ? `rgba(245,240,232,${Math.random() * 0.5 + 0.3})`
+              : `rgba(184,145,74,${Math.random() * 0.4 + 0.3})`,
+          vx: 0,
+          vy: 0,
+          mass: Math.random() * 0.4 + 0.6,
+        });
+      });
 
       // Scattered ambient stars
       for (let i = 0; i < 120; i++) {
@@ -133,7 +164,7 @@ export default function MagneticHero() {
       // Central glow
       const glow = ctx.createRadialGradient(
         W / 2, H / 2, 0,
-        W / 2, H / 2, 160
+        W / 2, H / 2, 220
       );
       glow.addColorStop(0, "rgba(201,169,110,0.06)");
       glow.addColorStop(1, "rgba(10,15,26,0)");
