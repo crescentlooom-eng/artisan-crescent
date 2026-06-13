@@ -69,14 +69,15 @@ export default function WeaveHero() {
       ctx.fillStyle = "#0B0E1A";
       ctx.fillRect(0, 0, W, H);
 
+     const cellW = W / NUM_V;
+      const cellH = H / NUM_H;
+
       // Draw image clipped by woven thread mask
       if (imgRef.current) {
         ctx.save();
 
         // Build clip path from threads
         ctx.beginPath();
-        const cellW = W / NUM_V;
-        const cellH = H / NUM_H;
 
         // Horizontal threads (reveal left to right)
         for (let i = 0; i < NUM_H; i++) {
