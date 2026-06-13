@@ -12,10 +12,10 @@ export const PRODUCTS = [
     category: "polo",
     price: 399,
     description:
-      "A structured polo tee in a soft textured weave. Six tonal variants, cut for a quiet, modern silhouette.",
+            "A study in quiet texture. Cut from breathable cotton with a subtly woven surface that catches light differently with every movement — understated detail for those who notice. Regular fit, designed for ease without losing its shape. A piece that feels considered, not loud.",
     sizes: ["M", "L", "XL"],
     colors: [],
-    material: "Cotton-Polyester blend, structured weave",
+    material: "100% Cotton, textured weave",
     in_stock: true,
     featured: true,
     new_arrival: true,
@@ -72,7 +72,7 @@ export const PRODUCTS = [
     category: "designer",
     price: 349,
     description:
-      "Ten designer prints across a single relaxed tee silhouette. Each print is a numbered, limited edition.",
+      "Each piece in this line carries its own story — a unique design, never quite repeated. Crafted from soft cotton with prints that play with form, line, and colour in quiet, deliberate ways. For those who want their wardrobe to say something, without saying too much.",
     sizes: ["L", "XL"],
     colors: [],
     material: "100% Cotton, soft-handle jersey",
@@ -160,7 +160,7 @@ export const PRODUCTS = [
     category: "basics",
     price: 299,
     description:
-      "Our quiet everyday tee. Heavyweight cotton, clean shoulders, washed for softness.",
+       "The foundation of a considered wardrobe. Pure cotton, clean lines, no excess — just the kind of tee that becomes part of your daily rhythm. Black or white, made to be worn often and loved longer.",
     sizes: ["M", "XL"],
     colors: [],
     material: "100% Heavyweight Cotton",
