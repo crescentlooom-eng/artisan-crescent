@@ -20,12 +20,18 @@ export const PRODUCTS = [
     featured: true,
     new_arrival: true,
     images: [],
-    variants: [
-      images: [
+     variants: [
+      {
+        id: "polo-c1",
+        name: "Dune Beige",
+        color_hex: "#C9B493",
+        images: [
           `${ASSET}/n405oqrl_beige%201.png`,
           "/dune-beige-side.png",
           "/dune-beige-back.png",
         ],
+        in_stock: true,
+      },
       {
         id: "polo-c2",
         name: "Sand Taupe",
