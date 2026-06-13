@@ -156,9 +156,12 @@ export default function WeaveHero() {
       }
     }
 
-    animId = requestAnimationFrame(draw);
+    const startDelay = setTimeout(() => {
+      animId = requestAnimationFrame(draw);
+    }, 4000);
 
     return () => {
+      clearTimeout(startDelay);
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", resize);
     };
