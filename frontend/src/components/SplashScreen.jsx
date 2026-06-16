@@ -29,7 +29,6 @@ export default function SplashScreen({ onComplete }) {
         transform: phase === "enter" ? "scale(0.8)" : "scale(1)",
         position: "relative", zIndex: 1,
       }}>
-        <img src={LOGO_URL} alt="" style={{ width: "110px", height: "110px", objectFit: "contain" }} />
       </div>
       <div style={{
         marginTop: "32px", position: "relative", zIndex: 1,
@@ -40,8 +39,10 @@ export default function SplashScreen({ onComplete }) {
       }}>
         <div style={{
           fontFamily: "Georgia, serif", fontWeight: 400,
-          fontSize: "28px", letterSpacing: "0.35em",
+          fontSize: "clamp(18px, 5vw, 28px)",
+          letterSpacing: "clamp(0.15em, 1.5vw, 0.35em)",
           textTransform: "uppercase",
+          whiteSpace: "nowrap",
           color: phase === "shimmer" ? "#C9A96E" : "rgba(245,240,232,0.95)",
           transition: "color 1s ease",
           marginBottom: "12px",
