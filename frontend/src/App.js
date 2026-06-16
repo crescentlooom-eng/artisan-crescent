@@ -1,3 +1,4 @@
+import ScrollToTop from "@/components/ScrollToTop";
 import React from "react";
 import "@/App.css";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
@@ -92,7 +93,8 @@ function App() {
           <AdminAuthProvider>
             <CartProvider>
               <WishlistProvider>
-                <AppRouter />
+                <ScrollToTop />
+              <AppRouter />
                 <Toaster theme="dark" position="top-center" toastOptions={{ style: { background: "#0B0E1A", color: "#F5F0E8", border: "1px solid rgba(201,169,110,0.2)" } }} />
               </WishlistProvider>
             </CartProvider>
