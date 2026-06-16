@@ -45,6 +45,44 @@ EMERGENT_AUTH_URL = os.environ.get('EMERGENT_AUTH_URL', 'https://demobackend.eme
 ADMIN_EMAILS = {e.strip().lower() for e in os.environ.get('ADMIN_EMAILS', '').split(',') if e.strip()}
 
 import notifications as notif
+# ====================== Meta Conversions API ======================
+META_PIXEL_ID = os.environ.get("META_PIXEL_ID", "")
+META_CAPI_TOKEN = os.environ.get("META_CAPI_TOKEN", "")
+
+async def send_meta_event(event_name: str, order: dict, client_ip: str = "", user_agent: str = ""):
+    if not META_PIXEL_ID or not META_CAPI_TOKEN:
+        return
+    try:
+        email = order.get("email", "")
+        phone = order.get("shipping", {}).get("phone", "")
+        items = order.get("items", [])
+        contents = [{"id": it.get("product_id", ""), "quantity": it.get("quantity", 1)} for it in items]
+        value = float(order.get("total", 0))
+        event = {
+            "event_name": event_name,
+            "event_time": int(datetime.now(timezone.utc).timestamp()),
+            "event_id": order.get("id", str(uuid.uuid4())),
+            "action_source": "website",
+            "user_data": {
+                "em": [hashlib.sha256(email.lower().encode()).hexdigest()] if email else [],
+                "ph": [hashlib.sha256(phone.encode()).hexdigest()] if phone else [],
+                "client_ip_address": client_ip,
+                "client_user_agent": user_agent,
+            },
+            "custom_data": {
+                "currency": "INR",
+                "value": value,
+                "contents": contents,
+                "content_type": "product",
+            },
+        }
+        url = f"https://graph.facebook.com/v19.0/{META_PIXEL_ID}/events"
+        payload = {"data": [event], "access_token": META_CAPI_TOKEN}
+        async with httpx.AsyncClient() as hc:
+            r = await hc.post(url, json=payload, timeout=10.0)
+            logger.info(f"Meta CAPI {event_name}: {r.status_code} {r.text}")
+    except Exception as e:
+        logger.error(f"Meta CAPI error: {e}")
 
 # ====================== Customer email/password auth helpers ==================
 import bcrypt as _bcrypt
@@ -643,6 +681,7 @@ async def verify_payment(body: VerifyPaymentReq):
         await loom_award_for_order(order["user_id"], order["id"])
     if order:
         notif.fire_and_forget(notif.notify_payment(order, True))
+        notif.fire_and_forget(send_meta_event("Purchase", order))
     return {"ok": True, "order": order}
 
 @api_router.post("/payments/demo-complete/{order_id}")
