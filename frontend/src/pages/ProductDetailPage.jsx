@@ -173,6 +173,16 @@ export default function ProductDetailPage() {
     const p = getProductBySlug(slug);
     setProduct(p);
     if (p) {
+      // Meta Pixel — ViewContent
+      if (window.fbq) {
+        window.fbq('track', 'ViewContent', {
+          content_name: p.name,
+          content_ids: [p.id],
+          content_type: 'product',
+          value: p.price,
+          currency: 'INR',
+        });
+      }
       const requestedVariant = searchParams.get("variant");
       const initialIdx = requestedVariant
         ? Math.max(0, (p.variants || []).findIndex((v) => v.id === requestedVariant))
@@ -202,6 +212,16 @@ export default function ProductDetailPage() {
   const heroImg = images[activeImg] || productImage(product);
 
   const onAdd = () => {
+    // Meta Pixel — AddToCart
+    if (window.fbq) {
+      window.fbq('track', 'AddToCart', {
+        content_name: product.name + (variant ? ' · ' + variant.name : ''),
+        content_ids: [product.id],
+        content_type: 'product',
+        value: product.price * qty,
+        currency: 'INR',
+      });
+    }
     const productForCart = {
       ...product,
       images: images.length ? images : [productImage(product)],
