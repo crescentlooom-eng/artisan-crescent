@@ -38,6 +38,7 @@ export default function ShopPage() {
             variantId: v.id,
             name: p.name,
             images: v.images?.length ? v.images : p.images,
+            variants: [],
             color_hex: v.color_hex,
             __isVariantCard: true,
           }))
