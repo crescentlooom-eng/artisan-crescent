@@ -37,19 +37,18 @@ export default function SplashScreen({ onComplete }) {
         opacity: phase === "enter" ? 0 : 1,
         transform: phase === "enter" ? "translateY(16px)" : "translateY(0)",
       }}>
-        <div style={{
-          fontFamily: "Georgia, serif", fontWeight: 400,
-          fontSize: "clamp(18px, 5vw, 28px)",
-          letterSpacing: "clamp(0.15em, 1.5vw, 0.35em)",
-          textTransform: "uppercase",
-          whiteSpace: "nowrap",
-          color: phase === "shimmer" ? "#C9A96E" : "rgba(245,240,232,0.95)",
-          transition: "color 1s ease",
-          marginBottom: "12px",
-          textShadow: phase === "shimmer" ? "0 0 30px rgba(201,169,110,0.6)" : "none",
-        }}>
-          Crescent Loom
-        </div>
+       <img
+          src="/crescent-loom-name.png"
+          alt="Crescent Loom"
+          style={{
+            width: "clamp(200px, 40vw, 380px)",
+            height: "auto",
+            marginBottom: "12px",
+            opacity: 1,
+            filter: phase === "shimmer" ? "drop-shadow(0 0 20px rgba(201,169,110,0.6))" : "none",
+            transition: "filter 1s ease",
+          }}
+        />
         <div style={{
           fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 300,
           fontSize: "16px", color: "rgba(245,240,232,0.8)", lineHeight: "1.7", letterSpacing: "0.03em",
