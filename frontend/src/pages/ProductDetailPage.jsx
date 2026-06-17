@@ -96,7 +96,6 @@ function ReviewsSection({ slug }) {
         </button>
       </div>
 
-      {/* Review Form */}
       {showForm && (
         <div className="border border-[#C9A96E]/20 p-8 mb-12 bg-[#0D1020]">
           <h4 className="font-serif-display text-2xl text-[#F5F0E8] mb-6">Your Review</h4>
@@ -124,7 +123,6 @@ function ReviewsSection({ slug }) {
         </div>
       )}
 
-      {/* Reviews List */}
       {reviews.length === 0 ? (
         <div className="text-[#8A8FA8] text-sm text-center py-12">
           Be the first to review this piece.
@@ -157,6 +155,30 @@ function ReviewsSection({ slug }) {
   );
 }
 
+function ProductHighlights({ highlights }) {
+  if (!highlights) return null;
+  const items = [
+    { label: "Sleeve", value: highlights.sleeve },
+    { label: "Fabric", value: highlights.fabric },
+    { label: "Neck Type", value: highlights.neck_type },
+    { label: "Pattern", value: highlights.pattern },
+  ].filter(i => i.value);
+
+  return (
+    <div className="mt-10 border-t border-[#C9A96E]/15 pt-8">
+      <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E] mb-6">Product Highlights</div>
+      <div className="grid grid-cols-2 gap-0">
+        {items.map((item, idx) => (
+          <div key={item.label} className={`py-4 ${idx % 2 === 0 ? "pr-4 border-r border-[#C9A96E]/10" : "pl-4"} ${idx < items.length - 2 ? "border-b border-[#C9A96E]/10" : ""}`}>
+            <div className="text-[11px] tracking-[0.2em] uppercase text-[#8A8FA8] mb-1">{item.label}</div>
+            <div className="text-[#F5F0E8] text-sm font-medium">{item.value}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function ProductDetailPage() {
   const { slug } = useParams();
   const [searchParams] = useSearchParams();
@@ -173,7 +195,6 @@ export default function ProductDetailPage() {
     const p = getProductBySlug(slug);
     setProduct(p);
     if (p) {
-      // Meta Pixel — ViewContent
       if (window.fbq) {
         window.fbq('track', 'ViewContent', {
           content_name: p.name,
@@ -212,7 +233,6 @@ export default function ProductDetailPage() {
   const heroImg = images[activeImg] || productImage(product);
 
   const onAdd = () => {
-    // Meta Pixel — AddToCart
     if (window.fbq) {
       window.fbq('track', 'AddToCart', {
         content_name: product.name + (variant ? ' · ' + variant.name : ''),
@@ -258,14 +278,14 @@ export default function ProductDetailPage() {
             <div
               className="product-card-img-wrap aspect-[4/5] w-full mb-4"
               onTouchStart={(e) => {
-                const touch = e.touches[0];
-                e._startX = touch.clientX;
-                e.currentTarget._startX = touch.clientX;
+                if (images.length <= 1) return;
+                e.currentTarget._startX = e.touches[0].clientX;
               }}
               onTouchEnd={(e) => {
+                if (images.length <= 1) return;
                 const startX = e.currentTarget._startX;
-                const endX = e.changedTouches[0].clientX;
-                const diff = startX - endX;
+                if (startX === undefined) return;
+                const diff = startX - e.changedTouches[0].clientX;
                 if (Math.abs(diff) > 50) {
                   if (diff > 0) {
                     setActiveImg((prev) => (prev + 1) % images.length);
@@ -299,14 +319,6 @@ export default function ProductDetailPage() {
             <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E] mb-3 capitalize">{product.category}</div>
             <h1 className="font-serif-display text-4xl md:text-5xl lg:text-6xl text-[#F5F0E8] leading-[0.95]">{product.name}</h1>
             <div className="text-2xl text-[#F5F0E8]/85 mt-6">{formatINR(product.price)}</div>
-
-            <p className="text-[#F5F0E8]/75 mt-8 leading-relaxed">{product.description}</p>
-
-            {product.material && (
-              <div className="mt-6 text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">
-                Composition · <span className="text-[#F5F0E8]/85">{product.material}</span>
-              </div>
-            )}
 
             {/* Variant selector */}
             {product.variants?.length > 0 && (
@@ -423,7 +435,21 @@ export default function ProductDetailPage() {
               </button>
             </div>
 
-            <div className="mt-12 divider-thin" />
+            <div className="mt-8 divider-thin" />
+
+            {/* Description */}
+            <p className="text-[#F5F0E8]/75 mt-8 leading-relaxed">{product.description}</p>
+
+            {product.material && (
+              <div className="mt-6 text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">
+                Composition · <span className="text-[#F5F0E8]/85">{product.material}</span>
+              </div>
+            )}
+
+            {/* Product Highlights */}
+            <ProductHighlights highlights={product.highlights} />
+
+            <div className="mt-8 divider-thin" />
             <div className="mt-6 text-[11px] tracking-[0.25em] uppercase text-[#8A8FA8] space-y-2">
               <div>Slow-shipped within 3–5 days · India</div>
               <div>Complimentary returns · 14 days</div>
