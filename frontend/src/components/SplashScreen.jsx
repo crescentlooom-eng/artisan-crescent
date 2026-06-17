@@ -41,9 +41,12 @@ export default function SplashScreen({ onComplete }) {
           src="/crescent-loom-name.png"
           alt="Crescent Loom"
           style={{
-            width: "clamp(200px, 40vw, 380px)",
+            width: "clamp(200px, 70vw, 380px)",
             height: "auto",
             marginBottom: "12px",
+            display: "block",
+            marginLeft: "auto",
+            marginRight: "auto",
             opacity: 1,
             filter: phase === "shimmer" ? "drop-shadow(0 0 20px rgba(201,169,110,0.6))" : "none",
             transition: "filter 1s ease",
