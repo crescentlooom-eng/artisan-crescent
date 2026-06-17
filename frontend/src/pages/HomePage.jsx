@@ -6,10 +6,13 @@ import ProductCard from "@/components/ProductCard";
 import useScrollReveal from "@/hooks/useScrollReveal";
 import Hero from "@/components/Hero";
 import ChapterCard from "@/components/ChapterCard";
+import { useAuth } from "@/context/AuthContext";
 
 export default function HomePage() {
   const [products, setProducts] = useState([]);
   const [featured, setFeatured] = useState([]);
+  const [showGreeting, setShowGreeting] = useState(false);
+  const { user } = useAuth();
 
   useScrollReveal([featured]);
 
@@ -18,10 +21,53 @@ export default function HomePage() {
     setFeatured(listProducts({ featured: true }));
   }, []);
 
+  useEffect(() => {
+    if (!user) return;
+    const key = `greeting_shown_${user.user_id}`;
+    if (sessionStorage.getItem(key)) return;
+    const t = setTimeout(() => {
+      setShowGreeting(true);
+      sessionStorage.setItem(key, "1");
+      setTimeout(() => setShowGreeting(false), 3500);
+    }, 800);
+    return () => clearTimeout(t);
+  }, [user]);
+
+  const firstName = user?.name?.split(" ")[0] || "";
   const marqueeItems = [...products, ...products];
 
   return (
     <div data-testid="home-page" className="page-fade">
+
+      {/* Floating greeting toast */}
+      {user && (
+        <div style={{
+          position: "fixed",
+          top: "90px",
+          left: "50%",
+          transform: `translateX(-50%) translateY(${showGreeting ? "0" : "-20px"})`,
+          opacity: showGreeting ? 1 : 0,
+          transition: "opacity 0.6s ease, transform 0.6s ease",
+          zIndex: 9999,
+          pointerEvents: "none",
+          background: "rgba(11,14,26,0.92)",
+          border: "1px solid rgba(201,169,110,0.35)",
+          backdropFilter: "blur(12px)",
+          padding: "12px 28px",
+          whiteSpace: "nowrap",
+        }}>
+          <span style={{
+            fontFamily: "Georgia, serif",
+            fontStyle: "italic",
+            fontSize: "14px",
+            letterSpacing: "0.08em",
+            color: "#C9A96E",
+          }}>
+            Welcome back, {firstName} 🌙
+          </span>
+        </div>
+      )}
+
       <Hero />
 
       {/* MARQUEE NEW ARRIVALS */}
@@ -63,7 +109,6 @@ export default function HomePage() {
           </h2>
 
           <div className="grid grid-cols-12 gap-6 md:gap-10 mt-16">
-            {/* Chapter I */}
             <div className="col-span-12 md:col-span-7 reveal-up">
               <ChapterCard
                 to="/shop?category=polo"
@@ -77,7 +122,6 @@ export default function HomePage() {
               />
             </div>
 
-            {/* Chapter II */}
             <div className="col-span-12 md:col-span-5 flex flex-col gap-10 md:pt-32">
               <div className="reveal-up" style={{ transitionDelay: "100ms" }}>
                 <ChapterCard
@@ -93,7 +137,6 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Chapter III */}
             <div className="col-span-12 md:col-span-6 md:col-start-4 reveal-up" style={{ transitionDelay: "200ms" }}>
               <ChapterCard
                 to="/shop?category=basics"
