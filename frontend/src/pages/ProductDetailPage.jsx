@@ -255,7 +255,26 @@ export default function ProductDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
           {/* Gallery */}
           <div className="lg:col-span-7">
-            <div className="product-card-img-wrap aspect-[4/5] w-full mb-4">
+            <div
+              className="product-card-img-wrap aspect-[4/5] w-full mb-4"
+              onTouchStart={(e) => {
+                const touch = e.touches[0];
+                e._startX = touch.clientX;
+                e.currentTarget._startX = touch.clientX;
+              }}
+              onTouchEnd={(e) => {
+                const startX = e.currentTarget._startX;
+                const endX = e.changedTouches[0].clientX;
+                const diff = startX - endX;
+                if (Math.abs(diff) > 50) {
+                  if (diff > 0) {
+                    setActiveImg((prev) => (prev + 1) % images.length);
+                  } else {
+                    setActiveImg((prev) => (prev - 1 + images.length) % images.length);
+                  }
+                }
+              }}
+            >
               {heroImg ? (
                 <img src={heroImg} alt={product.name} className="w-full h-full object-cover" />
               ) : (
