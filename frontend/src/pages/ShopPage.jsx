@@ -30,7 +30,20 @@ export default function ShopPage() {
   useEffect(() => {
     setLoading(true);
     const items = listProducts({ category: category === "all" ? undefined : category, q: q || undefined });
-    setProducts(items);
+    const expanded = items.flatMap((p) =>
+      p.variants?.length > 0
+        ? p.variants.map((v) => ({
+            ...p,
+            id: `${p.id}__${v.id}`,
+            variantId: v.id,
+            name: p.name,
+            images: v.images?.length ? v.images : p.images,
+            color_hex: v.color_hex,
+            __isVariantCard: true,
+          }))
+        : [p]
+    );
+    setProducts(expanded);
     setLoading(false);
   }, [category, q]);
 
