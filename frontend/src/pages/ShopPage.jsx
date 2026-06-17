@@ -8,8 +8,8 @@ import useScrollReveal from "@/hooks/useScrollReveal";
 const CATEGORIES = [
   { value: "all", label: "At A Glance" },
   { value: "polo", label: "Polo" },
-  { value: "designer", label: "Designer" },
-  { value: "basics", label: "Basics" },
+  { value: "designer", label: "Prism Collection" },
+  { value: "basics", label: "Essential" },
 ];
 
 const SORTS = [
