@@ -382,9 +382,18 @@ export default function ProductDetailPage() {
                             <tr><th className="py-2">Size</th><th>Chest (in)</th><th>Length (in)</th><th>Shoulder (in)</th></tr>
                           </thead>
                           <tbody className="text-[#F5F0E8]/80">
-                            <tr className="border-t border-[#C9A96E]/15"><td className="py-3">M</td><td>40</td><td>27</td><td>17</td></tr>
-                            <tr className="border-t border-[#C9A96E]/15"><td className="py-3">L</td><td>42</td><td>28</td><td>18</td></tr>
-                            <tr className="border-t border-[#C9A96E]/15"><td className="py-3">XL</td><td>44</td><td>29</td><td>19</td></tr>
+                            {product.slug === "textured-polo-tee" && <>
+                              <tr className="border-t border-[#C9A96E]/15"><td className="py-3">M</td><td>36</td><td>26.5</td><td>15.5</td></tr>
+                              <tr className="border-t border-[#C9A96E]/15"><td className="py-3">L</td><td>37</td><td>26.5</td><td>17</td></tr>
+                              <tr className="border-t border-[#C9A96E]/15"><td className="py-3">XL</td><td>40</td><td>28.5</td><td>17</td></tr>
+                            </>}
+                            {product.slug === "essential-tee" && <>
+                              <tr className="border-t border-[#C9A96E]/15"><td className="py-3">M</td><td>35</td><td>25.2</td><td>15</td></tr>
+                              <tr className="border-t border-[#C9A96E]/15"><td className="py-3">XL</td><td>37</td><td>25.5</td><td>16.5</td></tr>
+                            </>}
+                            {product.slug === "prism-wear-tee" && <>
+                              <tr className="border-t border-[#C9A96E]/15"><td className="py-3">Free Size</td><td>41</td><td>28.5</td><td>18</td></tr>
+                            </>}
                           </tbody>
                         </table>
                         <p className="text-[#8A8FA8] text-xs mt-4">Measurements are approximate. Garments are cut relaxed; pick your usual size.</p>
