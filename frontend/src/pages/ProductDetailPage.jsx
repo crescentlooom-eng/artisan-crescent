@@ -211,7 +211,9 @@ export default function ProductDetailPage() {
       setVariantIdx(initialIdx);
       const initialVariant = p.variants?.[initialIdx];
       const outOfStock = initialVariant?.out_of_stock_sizes || [];
-      const firstAvailable = (p.sizes || []).find((s) => !outOfStock.includes(s)) || p.sizes?.[0] || null;
+      const firstAvailable = initialVariant?.in_stock === false
+        ? null
+        : (p.sizes || []).find((s) => !outOfStock.includes(s)) || p.sizes?.[0] || null;
       setSize(firstAvailable);
       setActiveImg(0);
       setRelated(listProducts({ category: p.category }).filter((x) => x.id !== p.id).slice(0, 4));
@@ -263,6 +265,8 @@ export default function ProductDetailPage() {
       toast("Sign in to save to your wishlist", { action: { label: "Sign in", onClick: () => (window.location.href = "/login") } });
     }
   };
+
+  const variantOutOfStock = variant?.in_stock === false;
 
   return (
     <div data-testid="product-detail-page" className="page-fade pt-28 md:pt-32 pb-24">
@@ -336,15 +340,19 @@ export default function ProductDetailPage() {
                         onClick={() => {
                           setVariantIdx(i);
                           setActiveImg(0);
-                          const outOfStock = v.out_of_stock_sizes || [];
-                          if (!size || outOfStock.includes(size)) {
-                            const firstAvailable = (product.sizes || []).find((s) => !outOfStock.includes(s)) || null;
-                            setSize(firstAvailable);
+                          if (v.in_stock === false) {
+                            setSize(null);
+                          } else {
+                            const outOfStock = v.out_of_stock_sizes || [];
+                            if (!size || outOfStock.includes(size)) {
+                              const firstAvailable = (product.sizes || []).find((s) => !outOfStock.includes(s)) || null;
+                              setSize(firstAvailable);
+                            }
                           }
                         }}
                         data-testid={`product-variant-${i}`}
                         title={v.name}
-                        className={`aspect-square overflow-hidden border-2 transition-all ${selected ? "border-[#C9A96E]" : "border-transparent opacity-70 hover:opacity-100"}`}
+                        className={`aspect-square overflow-hidden border-2 transition-all relative ${selected ? "border-[#C9A96E]" : "border-transparent opacity-70 hover:opacity-100"}`}
                         style={!thumb && v.color_hex ? { backgroundColor: v.color_hex } : undefined}
                       >
                         {thumb ? (
@@ -354,6 +362,11 @@ export default function ProductDetailPage() {
                             {v.name.replace(/[^0-9]/g, "") || v.name.slice(0,3)}
                           </div>
                         )}
+                        {v.in_stock === false && (
+                          <div className="absolute inset-0 bg-[#0B0E1A]/60 flex items-center justify-center">
+                            <div className="w-full h-[1px] bg-[#8A8FA8]/50 rotate-45 absolute" />
+                          </div>
+                        )}
                       </button>
                     );
                   })}
@@ -361,8 +374,15 @@ export default function ProductDetailPage() {
               </div>
             )}
 
+            {/* Out of stock notice */}
+            {variantOutOfStock && (
+              <div className="mt-6 text-[11px] tracking-[0.25em] uppercase text-[#8A8FA8]">
+                <span style={{ color: "#E57373" }}>Currently unavailable</span> — this design is out of stock.
+              </div>
+            )}
+
             {/* Size selector */}
-            {product.sizes?.length > 0 && (
+            {product.sizes?.length > 0 && !variantOutOfStock && (
               <div className="mt-10">
                 <div className="flex items-center justify-between mb-3">
                   <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">
@@ -434,10 +454,10 @@ export default function ProductDetailPage() {
               <button
                 data-testid="product-add-to-cart"
                 onClick={onAdd}
-                disabled={!size}
+                disabled={!size || variantOutOfStock}
                 className="btn-gold flex-1 disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {size ? "Add to Bag" : "Out of Stock"}
+                {variantOutOfStock ? "Out of Stock" : size ? "Add to Bag" : "Out of Stock"}
               </button>
               <button data-testid="product-wishlist-button" onClick={onWish} aria-label="Wishlist" className={`p-3 border ${has(product.id) ? "border-[#C9A96E] text-[#C9A96E]" : "border-[#C9A96E]/30 text-[#F5F0E8]"} hover:border-[#C9A96E]`}>
                 <Heart size={16} fill={has(product.id) ? "currentColor" : "none"} />
@@ -459,7 +479,7 @@ export default function ProductDetailPage() {
             <ProductHighlights highlights={product.highlights} />
 
             <div className="mt-8 divider-thin" />
-             <div className="mt-6 space-y-2">
+            <div className="mt-6 space-y-2">
               {["Delivered within 3–5 days · Delhi NCR", "Complimentary returns · 7 days", "Made in India"].map((point) => (
                 <div key={point} className="flex items-center gap-2 text-[11px] tracking-[0.25em] uppercase text-[#8A8FA8]">
                   <span className="w-1 h-1 rounded-full bg-[#C9A96E] flex-shrink-0" />
