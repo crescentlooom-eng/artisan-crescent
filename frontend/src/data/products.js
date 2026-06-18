@@ -104,7 +104,7 @@ export const PRODUCTS = [
     price: 349,
     description:
       "Each piece carries its own story — a unique print, never quite repeated. For those who want their wardrobe to say something, without saying too much.",
-    sizes: ["L", "XL"],
+    sizes: ["Free Size"],
     colors: [],
     material: "100% Cotton, soft-handle jersey",
     highlights: {
@@ -122,7 +122,6 @@ export const PRODUCTS = [
         id: "prism-d1",
         name: "Design 01",
         color_hex: null,
-        out_of_stock_sizes: ["L", "XL"],
         images: [
           `${ASSET}/q8uaai9p_desigenr%20beige%201%20.png`,
           "/prism-d1-2.png",
@@ -178,7 +177,6 @@ export const PRODUCTS = [
         id: "prism-d6",
         name: "Design 06",
         color_hex: null,
-        out_of_stock_sizes: ["L", "XL"],
         images: [
           `${ASSET}/uwlyo46l_designer%20pink%201%20.png`,
           "/prism-d6-2.png",
@@ -190,7 +188,6 @@ export const PRODUCTS = [
         id: "prism-d7",
         name: "Design 07",
         color_hex: null,
-        out_of_stock_sizes: ["L", "XL"],
         images: [
           `${ASSET}/jqs8nqld_pink%20designer%202nd.png`,
           "/prism-d7-2.png",
