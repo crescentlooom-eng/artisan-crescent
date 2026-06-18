@@ -66,7 +66,7 @@ export default function ReturnPolicyPage() {
         <p>To raise a return or exchange request:</p>
         <ul className="space-y-3 mt-2">
           {[
-            "WhatsApp us at +91 XXXXXXXXXX with your Order ID and reason",
+            "WhatsApp us at the number given below with your Order ID and reason",
             "Attach clear photos of the item showing the issue",
             "Our team will respond within 24–48 hours",
             "Once approved, ship the item to the address provided",
