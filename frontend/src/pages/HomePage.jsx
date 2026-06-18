@@ -29,7 +29,7 @@ export default function HomePage() {
       setShowGreeting(true);
       sessionStorage.setItem(key, "1");
       setTimeout(() => setShowGreeting(false), 3500);
-    }, 800);
+    }, 4500);
     return () => clearTimeout(t);
   }, [user]);
 
