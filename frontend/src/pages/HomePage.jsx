@@ -179,7 +179,7 @@ export default function HomePage() {
           <p className="font-serif-display text-3xl md:text-5xl lg:text-6xl text-[#F5F0E8] leading-[1.15] italic font-light">
             &ldquo;We make few things, but we make them slowly. Each garment carries the hand that wove it, the quiet of the room it was finished in.&rdquo;
           </p>
-          <div className="mt-12 text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">— The Atelier</div>
+          <div className="mt-12 text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">— Triad</div>
         </div>
       </section>
     </div>
