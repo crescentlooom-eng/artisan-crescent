@@ -104,7 +104,7 @@ export default function AboutPage() {
 
       {/* Team */}
       <section className="py-24 md:py-36 max-w-7xl mx-auto px-6 md:px-12">
-        <div className="text-[11px] tracking-[0.4em] uppercase text-[#C9A96E] mb-4 reveal-up">The Atelier</div>
+        <div className="text-[11px] tracking-[0.4em] uppercase text-[#C9A96E] mb-4 reveal-up">Triad</div>
         <h2 className="font-serif-display text-4xl md:text-5xl text-[#F5F0E8] reveal-up" style={{ transitionDelay: "80ms" }}>
           Three people. <span className="italic text-[#C9A96E]/90">One quiet vision.</span>
         </h2>
