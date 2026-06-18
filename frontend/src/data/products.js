@@ -127,7 +127,7 @@ export const PRODUCTS = [
           "/prism-d1-2.png",
           "/prism-d1-3.png",
         ],
-        in_stock: true,
+        in_stock: false,
       },
       {
         id: "prism-d2",
@@ -138,7 +138,7 @@ export const PRODUCTS = [
           "/prism-d2-2.png",
           "/prism-d2-3.png",
         ],
-        in_stock: true,
+        in_stock: false,
       },
       {
         id: "prism-d3",
@@ -182,7 +182,7 @@ export const PRODUCTS = [
           "/prism-d6-2.png",
           "/prism-d6-3.png",
         ],
-        in_stock: true,
+        in_stock: false,
       },
       {
         id: "prism-d7",
@@ -193,7 +193,7 @@ export const PRODUCTS = [
           "/prism-d7-2.png",
           "/prism-d7-3.png",
         ],
-        in_stock: true,
+        in_stock: false,
       },
       {
         id: "prism-d8",
@@ -226,7 +226,7 @@ export const PRODUCTS = [
           "/prism-d10-2.png",
           "/prism-d10-3.png",
         ],
-        in_stock: true,
+        in_stock: false,
       },
     ],
   },
