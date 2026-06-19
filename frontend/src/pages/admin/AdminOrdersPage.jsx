@@ -57,8 +57,8 @@ function AwbInput({ orderId, initialAwb, onSaved }) {
       >
         {saving ? "Saving..." : "Save"}
       </button>
-       {initialAwb && (
-        
+      {initialAwb && (
+        <a
           href={`https://www.delhivery.com/track-v2/package/${initialAwb}`}
           target="_blank"
           rel="noopener noreferrer"
