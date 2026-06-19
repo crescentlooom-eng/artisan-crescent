@@ -822,6 +822,18 @@ ORDER_STATUSES = ["pending", "placed", "paid", "packed", "shipped", "out_for_del
 class StatusUpdateReq(BaseModel):
     status: str
 
+class AwbUpdateReq(BaseModel):
+    delhivery_awb: str
+
+@api_router.patch("/admin/orders/{order_id}/awb")
+async def admin_update_awb(order_id: str, body: AwbUpdateReq, admin=Depends(require_admin)):
+    order = await db.orders.find_one({"id": order_id}, {"_id": 0})
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    await db.orders.update_one({"id": order_id}, {"$set": {"delhivery_awb": body.delhivery_awb.strip()}})
+    updated = await db.orders.find_one({"id": order_id}, {"_id": 0})
+    return {"ok": True, "order": updated}
+
 @api_router.patch("/admin/orders/{order_id}/status")
 async def admin_update_order_status(order_id: str, body: StatusUpdateReq, admin=Depends(require_admin)):
     if body.status not in ORDER_STATUSES:
