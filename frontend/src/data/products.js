@@ -15,7 +15,8 @@ export const PRODUCTS = [
             "A study in quiet texture. Cut from breathable cotton with a subtly woven surface — understated detail for those who notice.",
     sizes: ["M", "L", "XL"],
     colors: [],
-    material: "100% Cotton, textured weave",
+      material: "100% Cotton, textured weave",
+    keywords: ["polo", "collared", "buttoned", "textured weave", "regular fit"],
     highlights: {
       sleeve: "Half Sleeve",
       fabric: "100% Cotton",
@@ -107,6 +108,7 @@ export const PRODUCTS = [
     sizes: ["Free Size"],
     colors: [],
     material: "100% Cotton, soft-handle jersey",
+    keywords: ["designer", "printed", "graphic", "prism", "artistic", "statement print"],
     highlights: {
       sleeve: "Half Sleeve",
       fabric: "100% Cotton",
@@ -241,6 +243,7 @@ export const PRODUCTS = [
     sizes: ["M", "XL"],
     colors: [],
     material: "100% Heavyweight Cotton",
+    keywords: ["basic", "plain", "minimal", "everyday", "heavyweight cotton", "solid"],
     highlights: {
       sleeve: "Half Sleeve",
       fabric: "100% Cotton",
