@@ -67,6 +67,16 @@ export default function AccountPage() {
               <div className="text-right">
                 <div className="text-[#F5F0E8]">{formatINR(o.total)}</div>
                 <div className={`text-[11px] tracking-[0.3em] uppercase mt-1 ${o.status === "paid" ? "text-[#C9A96E]" : "text-[#8A8FA8]"}`}>{o.status}</div>
+                {o.delhivery_awb && (
+                  
+                    href={`https://www.delhivery.com/track-v2/package/${o.delhivery_awb}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[11px] tracking-[0.25em] uppercase gold-underline text-[#C9A96E] mt-2 inline-block"
+                  >
+                    Track Order ↗
+                  </a>
+                )}
               </div>
             </div>
           ))}
