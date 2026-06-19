@@ -25,6 +25,52 @@ const ALL_STATUSES = ["pending", "placed", "paid", "packed", "shipped", "out_for
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
+function AwbInput({ orderId, initialAwb, onSaved }) {
+  const [awb, setAwb] = useState(initialAwb || "");
+  const [saving, setSaving] = useState(false);
+
+  const save = async () => {
+    if (!awb.trim()) return;
+    setSaving(true);
+    try {
+      await api.patch(`/admin/orders/${orderId}/awb`, { delhivery_awb: awb.trim() });
+      toast.success("Tracking number saved");
+      onSaved();
+    } catch (e) {
+      toast.error(e?.response?.data?.detail || "Failed to save tracking number");
+    }
+    setSaving(false);
+  };
+
+  return (
+    <div className="flex items-center gap-2 flex-wrap">
+      <input
+        value={awb}
+        onChange={(e) => setAwb(e.target.value)}
+        placeholder="Delhivery AWB number"
+        className="text-xs bg-transparent border border-[#C9A96E]/25 px-3 py-2 flex-1 max-w-xs text-[#F5F0E8]"
+      />
+      <button
+        onClick={save}
+        disabled={saving}
+        className="text-[10px] tracking-[0.25em] uppercase text-[#C9A96E] border border-[#C9A96E]/40 px-3 py-2 hover:bg-[#C9A96E] hover:text-[#0B0E1A] transition-colors disabled:opacity-50"
+      >
+        {saving ? "Saving..." : "Save"}
+      </button>
+      {initialAwb && (
+        
+          href={`https://www.delhivery.com/track-v2/package/${initialAwb}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[10px] tracking-[0.25em] uppercase text-[#8A8FA8] hover:text-[#C9A96E] underline"
+        >
+          Track ↗
+        </a>
+      )}
+    </div>
+  );
+}
+
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState([]);
   const [range, setRange] = useState("all");
@@ -154,6 +200,9 @@ export default function AdminOrdersPage() {
                   <button onClick={() => setExpanded(isOpen ? null : o.id)} className="text-[11px] tracking-[0.3em] uppercase gold-underline text-[#F5F0E8]/80 flex items-center gap-1 md:justify-end" data-testid={`order-toggle-${o.id}`}>
                     Details <ChevronDown size={12} className={isOpen ? "rotate-180" : ""} />
                   </button>
+                </div>
+                <div className="col-span-12 mt-2">
+                  <AwbInput orderId={o.id} initialAwb={o.delhivery_awb} onSaved={refresh} />
                 </div>
               </div>
               {isOpen && (
