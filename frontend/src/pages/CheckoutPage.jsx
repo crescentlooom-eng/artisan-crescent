@@ -83,12 +83,12 @@ export default function CheckoutPage() {
       const res = await api.post("/payments/create-order", { items: orderItems, shipping, loom_credits_redeemed: redeemCards });
       const { order, razorpay_order, razorpay_key_id, demo_mode } = res.data;
 
-      if (demo_mode) {
+     if (demo_mode) {
         // Demo mode — simulate success
         await api.post(`/payments/demo-complete/${order.id}`);
         toast.success("Order placed (demo mode — no Razorpay keys configured)");
         clear();
-        navigate("/account");
+        navigate("/thank-you", { state: { order: { ...order, items: orderItems, total } } });
         return;
       }
 
@@ -113,7 +113,7 @@ export default function CheckoutPage() {
             });
             toast.success("Payment received — your pieces are on their way");
             clear();
-            navigate("/account");
+            navigate("/thank-you", { state: { order: { ...order, items: orderItems, total } } });
           } catch (e) {
             toast.error("Payment verification failed");
           }
