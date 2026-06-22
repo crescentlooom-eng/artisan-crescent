@@ -869,8 +869,8 @@ async def admin_dashboard_stats(admin=Depends(require_admin)):
     month_start = today.replace(day=1)
 
     async def count_and_sum(since_iso: str):
-        pipe = [
-            {"$match": {"created_at": {"$gte": since_iso}, "status": {"$ne": "cancelled"}}},
+    pipe = [
+        {"$match": {"created_at": {"$gte": since_iso}, "status": {"$in": ["paid", "packed", "shipped", "out_for_delivery", "delivered"]}}},
             {"$group": {"_id": None, "count": {"$sum": 1}, "revenue": {"$sum": "$total"}}},
         ]
         docs = await db.orders.aggregate(pipe).to_list(1)
@@ -1214,7 +1214,10 @@ async def create_review(body: ReviewCreate, request: Request):
 @api_router.get("/admin/reviews")
 async def admin_get_all_reviews(admin=Depends(require_admin)):
     reviews = await db.reviews.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
-    return reviewsasync def delete_review(review_id: str, admin=Depends(require_admin)):
+    return reviews
+
+@api_router.delete("/admin/reviews/{review_id}")
+async def delete_review(review_id: str, admin=Depends(require_admin)):
     await db.reviews.delete_one({"id": review_id})
     return {"ok": True}
 
