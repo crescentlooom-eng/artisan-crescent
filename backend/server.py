@@ -882,8 +882,8 @@ async def admin_dashboard_stats(admin=Depends(require_admin)):
     month_start = today.replace(day=1)
 
     async def count_and_sum(since_iso: str):
-    pipe = [
-        {"$match": {"created_at": {"$gte": since_iso}, "status": {"$in": ["paid", "packed", "shipped", "out_for_delivery", "delivered"]}}},
+        pipe = [
+            {"$match": {"created_at": {"$gte": since_iso}, "status": {"$in": ["paid", "packed", "shipped", "out_for_delivery", "delivered"]}}},
             {"$group": {"_id": None, "count": {"$sum": 1}, "revenue": {"$sum": "$total"}}},
         ]
         docs = await db.orders.aggregate(pipe).to_list(1)
