@@ -14,3 +14,4 @@ pydantic
 PyJWT
 aiosmtplib
 razorpay
+cloudinary
