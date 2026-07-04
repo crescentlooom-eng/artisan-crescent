@@ -9,6 +9,16 @@ import httpx
 import hmac
 import hashlib
 import requests
+import requests
+import cloudinary
+import cloudinary.uploader
+
+cloudinary.config(
+    cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.environ.get("CLOUDINARY_API_KEY"),
+    api_secret=os.environ.get("CLOUDINARY_API_SECRET"),
+    secure=True,
+)
 from pathlib import Path
 from pydantic import BaseModel, Field
 from typing import List, Optional
@@ -162,10 +172,13 @@ def init_storage() -> str:
 
 
 def storage_put(path: str, data: bytes, content_type: str) -> dict:
-    full = STORAGE_DIR / path
-    full.parent.mkdir(parents=True, exist_ok=True)
-    full.write_bytes(data)
-    return {"path": path, "size": len(data)}
+    result = cloudinary.uploader.upload(
+        data,
+        public_id=path.rsplit(".", 1)[0],
+        resource_type="image",
+        overwrite=True,
+    )
+    return {"path": path, "size": len(data), "url": result["secure_url"]}
 
 
 def storage_get(path: str):
@@ -1078,10 +1091,8 @@ async def upload_file(file: UploadFile = File(...), admin=Depends(require_admin)
         uploaded_by=admin["user_id"],
     ).model_dump()
     await db.files.insert_one(ref)
-    backend_base = os.environ.get("PUBLIC_BACKEND_URL", "")
-    public_url = f"/api/files/{file_id}"
+    public_url = result["url"]
     return {"id": file_id, "url": public_url, "content_type": content_type, "size": ref["size"]}
-
 @api_router.get("/files/{file_id}")
 async def serve_file(file_id: str):
     ref = await db.files.find_one({"id": file_id, "is_deleted": False}, {"_id": 0})
