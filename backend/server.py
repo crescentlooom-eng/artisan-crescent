@@ -1124,6 +1124,11 @@ async def create_delhivery_shipment(order: dict) -> dict:
     is_cod = order.get("payment_mode") == "cod_full"
     cod_amount = float(order.get("cod_due", 0)) if is_cod else 0.0
 
+PACKAGE_WEIGHT_PER_ITEM_G = 204
+    PACKAGE_LENGTH_CM = 43
+    PACKAGE_BREADTH_CM = 33
+    PACKAGE_HEIGHT_CM = 5
+
     shipment = {
         "name": s.get("full_name", ""),
         "add": s.get("address_line", ""),
@@ -1139,6 +1144,10 @@ async def create_delhivery_shipment(order: dict) -> dict:
         "quantity": str(total_qty),
         "order_date": order.get("created_at", ""),
         "total_amount": float(order.get("total", 0)),
+        "weight": str(PACKAGE_WEIGHT_PER_ITEM_G * total_qty),
+        "shipment_length": str(PACKAGE_LENGTH_CM),
+        "shipment_width": str(PACKAGE_BREADTH_CM),
+        "shipment_height": str(PACKAGE_HEIGHT_CM),
     }
 
     payload = {
