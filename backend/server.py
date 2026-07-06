@@ -9,6 +9,7 @@ import httpx
 import hmac
 import hashlib
 import requests
+import json
 
 DELHIVERY_API_TOKEN = os.environ.get("DELHIVERY_API_TOKEN", "")
 DELHIVERY_PICKUP_LOCATION = os.environ.get("DELHIVERY_PICKUP_LOCATION", "")
@@ -1145,12 +1146,11 @@ async def create_delhivery_shipment(order: dict) -> dict:
         "pickup_location": {"name": DELHIVERY_PICKUP_LOCATION},
     }
 
-    body = f"format=json&data={httpx.URL('').copy_with()._raw_path}"
     async with httpx.AsyncClient() as hc:
         r = await hc.post(
             f"{DELHIVERY_BASE_URL}/api/cmu/create.json",
             headers=_delhivery_headers(),
-            data={"format": "json", "data": str(payload).replace("'", '"')},
+        data={"format": "json", "data": json.dumps(payload)},
             timeout=20.0,
         )
     try:
