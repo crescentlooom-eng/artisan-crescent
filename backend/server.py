@@ -273,14 +273,14 @@ class Order(BaseModel):
     total: float
     currency: str = "INR"
     status: str = "pending"  # pending, paid, shipped, delivered, cancelled
-    razorpay_order_id: Optional[str] = None
-    razorpay_payment_id: Optional[str] = None
-    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    payment_mode: str = "prepaid"  # prepaid | cod_partial | cod_full
+    cod_due: float = 0.0  # amount to be collected at delivery
 
 class CreatePaymentOrderReq(BaseModel):
     items: List[OrderItem]
     shipping: ShippingAddress
     loom_credits_redeemed: int = 0
+    payment_mode: str = "prepaid"  # prepaid | cod_partial | cod_full
 
 class VerifyPaymentReq(BaseModel):
     razorpay_order_id: str
@@ -290,6 +290,7 @@ class VerifyPaymentReq(BaseModel):
 # ====================== Loom Credits ======================
 LOOM_CREDIT_VALUE_INR = 5
 LOOM_CREDIT_MIN_REDEEM = 3
+COD_TOKEN_AMOUNT_INR = 49
 
 class LoomCreditTxn(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
@@ -627,9 +628,24 @@ async def create_payment_order(body: CreatePaymentOrderReq, request: Request):
         discount = float(cards * LOOM_CREDIT_VALUE_INR)
 
     total = max(0.0, subtotal - discount)
-    amount_paise = int(round(total * 100))
-    if amount_paise < 100:
-        raise HTTPException(status_code=400, detail="Order total must be at least ₹1 after discount")
+
+    payment_mode = body.payment_mode if body.payment_mode in ("prepaid", "cod_partial", "cod_full") else "prepaid"
+
+    cod_due = 0.0
+    amount_to_charge = total
+
+    if payment_mode == "cod_full":
+        amount_to_charge = 0.0
+        cod_due = total
+    elif payment_mode == "cod_partial":
+        if total <= COD_TOKEN_AMOUNT_INR:
+            amount_to_charge = total
+            cod_due = 0.0
+        else:
+            amount_to_charge = float(COD_TOKEN_AMOUNT_INR)
+            cod_due = total - COD_TOKEN_AMOUNT_INR
+
+    amount_paise = int(round(amount_to_charge * 100))
 
     order = Order(
         user_id=user['user_id'] if user else None,
@@ -640,20 +656,32 @@ async def create_payment_order(body: CreatePaymentOrderReq, request: Request):
         loom_credits_redeemed=cards,
         loom_credits_discount=discount,
         total=total,
+        payment_mode=payment_mode,
+        cod_due=cod_due,
     )
+
     rzp_order = None
-    if razorpay_client:
-        try:
-            rzp_order = razorpay_client.order.create({
-                "amount": amount_paise,
-                "currency": "INR",
-                "payment_capture": 1,
-                "receipt": order.id[:40],
-            })
-            order.razorpay_order_id = rzp_order['id']
-        except Exception as e:
-            logger.error(f"Razorpay order create failed: {e}")
-            raise HTTPException(status_code=500, detail=f"Payment gateway error: {str(e)}")
+    cod_full_no_charge = payment_mode == "cod_full"
+
+    if not cod_full_no_charge:
+        if amount_paise < 100:
+            raise HTTPException(status_code=400, detail="Order total must be at least ₹1 after discount")
+        if razorpay_client:
+            try:
+                rzp_order = razorpay_client.order.create({
+                    "amount": amount_paise,
+                    "currency": "INR",
+                    "payment_capture": 1,
+                    "receipt": order.id[:40],
+                })
+                order.razorpay_order_id = rzp_order['id']
+            except Exception as e:
+                logger.error(f"Razorpay order create failed: {e}")
+                raise HTTPException(status_code=500, detail=f"Payment gateway error: {str(e)}")
+    else:
+        # Full COD — no online charge, mark order as placed directly
+        order.status = "placed"
+
     doc = order.model_dump()
     await db.orders.insert_one(doc)
 
@@ -675,6 +703,7 @@ async def create_payment_order(body: CreatePaymentOrderReq, request: Request):
         "razorpay_order": rzp_order,
         "razorpay_key_id": RZP_KEY_ID,
         "demo_mode": razorpay_client is None,
+        "cod_full_no_charge": cod_full_no_charge,
     }
 
 @api_router.post("/payments/verify")
