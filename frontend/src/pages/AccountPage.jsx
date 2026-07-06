@@ -4,6 +4,58 @@ import { api, formatINR } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import LoomCreditsCard from "@/components/LoomCreditsCard";
 
+const TIMELINE_STEPS = [
+  { key: "confirmed", label: "Confirmed" },
+  { key: "packed", label: "Packed" },
+  { key: "dispatched", label: "Dispatched" },
+  { key: "out_for_delivery", label: "Out for Delivery" },
+  { key: "delivered", label: "Delivered" },
+];
+
+function getStepIndex(status) {
+  if (status === "cancelled") return -1;
+  if (status === "delivered") return 4;
+  if (status === "out_for_delivery") return 3;
+  if (status === "shipped") return 2;
+  if (status === "packed") return 1;
+  if (["placed", "paid", "pending"].includes(status)) return 0;
+  return 0;
+}
+
+function OrderTimeline({ status }) {
+  if (status === "cancelled") {
+    return (
+      <div className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8] mt-4">Order Cancelled</div>
+    );
+  }
+  const activeIndex = getStepIndex(status);
+  return (
+    <div className="mt-5">
+      {TIMELINE_STEPS.map((step, i) => {
+        const isDone = i <= activeIndex;
+        const isLast = i === TIMELINE_STEPS.length - 1;
+        return (
+          <div key={step.key} className="flex gap-3">
+            <div className="flex flex-col items-center">
+              <div
+                className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
+                  isDone ? "bg-[#C9A96E]" : "bg-transparent border border-[#8A8FA8]/50"
+                }`}
+              />
+              {!isLast && (
+                <div className={`w-px flex-1 min-h-[22px] ${isDone && i < activeIndex ? "bg-[#C9A96E]" : "bg-[#8A8FA8]/30"}`} />
+              )}
+            </div>
+            <div className={`pb-5 text-[13px] ${isDone ? "text-[#F5F0E8]" : "text-[#8A8FA8]"}`}>
+              {step.label}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function AccountPage() {
   const { user, loading, logout } = useAuth();
   const [orders, setOrders] = useState([]);
@@ -58,26 +110,31 @@ export default function AccountPage() {
       ) : (
         <div className="space-y-4">
           {orders.map((o) => (
-            <div key={o.id} className="border border-[#C9A96E]/15 p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-3" data-testid={`order-${o.id}`}>
-              <div>
-                <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">Order · {o.id.slice(0,8)}</div>
-                <div className="text-[#F5F0E8] mt-1">{o.items.map((i) => i.name).join(" · ")}</div>
-                <div className="text-xs text-[#8A8FA8] mt-1">{new Date(o.created_at).toLocaleString()}</div>
+            <div key={o.id} className="border border-[#C9A96E]/15 p-6" data-testid={`order-${o.id}`}>
+              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
+                <div>
+                  <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">Order · {o.id.slice(0,8)}</div>
+                  <div className="text-[#F5F0E8] mt-1">{o.items.map((i) => i.name).join(" · ")}</div>
+                  <div className="text-xs text-[#8A8FA8] mt-1">{new Date(o.created_at).toLocaleString()}</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-[#F5F0E8]">{formatINR(o.total)}</div>
+                  {o.delhivery_awb && (
+                    <>
+                      <div className="text-[11px] tracking-[0.2em] uppercase text-[#8A8FA8] mt-2">AWB · {o.delhivery_awb}</div>
+                      
+                        href={`https://www.delhivery.com/track-v2/package/${o.delhivery_awb}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[11px] tracking-[0.25em] uppercase gold-underline text-[#C9A96E] mt-1 inline-block"
+                      >
+                        Track Order ↗
+                      </a>
+                    </>
+                  )}
+                </div>
               </div>
-              <div className="text-right">
-                <div className="text-[#F5F0E8]">{formatINR(o.total)}</div>
-                <div className={`text-[11px] tracking-[0.3em] uppercase mt-1 ${o.status === "paid" ? "text-[#C9A96E]" : "text-[#8A8FA8]"}`}>{o.status}</div>
-                {o.delhivery_awb && (
-                  <a
-                    href={`https://www.delhivery.com/track-v2/package/${o.delhivery_awb}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[11px] tracking-[0.25em] uppercase gold-underline text-[#C9A96E] mt-2 inline-block"
-                  >
-                    Track Order ↗
-                  </a>
-                )}
-              </div>
+              <OrderTimeline status={o.status} />
             </div>
           ))}
         </div>
