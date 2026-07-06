@@ -43,7 +43,11 @@ function OrderTimeline({ status }) {
                 }`}
               />
               {!isLast && (
-                <div className={`w-px flex-1 min-h-[22px] ${isDone && i < activeIndex ? "bg-[#C9A96E]" : "bg-[#8A8FA8]/30"}`} />
+                <div
+                  className={`w-px flex-1 min-h-[22px] ${
+                    isDone && i < activeIndex ? "bg-[#C9A96E]" : "bg-[#8A8FA8]/30"
+                  }`}
+                />
               )}
             </div>
             <div className={`pb-5 text-[13px] ${isDone ? "text-[#F5F0E8]" : "text-[#8A8FA8]"}`}>
@@ -75,8 +79,16 @@ export default function AccountPage() {
     <div data-testid="account-page" className="page-fade pt-32 pb-24 max-w-5xl mx-auto px-6 md:px-12">
       <div className="text-[11px] tracking-[0.4em] uppercase text-[#C9A96E] mb-4">Your House</div>
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-        <h1 className="font-serif-display text-5xl md:text-6xl text-[#F5F0E8] leading-[0.95]">Welcome, <span className="italic text-[#C9A96E]/90">{user.name.split(" ")[0]}</span></h1>
-        <button onClick={logout} data-testid="account-logout-button" className="text-[11px] tracking-[0.3em] uppercase gold-underline text-[#F5F0E8]/80 self-start md:self-auto">Sign Out</button>
+        <h1 className="font-serif-display text-5xl md:text-6xl text-[#F5F0E8] leading-[0.95]">
+          Welcome, <span className="italic text-[#C9A96E]/90">{user.name.split(" ")[0]}</span>
+        </h1>
+        <button
+          onClick={logout}
+          data-testid="account-logout-button"
+          className="text-[11px] tracking-[0.3em] uppercase gold-underline text-[#F5F0E8]/80 self-start md:self-auto"
+        >
+          Sign Out
+        </button>
       </div>
 
       <div className="grid md:grid-cols-3 gap-6 mt-12">
@@ -105,6 +117,7 @@ export default function AccountPage() {
       )}
 
       <h2 className="font-serif-display text-3xl md:text-4xl text-[#F5F0E8] mt-20 mb-8">Order History</h2>
+
       {orders.length === 0 ? (
         <div className="text-[#8A8FA8] text-sm">No orders yet. The atelier is patient.</div>
       ) : (
@@ -113,15 +126,19 @@ export default function AccountPage() {
             <div key={o.id} className="border border-[#C9A96E]/15 p-6" data-testid={`order-${o.id}`}>
               <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
                 <div>
-                  <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">Order · {o.id.slice(0,8)}</div>
+                  <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">
+                    Order · {o.id.slice(0, 8)}
+                  </div>
                   <div className="text-[#F5F0E8] mt-1">{o.items.map((i) => i.name).join(" · ")}</div>
                   <div className="text-xs text-[#8A8FA8] mt-1">{new Date(o.created_at).toLocaleString()}</div>
                 </div>
                 <div className="text-right">
                   <div className="text-[#F5F0E8]">{formatINR(o.total)}</div>
-                  {o.delhivery_awb && (
-                    <>
-                      <div className="text-[11px] tracking-[0.2em] uppercase text-[#8A8FA8] mt-2">AWB · {o.delhivery_awb}</div>
+                  {o.delhivery_awb ? (
+                    <div>
+                      <div className="text-[11px] tracking-[0.2em] uppercase text-[#8A8FA8] mt-2">
+                        AWB · {o.delhivery_awb}
+                      </div>
                       
                         href={`https://www.delhivery.com/track-v2/package/${o.delhivery_awb}`}
                         target="_blank"
@@ -130,8 +147,8 @@ export default function AccountPage() {
                       >
                         Track Order ↗
                       </a>
-                    </>
-                  )}
+                    </div>
+                  ) : null}
                 </div>
               </div>
               <OrderTimeline status={o.status} />
