@@ -16,6 +16,8 @@ const loadRazorpayScript = () =>
     document.body.appendChild(s);
   });
 
+const COD_TOKEN_AMOUNT = 49;
+
 export default function CheckoutPage() {
   const { items, subtotal, clear } = useCart();
   const { user } = useAuth();
@@ -24,6 +26,7 @@ export default function CheckoutPage() {
   const [config, setConfig] = useState({ enabled: false, key_id: "" });
   const [loom, setLoom] = useState(null);
   const [redeemCards, setRedeemCards] = useState(0);
+  const [paymentMode, setPaymentMode] = useState("prepaid"); // prepaid | cod_partial | cod_full
   const [shipping, setShipping] = useState({
     full_name: user?.name || "",
     phone: "",
@@ -80,8 +83,15 @@ export default function CheckoutPage() {
         size: it.size,
         image: it.image,
       }));
-      const res = await api.post("/payments/create-order", { items: orderItems, shipping, loom_credits_redeemed: redeemCards });
-      const { order, razorpay_order, razorpay_key_id, demo_mode } = res.data;
+      const res = await api.post("/payments/create-order", { items: orderItems, shipping, loom_credits_redeemed: redeemCards, payment_mode: paymentMode });
+      const { order, razorpay_order, razorpay_key_id, demo_mode, cod_full_no_charge } = res.data;
+
+      if (cod_full_no_charge) {
+        toast.success("Order placed — pay cash on delivery");
+        clear();
+        navigate("/thank-you", { state: { order: { ...order, items: orderItems, total } } });
+        return;
+      }
 
      if (demo_mode) {
         // Demo mode — simulate success
@@ -197,13 +207,46 @@ export default function CheckoutPage() {
 
           <section>
             <h2 className="font-serif-display text-2xl md:text-3xl text-[#F5F0E8] mb-6">Payment</h2>
-            <div className="border border-[#C9A96E]/20 p-6">
-              <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E] mb-2">Razorpay · UPI / Cards / Netbanking</div>
-              <p className="text-[#F5F0E8]/75 text-sm">
-                {config.enabled
-                  ? "You'll be taken to Razorpay's secure checkout. Pay via UPI, credit/debit card, or netbanking."
-                  : "Demo mode — Razorpay keys are not configured. Your order will be marked as paid for testing."}
-              </p>
+            <div className="space-y-3">
+
+              <button
+                type="button"
+                onClick={() => setPaymentMode("prepaid")}
+                data-testid="payment-mode-prepaid"
+                className={`w-full text-left border p-5 transition ${paymentMode === "prepaid" ? "border-[#C9A96E]" : "border-[#C9A96E]/20"}`}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="text-[11px] tracking-[0.3em] uppercase text-[#F5F0E8]">Prepaid</div>
+                  <span className="text-[10px] tracking-[0.2em] uppercase text-[#C9A96E]">⚡ Priority packing — ships faster</span>
+                </div>
+                <p className="text-[#F5F0E8]/60 text-sm mt-2">Pay {formatINR(total)} now via UPI, card, or netbanking.</p>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setPaymentMode("cod_partial")}
+                data-testid="payment-mode-cod-partial"
+                className={`w-full text-left border p-5 transition ${paymentMode === "cod_partial" ? "border-[#C9A96E]" : "border-[#C9A96E]/20"}`}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="text-[11px] tracking-[0.3em] uppercase text-[#F5F0E8]">Partial COD</div>
+                  <span className="text-[10px] tracking-[0.2em] uppercase text-[#C9A96E]">⚡ Priority packing — ships faster</span>
+                </div>
+                <p className="text-[#F5F0E8]/60 text-sm mt-2">
+                  Pay {formatINR(Math.min(COD_TOKEN_AMOUNT, total))} now, {formatINR(Math.max(0, total - COD_TOKEN_AMOUNT))} cash on delivery.
+                </p>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setPaymentMode("cod_full")}
+                data-testid="payment-mode-cod-full"
+                className={`w-full text-left border p-5 transition ${paymentMode === "cod_full" ? "border-[#C9A96E]" : "border-[#C9A96E]/20"}`}
+              >
+                <div className="text-[11px] tracking-[0.3em] uppercase text-[#F5F0E8]">Cash on Delivery</div>
+                <p className="text-[#F5F0E8]/60 text-sm mt-2">Pay {formatINR(total)} in cash when your order arrives.</p>
+              </button>
+
             </div>
           </section>
         </div>
@@ -239,7 +282,13 @@ export default function CheckoutPage() {
             <div className="divider-thin my-6" />
             <div className="flex items-center justify-between"><span className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">Total</span><span className="text-2xl text-[#F5F0E8]" data-testid="checkout-total">{formatINR(total)}</span></div>
             <button data-testid="checkout-place-order" onClick={placeOrder} disabled={processing} className="btn-gold w-full mt-8 disabled:opacity-50">
-              {processing ? "Processing..." : "Place Order"}
+              {processing
+                ? "Processing..."
+                : paymentMode === "cod_full"
+                ? "Place Order — Pay on Delivery"
+                : paymentMode === "cod_partial"
+                ? `Pay ${formatINR(Math.min(COD_TOKEN_AMOUNT, total))} & Place Order`
+                : "Place Order"}
             </button>
             <p className="text-[11px] tracking-[0.2em] uppercase text-[#8A8FA8] mt-4 text-center">Secure payments via Razorpay</p>
           </div>
