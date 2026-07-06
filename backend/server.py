@@ -685,6 +685,9 @@ async def create_payment_order(body: CreatePaymentOrderReq, request: Request):
     doc = order.model_dump()
     await db.orders.insert_one(doc)
 
+    if cod_full_no_charge:
+        notif.fire_and_forget(notif.notify_payment(doc, True))
+
     # Record redemption transaction immediately so balance reflects pending redemption
     if cards > 0 and user:
         await db.loom_credit_txns.insert_one(LoomCreditTxn(
