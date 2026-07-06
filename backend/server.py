@@ -9,7 +9,10 @@ import httpx
 import hmac
 import hashlib
 import requests
-import requests
+
+DELHIVERY_API_TOKEN = os.environ.get("DELHIVERY_API_TOKEN", "")
+DELHIVERY_PICKUP_LOCATION = os.environ.get("DELHIVERY_PICKUP_LOCATION", "")
+DELHIVERY_BASE_URL = "https://track.delhivery.com"
 import cloudinary
 import cloudinary.uploader
 
@@ -886,7 +889,18 @@ async def admin_update_order_status(order_id: str, body: StatusUpdateReq, admin=
     order = await db.orders.find_one({"id": order_id}, {"_id": 0})
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
-    await db.orders.update_one({"id": order_id}, {"$set": {"status": body.status, "updated_at": datetime.now(timezone.utc).isoformat()}})
+
+    update_fields = {"status": body.status, "updated_at": datetime.now(timezone.utc).isoformat()}
+
+    if body.status == "packed" and not order.get("delhivery_awb"):
+        try:
+            result = await create_delhivery_shipment(order)
+            update_fields["delhivery_awb"] = result["waybill"]
+        except HTTPException as e:
+            logger.error(f"Delhivery shipment creation failed for order {order_id}: {e.detail}")
+            raise
+
+    await db.orders.update_one({"id": order_id}, {"$set": update_fields})
     updated = await db.orders.find_one({"id": order_id}, {"_id": 0})
     notif.fire_and_forget(notif.notify_status_update(updated, body.status))
     return {"ok": True, "order": updated}
@@ -1089,6 +1103,75 @@ async def admin_orders_csv(admin=Depends(require_admin)):
     return Response(content=csv_data, media_type="text/csv",
                     headers={"Content-Disposition": f"attachment; filename=crescent-loom-orders-{datetime.now(timezone.utc).strftime('%Y%m%d')}.csv"})
 
+# ====================== Delhivery Shipment Creation ======================
+def _delhivery_headers():
+    return {
+        "Authorization": f"Token {DELHIVERY_API_TOKEN}",
+        "Content-Type": "application/json",
+    }
+
+async def create_delhivery_shipment(order: dict) -> dict:
+    """Creates a shipment on Delhivery and returns the waybill (AWB) number."""
+    if not DELHIVERY_API_TOKEN or not DELHIVERY_PICKUP_LOCATION:
+        raise HTTPException(status_code=500, detail="Delhivery API not configured")
+
+    s = order.get("shipping", {})
+    items = order.get("items", [])
+    product_names = ", ".join(i.get("name", "") for i in items)
+    total_qty = sum(i.get("quantity", 1) for i in items)
+
+    is_cod = order.get("payment_mode") == "cod_full"
+    cod_amount = float(order.get("cod_due", 0)) if is_cod else 0.0
+
+    shipment = {
+        "name": s.get("full_name", ""),
+        "add": s.get("address_line", ""),
+        "pin": s.get("pincode", ""),
+        "city": s.get("city", ""),
+        "state": s.get("state", ""),
+        "country": s.get("country", "India"),
+        "phone": s.get("phone", ""),
+        "order": order.get("id", "")[:20],
+        "payment_mode": "COD" if is_cod else "Prepaid",
+        "cod_amount": cod_amount,
+        "products_desc": product_names[:200],
+        "quantity": str(total_qty),
+        "order_date": order.get("created_at", ""),
+        "total_amount": float(order.get("total", 0)),
+    }
+
+    payload = {
+        "shipments": [shipment],
+        "pickup_location": {"name": DELHIVERY_PICKUP_LOCATION},
+    }
+
+    body = f"format=json&data={httpx.URL('').copy_with()._raw_path}"
+    async with httpx.AsyncClient() as hc:
+        r = await hc.post(
+            f"{DELHIVERY_BASE_URL}/api/cmu/create.json",
+            headers=_delhivery_headers(),
+            data={"format": "json", "data": str(payload).replace("'", '"')},
+            timeout=20.0,
+        )
+    try:
+        res_json = r.json()
+    except Exception:
+        logger.error(f"Delhivery raw response: {r.text}")
+        raise HTTPException(status_code=502, detail="Delhivery returned an invalid response")
+
+    if not res_json.get("success", True) and not res_json.get("packages"):
+        logger.error(f"Delhivery shipment creation failed: {res_json}")
+        raise HTTPException(status_code=502, detail=f"Delhivery error: {res_json}")
+
+    packages = res_json.get("packages", [])
+    if not packages:
+        raise HTTPException(status_code=502, detail="Delhivery did not return a waybill")
+
+    waybill = packages[0].get("waybill")
+    if not waybill:
+        raise HTTPException(status_code=502, detail="Delhivery response missing waybill number")
+
+    return {"waybill": waybill, "raw": res_json}
 # ====================== File Upload ======================
 class FileRef(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
