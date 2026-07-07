@@ -75,4 +75,77 @@ export default function AccountPage() {
 
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
         <h1 className="font-serif-display text-5xl md:text-6xl text-[#F5F0E8] leading-[0.95]">
-          Welcome,
+          Welcome, <span className="italic text-[#C9A96E]/90">{user.name.split(" ")[0]}</span>
+        </h1>
+        <button onClick={logout} data-testid="account-logout-button" className="text-[11px] tracking-[0.3em] uppercase gold-underline text-[#F5F0E8]/80 self-start md:self-auto">
+          Sign Out
+        </button>
+      </div>
+
+      <div className="grid md:grid-cols-3 gap-6 mt-12">
+        <div className="border border-[#C9A96E]/15 p-6">
+          <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E] mb-2">Email</div>
+          <div className="text-[#F5F0E8]">{user.email}</div>
+        </div>
+        <div className="border border-[#C9A96E]/15 p-6">
+          <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E] mb-2">Wishlist</div>
+          <Link to="/wishlist" className="text-[#F5F0E8] gold-underline">Saved pieces</Link>
+        </div>
+        <div className="border border-[#C9A96E]/15 p-6">
+          <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E] mb-2">Orders</div>
+          <div className="text-[#F5F0E8]">{orders.length} placed</div>
+        </div>
+      </div>
+
+      <div className="mt-10">
+        <LoomCreditsCard data={loom} />
+      </div>
+
+      {user.is_admin ? (
+        <div className="mt-10">
+          <Link to="/admin" data-testid="account-admin-link" className="btn-gold inline-block">Open Admin</Link>
+        </div>
+      ) : null}
+
+      <h2 className="font-serif-display text-3xl md:text-4xl text-[#F5F0E8] mt-20 mb-8">Order History</h2>
+
+      {orders.length === 0 ? (
+        <div className="text-[#8A8FA8] text-sm">No orders yet. The atelier is patient.</div>
+      ) : (
+        <div className="space-y-4">
+          {orders.map(function (o) {
+            return (
+              <div key={o.id} className="border border-[#C9A96E]/15 p-6" data-testid={"order-" + o.id}>
+                <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
+                  <div>
+                    <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">
+                      Order · {o.id.slice(0, 8)}
+                    </div>
+                    <div className="text-[#F5F0E8] mt-1">
+                      {o.items.map(function (i) { return i.name; }).join(" · ")}
+                    </div>
+                    <div className="text-xs text-[#8A8FA8] mt-1">{new Date(o.created_at).toLocaleString()}</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-[#F5F0E8]">{formatINR(o.total)}</div>
+                    {o.delhivery_awb ? (
+                      <div>
+                        <div className="text-[11px] tracking-[0.2em] uppercase text-[#8A8FA8] mt-2">
+                          AWB · {o.delhivery_awb}
+                        </div>
+                        <a href={"https://www.delhivery.com/track-v2/package/" + o.delhivery_awb} target="_blank" rel="noopener noreferrer" className="text-[11px] tracking-[0.25em] uppercase gold-underline text-[#C9A96E] mt-1 inline-block">
+                          Track Order ↗
+                        </a>
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+                <OrderTimeline status={o.status} />
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
