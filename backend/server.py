@@ -894,12 +894,29 @@ async def admin_update_order_status(order_id: str, body: StatusUpdateReq, admin=
     update_fields = {"status": body.status, "updated_at": datetime.now(timezone.utc).isoformat()}
 
     if body.status == "packed" and not order.get("delhivery_awb"):
+        pickup_date = (datetime.now(timezone.utc) + timedelta(days=1)).strftime("%Y-%m-%d")
+        label_order_id = generate_label_order_id(order, pickup_date)
+
         try:
-            result = await create_delhivery_shipment(order)
+            result = await create_delhivery_shipment(order, label_order_id)
             update_fields["delhivery_awb"] = result["waybill"]
+            update_fields["delhivery_label_order_id"] = label_order_id
         except HTTPException as e:
             logger.error(f"Delhivery shipment creation failed for order {order_id}: {e.detail}")
             raise
+
+        try:
+            label_url = await get_delhivery_packing_slip(result["waybill"])
+            update_fields["delhivery_label_url"] = label_url
+        except HTTPException as e:
+            logger.error(f"Delhivery label fetch failed for order {order_id}: {e.detail}")
+
+        try:
+            pickup = await schedule_delhivery_pickup(pickup_date, expected_package_count=1)
+            update_fields["delhivery_pickup_id"] = pickup["pickup_id"]
+            update_fields["delhivery_pickup_date"] = pickup["pickup_date"]
+        except HTTPException as e:
+            logger.error(f"Delhivery pickup scheduling failed for order {order_id}: {e.detail}")
 
     await db.orders.update_one({"id": order_id}, {"$set": update_fields})
     updated = await db.orders.find_one({"id": order_id}, {"_id": 0})
@@ -1111,8 +1128,29 @@ def _delhivery_headers():
         "Content-Type": "application/json",
     }
 
-async def create_delhivery_shipment(order: dict) -> dict:
-    """Creates a shipment on Delhivery and returns the waybill (AWB) number."""
+PRODUCT_CODE_MAP = {
+    "polo": "PL",
+    "essential": "ET",
+    "prism": "PW",
+}
+
+def generate_label_order_id(order: dict, pickup_date: str) -> str:
+    """Builds label order id like CLPL14072026 (CL + product code + DDMMYYYY of pickup)."""
+    items = order.get("items", [])
+    first_name = (items[0].get("name", "") if items else "").lower()
+    code = "XX"
+    for keyword, c in PRODUCT_CODE_MAP.items():
+        if keyword in first_name:
+            code = c
+            break
+    y, m, d = pickup_date.split("-")
+    return f"CL{code}{d}{m}{y}"
+
+
+async def create_delhivery_shipment(order: dict, label_order_id: str) -> dict:
+    """Creates a shipment on Delhivery and returns the waybill (AWB) number.
+    Always sent as Prepaid to Delhivery — regardless of customer's chosen payment mode —
+    since Delhivery charges more for COD shipments."""
     if not DELHIVERY_API_TOKEN or not DELHIVERY_PICKUP_LOCATION:
         raise HTTPException(status_code=500, detail="Delhivery API not configured")
 
@@ -1121,10 +1159,7 @@ async def create_delhivery_shipment(order: dict) -> dict:
     product_names = ", ".join(i.get("name", "") for i in items)
     total_qty = sum(i.get("quantity", 1) for i in items)
 
-    is_cod = order.get("payment_mode") == "cod_full"
-    cod_amount = float(order.get("cod_due", 0)) if is_cod else 0.0
-
-PACKAGE_WEIGHT_PER_ITEM_G = 204
+    PACKAGE_WEIGHT_PER_ITEM_G = 204
     PACKAGE_LENGTH_CM = 43
     PACKAGE_BREADTH_CM = 33
     PACKAGE_HEIGHT_CM = 5
@@ -1137,9 +1172,9 @@ PACKAGE_WEIGHT_PER_ITEM_G = 204
         "state": s.get("state", ""),
         "country": s.get("country", "India"),
         "phone": s.get("phone", ""),
-        "order": order.get("id", "")[:20],
-        "payment_mode": "COD" if is_cod else "Prepaid",
-        "cod_amount": cod_amount,
+        "order": label_order_id,
+        "payment_mode": "Prepaid",
+        "cod_amount": 0.0,
         "products_desc": product_names[:200],
         "quantity": str(total_qty),
         "order_date": order.get("created_at", ""),
@@ -1159,7 +1194,7 @@ PACKAGE_WEIGHT_PER_ITEM_G = 204
         r = await hc.post(
             f"{DELHIVERY_BASE_URL}/api/cmu/create.json",
             headers=_delhivery_headers(),
-        data={"format": "json", "data": json.dumps(payload)},
+            data={"format": "json", "data": json.dumps(payload)},
             timeout=20.0,
         )
     try:
@@ -1181,6 +1216,64 @@ PACKAGE_WEIGHT_PER_ITEM_G = 204
         raise HTTPException(status_code=502, detail="Delhivery response missing waybill number")
 
     return {"waybill": waybill, "raw": res_json}
+
+
+async def schedule_delhivery_pickup(pickup_date: str, expected_package_count: int = 1) -> dict:
+    """Schedules a pickup with Delhivery in the 10 AM – 2 PM slot."""
+    if not DELHIVERY_API_TOKEN or not DELHIVERY_PICKUP_LOCATION:
+        raise HTTPException(status_code=500, detail="Delhivery API not configured")
+
+    payload = {
+        "pickup_time": "10:00:00",
+        "pickup_date": pickup_date,
+        "pickup_location": DELHIVERY_PICKUP_LOCATION,
+        "expected_package_count": expected_package_count,
+    }
+
+    async with httpx.AsyncClient() as hc:
+        r = await hc.post(
+            f"{DELHIVERY_BASE_URL}/fm/request/new/",
+            headers=_delhivery_headers(),
+            json=payload,
+            timeout=20.0,
+        )
+    try:
+        res_json = r.json()
+    except Exception:
+        logger.error(f"Delhivery pickup raw response: {r.text}")
+        raise HTTPException(status_code=502, detail="Delhivery pickup request returned invalid response")
+
+    if r.status_code not in (200, 201) or not res_json.get("pickup_id"):
+        logger.error(f"Delhivery pickup request failed: {res_json}")
+        raise HTTPException(status_code=502, detail=f"Delhivery pickup error: {res_json}")
+
+    return {"pickup_id": res_json.get("pickup_id"), "pickup_date": pickup_date, "raw": res_json}
+
+
+async def get_delhivery_packing_slip(waybill: str) -> str:
+    """Fetches the shipping label (packing slip) PDF URL for a waybill."""
+    if not DELHIVERY_API_TOKEN:
+        raise HTTPException(status_code=500, detail="Delhivery API not configured")
+
+    async with httpx.AsyncClient() as hc:
+        r = await hc.get(
+            f"{DELHIVERY_BASE_URL}/api/p/packing_slip",
+            headers=_delhivery_headers(),
+            params={"wbns": waybill, "pdf": "true"},
+            timeout=20.0,
+        )
+    try:
+        res_json = r.json()
+    except Exception:
+        logger.error(f"Delhivery packing slip raw response: {r.text}")
+        raise HTTPException(status_code=502, detail="Delhivery packing slip returned invalid response")
+
+    packages = res_json.get("packages", [])
+    if not packages or not packages[0].get("pdf_download_link"):
+        logger.error(f"Delhivery packing slip missing link: {res_json}")
+        raise HTTPException(status_code=502, detail="Delhivery did not return a label link")
+
+    return packages[0]["pdf_download_link"]
 # ====================== File Upload ======================
 class FileRef(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
