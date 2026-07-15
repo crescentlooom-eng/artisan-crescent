@@ -1147,6 +1147,109 @@ def generate_label_order_id(order: dict, pickup_date: str) -> str:
     return f"CL{code}{d}{m}{y}"
 
 
+def generate_sku(order: dict) -> str:
+    """Builds SKU like CL-PL-DB (CL + product code + color initials)."""
+    items = order.get("items", [])
+    if not items:
+        return "CL-XX-XX"
+    full_name = items[0].get("name", "").strip().lower()
+
+    BASE_NAMES = {
+        "textured polo tee": "PL",
+        "essential tee": "ET",
+        "prism wear tee": "PW",
+    }
+
+    product_code = "XX"
+    variant_part = ""
+    for base_name, code in BASE_NAMES.items():
+        if full_name.startswith(base_name):
+            product_code = code
+            variant_part = full_name[len(base_name):].strip()
+            break
+
+    words = variant_part.split()
+    if len(words) >= 2:
+        color_code = (words[0][0] + words[1][0]).upper()
+    elif len(words) == 1:
+        color_code = words[0][:2].upper()
+    else:
+        color_code = "XX"
+
+    return f"CL-{product_code}-{color_code}"
+
+
+async def create_delhivery_shipment(order: dict, label_order_id: str) -> dict:
+    """Creates a shipment on Delhivery and returns the waybill (AWB) number.
+    Always sent as Prepaid to Delhivery — regardless of customer's chosen payment mode —
+    since Delhivery charges more for COD shipments."""
+    if not DELHIVERY_API_TOKEN or not DELHIVERY_PICKUP_LOCATION:
+        raise HTTPException(status_code=500, detail="Delhivery API not configured")
+
+    s = order.get("shipping", {})
+    items = order.get("items", [])
+    total_qty = sum(i.get("quantity", 1) for i in items)
+
+    PACKAGE_WEIGHT_PER_ITEM_G = 204
+    PACKAGE_LENGTH_CM = 43
+    PACKAGE_BREADTH_CM = 33
+    PACKAGE_HEIGHT_CM = 5
+
+    shipment = {
+        "name": s.get("full_name", ""),
+        "add": s.get("address_line", ""),
+        "pin": s.get("pincode", ""),
+        "city": s.get("city", ""),
+        "state": s.get("state", ""),
+        "country": s.get("country", "India"),
+        "phone": s.get("phone", ""),
+        "order": label_order_id,
+        "payment_mode": "Prepaid",
+        "cod_amount": 0.0,
+        "products_desc": f"Tshirt\nSKU:{generate_sku(order)}",
+        "quantity": str(total_qty),
+        "order_date": order.get("created_at", ""),
+        "total_amount": float(order.get("total", 0)),
+        "weight": str(PACKAGE_WEIGHT_PER_ITEM_G * total_qty),
+        "shipment_length": str(PACKAGE_LENGTH_CM),
+        "shipment_width": str(PACKAGE_BREADTH_CM),
+        "shipment_height": str(PACKAGE_HEIGHT_CM),
+    }
+
+    payload = {
+        "shipments": [shipment],
+        "pickup_location": {"name": DELHIVERY_PICKUP_LOCATION},
+    }
+
+    async with httpx.AsyncClient() as hc:
+        r = await hc.post(
+            f"{DELHIVERY_BASE_URL}/api/cmu/create.json",
+            headers=_delhivery_headers(),
+            data={"format": "json", "data": json.dumps(payload)},
+            timeout=20.0,
+        )
+    try:
+        res_json = r.json()
+    except Exception:
+        logger.error(f"Delhivery raw response: {r.text}")
+        raise HTTPException(status_code=502, detail="Delhivery returned an invalid response")
+
+    if not res_json.get("success", True) and not res_json.get("packages"):
+        logger.error(f"Delhivery shipment creation failed: {res_json}")
+        raise HTTPException(status_code=502, detail=f"Delhivery error: {res_json}")
+
+    packages = res_json.get("packages", [])
+    if not packages:
+        raise HTTPException(status_code=502, detail="Delhivery did not return a waybill")
+
+    waybill = packages[0].get("waybill")
+    if not waybill:
+        raise HTTPException(status_code=502, detail="Delhivery response missing waybill number")
+
+    return {"waybill": waybill, "raw": res_json}
+    
+
+
 async def create_delhivery_shipment(order: dict, label_order_id: str) -> dict:
     """Creates a shipment on Delhivery and returns the waybill (AWB) number.
     Always sent as Prepaid to Delhivery — regardless of customer's chosen payment mode —
