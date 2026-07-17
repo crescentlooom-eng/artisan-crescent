@@ -15,11 +15,11 @@ export const PRODUCTS = [
             "A study in quiet texture. Cut from breathable cotton with a subtly woven surface — understated detail for those who notice.",
     sizes: ["M", "L", "XL"],
     colors: [],
-      material: "100% Cotton, textured weave",
+      material: "Jacquard Cotton, textured weave",
     keywords: ["polo", "collared", "buttoned", "textured weave", "regular fit"],
     highlights: {
       sleeve: "Half Sleeve",
-      fabric: "100% Cotton",
+            fabric: "Jacquard Cotton",
       neck_type: "Polo Neck",
       pattern: "Textured Weave",
     },
