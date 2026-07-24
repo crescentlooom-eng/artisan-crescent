@@ -279,6 +279,8 @@ class Order(BaseModel):
     status: str = "pending"  # pending, paid, shipped, delivered, cancelled
     payment_mode: str = "prepaid"  # prepaid | cod_partial | cod_full
     cod_due: float = 0.0  # amount to be collected at delivery
+    razorpay_order_id: Optional[str] = None
+    razorpay_payment_id: Optional[str] = None
 
 class CreatePaymentOrderReq(BaseModel):
     items: List[OrderItem]
