@@ -15,6 +15,7 @@ export default function ComingSoon() {
         textAlign: "center",
         padding: "24px",
         fontFamily: "'DM Sans', sans-serif",
+        cursor: "auto",
       }}
     >
       <div
@@ -65,6 +66,7 @@ export default function ComingSoon() {
           letterSpacing: "0.08em",
           textTransform: "uppercase",
           textDecoration: "none",
+          cursor: "pointer",
         }}
       >
         Message us on WhatsApp
