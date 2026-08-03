@@ -29,6 +29,7 @@ import AdminPage from "@/pages/AdminPage";
 import AuthCallback from "@/pages/AuthCallback";
 import ReturnPolicyPage from "@/pages/ReturnPolicyPage";
 import ShippingPage from "@/pages/ShippingPage";
+import ComingSoon from "@/pages/ComingSoon";
 
 import AdminShell from "@/pages/admin/AdminShell";
 import AdminLoginPage from "@/pages/admin/AdminLoginPage";
@@ -36,6 +37,29 @@ import AdminDashboardPage from "@/pages/admin/AdminDashboardPage";
 import AdminOrdersPage from "@/pages/admin/AdminOrdersPage";
 import AdminCustomersPage from "@/pages/admin/AdminCustomersPage";
 import AdminLoomCreditsPage from "@/pages/admin/AdminLoomCreditsPage";
+
+// ---- Coming Soon Gate Config ----
+const SITE_LOCKED = true; // flip to false to fully reopen the site to everyone
+const BYPASS_KEY = "cl_preview_access";
+const BYPASS_SECRET = "crescentloom2026"; // change this to whatever secret you want
+
+function useIsUnlocked() {
+  const location = useLocation();
+  const [unlocked, setUnlocked] = React.useState(
+    () => localStorage.getItem(BYPASS_KEY) === BYPASS_SECRET
+  );
+
+  React.useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const preview = params.get("preview");
+    if (preview === BYPASS_SECRET) {
+      localStorage.setItem(BYPASS_KEY, BYPASS_SECRET);
+      setUnlocked(true);
+    }
+  }, [location.search]);
+
+  return unlocked;
+}
 
 function StorefrontLayout({ children }) {
   return (
@@ -51,10 +75,19 @@ function StorefrontLayout({ children }) {
 
 function AppRouter() {
   const location = useLocation();
+  const isUnlocked = useIsUnlocked();
+  const isAdminRoute = location.pathname.startsWith("/admin");
+
   // Handle OAuth callback session_id before normal routing
   if (location.hash?.includes("session_id=")) {
     return <AuthCallback />;
   }
+
+  // Gate: show Coming Soon for storefront visitors unless unlocked or on admin path
+  if (SITE_LOCKED && !isUnlocked && !isAdminRoute) {
+    return <ComingSoon />;
+  }
+
   return (
     <Routes>
       {/* Admin (no storefront chrome) */}
