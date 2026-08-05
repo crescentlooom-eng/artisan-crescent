@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Search, ShoppingBag, Heart, User, Menu, X } from "lucide-react";
+import { Search, ShoppingBag, Heart, User, Menu, X, Sun, Moon } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
+import { useTheme } from "@/context/ThemeContext";
 
 const WORDMARK = "https://customer-assets.emergentagent.com/job_24c8e302-f443-4113-9597-93d7fedd037d/artifacts/u4a3crws_ChatGPT%20Image%20Jun%202%2C%202026%2C%2009_03_25%20PM.png";
 
@@ -13,6 +14,7 @@ export default function Navbar() {
   const [searchQ, setSearchQ] = useState("");
   const { count, setOpen: setCartOpen } = useCart();
   const { user } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,12 +43,13 @@ export default function Navbar() {
     <header
       data-testid="navbar"
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] ${
-        scrolled ? "py-3 backdrop-blur-xl bg-[#0B0E1A]/70 border-b border-[#C9A96E]/10" : "py-6 bg-transparent"
+        scrolled ? "py-3 backdrop-blur-xl border-b border-[var(--cl-border)]" : "py-6 bg-transparent"
       }`}
+      style={scrolled ? { backgroundColor: "var(--cl-header-bg)" } : undefined}
     >
       <div className="max-w-7xl mx-auto px-6 md:px-10 grid grid-cols-3 items-center">
         {/* Left nav */}
-        <nav className="hidden md:flex items-center gap-8 text-[11px] tracking-[0.25em] uppercase text-[#F5F0E8]/85">
+        <nav className="hidden md:flex items-center gap-8 text-[11px] tracking-[0.25em] uppercase text-[var(--cl-text)]/85">
           {navLinks.map((l) => (
             <NavLink
               key={l.to}
@@ -58,7 +61,7 @@ export default function Navbar() {
             </NavLink>
           ))}
         </nav>
-        <button data-testid="nav-mobile-toggle" className="md:hidden justify-self-start text-[#F5F0E8]" onClick={() => setOpen(true)} aria-label="Menu">
+        <button data-testid="nav-mobile-toggle" className="md:hidden justify-self-start text-[var(--cl-text)]" onClick={() => setOpen(true)} aria-label="Menu">
           <Menu size={22} />
         </button>
 
@@ -68,7 +71,15 @@ export default function Navbar() {
         </Link>
 
         {/* Right icons */}
-        <div className="flex items-center gap-5 justify-self-end text-[#F5F0E8]/90">
+        <div className="flex items-center gap-5 justify-self-end text-[var(--cl-text)]/90">
+          <button
+            data-testid="nav-theme-toggle"
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+            className="hover:text-[#C9A96E] transition-colors"
+          >
+            {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
           <button data-testid="nav-search-button" onClick={() => setSearchOpen((v) => !v)} aria-label="Search" className="hover:text-[#C9A96E] transition-colors">
             <Search size={18} />
           </button>
@@ -91,7 +102,7 @@ export default function Navbar() {
 
       {/* Search drawer */}
       {searchOpen && (
-        <div className="border-t border-[#C9A96E]/10 bg-[#0B0E1A]/95 backdrop-blur-xl">
+        <div className="border-t border-[var(--cl-border)]" style={{ backgroundColor: "var(--cl-header-bg)" }}>
           <form onSubmit={submitSearch} className="max-w-3xl mx-auto px-6 py-5 flex items-center gap-4">
             <Search size={18} className="text-[#C9A96E]" />
             <input
@@ -102,26 +113,26 @@ export default function Navbar() {
               placeholder="Search the atelier — coats, linen, silk…"
               className="flex-1 text-base"
             />
-            <button type="button" onClick={() => setSearchOpen(false)} aria-label="Close search" className="text-[#8A8FA8]"><X size={18} /></button>
+            <button type="button" onClick={() => setSearchOpen(false)} aria-label="Close search" className="text-[var(--cl-subtext)]"><X size={18} /></button>
           </form>
         </div>
       )}
 
       {/* Mobile drawer */}
       {open && (
-        <div className="md:hidden fixed inset-0 bg-[#0B0E1A] z-50 page-fade">
+        <div className="md:hidden fixed inset-0 z-50 page-fade" style={{ backgroundColor: "var(--cl-bg)" }}>
           <div className="flex items-center justify-between px-6 py-6">
             <span className="text-[11px] tracking-[0.3em] text-[#C9A96E] uppercase">Menu</span>
-            <button onClick={() => setOpen(false)} data-testid="nav-mobile-close" className="text-[#F5F0E8]"><X size={22} /></button>
+            <button onClick={() => setOpen(false)} data-testid="nav-mobile-close" className="text-[var(--cl-text)]"><X size={22} /></button>
           </div>
           <nav className="flex flex-col items-start gap-6 px-8 mt-6">
             {navLinks.map((l) => (
-              <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="font-serif-display text-4xl text-[#F5F0E8]">
+              <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="font-serif-display text-4xl text-[var(--cl-text)]">
                 {l.label}
               </Link>
             ))}
-            <Link to="/wishlist" onClick={() => setOpen(false)} className="font-serif-display text-4xl text-[#F5F0E8]">Wishlist</Link>
-            <Link to={user ? "/account" : "/login"} onClick={() => setOpen(false)} className="font-serif-display text-4xl text-[#F5F0E8]">
+            <Link to="/wishlist" onClick={() => setOpen(false)} className="font-serif-display text-4xl text-[var(--cl-text)]">Wishlist</Link>
+            <Link to={user ? "/account" : "/login"} onClick={() => setOpen(false)} className="font-serif-display text-4xl text-[var(--cl-text)]">
               {user ? "Account" : "Sign In"}
             </Link>
           </nav>
