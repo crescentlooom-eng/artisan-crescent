@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
 
 import { AuthProvider } from "@/context/AuthContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { AdminAuthProvider } from "@/context/AdminAuthContext";
@@ -124,6 +125,7 @@ function App() {
     <div className="App">
     {splash && <SplashScreen onComplete={() => setSplash(false)} />}
       <BrowserRouter>
+        <ThemeProvider>
         <AuthProvider>
           <AdminAuthProvider>
             <CartProvider>
@@ -135,6 +137,7 @@ function App() {
             </CartProvider>
           </AdminAuthProvider>
         </AuthProvider>
+        </ThemeProvider>
       </BrowserRouter>
     </div>
   );
