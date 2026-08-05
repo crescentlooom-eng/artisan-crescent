@@ -27,6 +27,11 @@ html.light {
     --cl-text: #0B0E1A;
     --cl-subtext: #5B5F72;
     --cl-border: rgba(11,14,26,0.08);
+    --cl-header-bg: rgba(247,244,238,0.75);
+}
+
+:root {
+    --cl-header-bg: rgba(11,14,26,0.7);
 }
 
 html {
