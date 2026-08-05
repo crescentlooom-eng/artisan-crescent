@@ -5,10 +5,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap');
 
 :root {
-    --cl-navy: #0B0E1A;
-    --cl-ivory: #F5F0E8;
+    /* Brand accent — stays constant across both themes */
     --cl-gold: #C9A96E;
-    --cl-slate: #8A8FA8;
+
+    /* Theme-aware tokens */
+    --cl-bg: #0B0E1A;
+    --cl-surface: #12162A;
+    --cl-text: #F5F0E8;
+    --cl-subtext: #8A8FA8;
+    --cl-border: rgba(245,240,232,0.1);
+
+    /* Legacy aliases — old code using these still works unchanged */
+    --cl-navy: var(--cl-bg);
+    --cl-ivory: var(--cl-text);
+    --cl-slate: var(--cl-subtext);
+}
+
+html.light {
+    --cl-bg: #F7F4EE;
+    --cl-surface: #FFFFFF;
+    --cl-text: #0B0E1A;
+    --cl-subtext: #5B5F72;
+    --cl-border: rgba(11,14,26,0.08);
+}
+
+html {
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 * {
