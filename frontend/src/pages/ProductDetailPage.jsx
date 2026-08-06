@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { useParams, Link, useSearchParams } from "react-router-dom";
-import { Heart, Minus, Plus, Star } from "lucide-react";
+import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Heart, Minus, Plus, Star, Truck, PackageCheck, ShieldCheck } from "lucide-react";
 import { formatINR, productImage, api } from "@/lib/api";
 import { getProductBySlug, listProducts } from "@/data/products";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
+import ProductCard from "@/components/ProductCard";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger
 } from "@/components/ui/dialog";
@@ -26,7 +27,7 @@ function StarRating({ value, onChange, size = 20 }) {
           <Star
             size={size}
             fill={(hover || value) >= star ? "#C9A96E" : "none"}
-            stroke={(hover || value) >= star ? "#C9A96E" : "#8A8FA8"}
+            stroke={(hover || value) >= star ? "#C9A96E" : "var(--cl-subtext)"}
           />
         </button>
       ))}
@@ -34,13 +35,124 @@ function StarRating({ value, onChange, size = 20 }) {
   );
 }
 
-function ReviewsSection({ slug }) {
-  const [reviews, setReviews] = useState([]);
-  const [average, setAverage] = useState(0);
-  const [total, setTotal] = useState(0);
+function ReviewsSection({ slug, average, total, reviews, onSubmitted }) {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ rating: 0, reviewer_name: "", title: "", body: "" });
   const [submitting, setSubmitting] = useState(false);
+
+  const submit = async () => {
+    if (!form.rating) return toast.error("Please select a rating");
+    if (!form.reviewer_name.trim()) return toast.error("Please enter your name");
+    if (form.body.trim().length < 10) return toast.error("Review must be at least 10 characters");
+    setSubmitting(true);
+    try {
+      await api.post("/reviews", { ...form, product_slug: slug });
+      toast.success("Review submitted!");
+      setForm({ rating: 0, reviewer_name: "", title: "", body: "" });
+      setShowForm(false);
+      onSubmitted();
+    } catch (e) {
+      toast.error(e?.response?.data?.detail || "Could not submit review");
+    }
+    setSubmitting(false);
+  };
+
+  return (
+    <div className="mt-32 border-t pt-16" style={{ borderColor: "var(--cl-border)" }}>
+      <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
+        <div>
+          <div className="text-[11px] tracking-[0.3em] uppercase mb-2" style={{ color: "#C9A96E" }}>Customer Reviews</div>
+          <div className="flex items-center gap-4">
+            <h3 className="font-serif-display text-3xl md:text-4xl" style={{ color: "var(--cl-text)" }}>
+              {total > 0 ? (
+                <><span className="italic" style={{ color: "#C9A96E" }}>{average}</span> out of 5</>
+              ) : "No reviews yet"}
+            </h3>
+            {total > 0 && (
+              <div className="flex items-center gap-2">
+                <StarRating value={Math.round(average)} size={16} />
+                <span className="text-sm" style={{ color: "var(--cl-subtext)" }}>({total})</span>
+              </div>
+            )}
+          </div>
+        </div>
+        <button onClick={() => setShowForm(!showForm)} className="btn-gold">
+          {showForm ? "Cancel" : "Write a Review"}
+        </button>
+      </div>
+
+      {showForm && (
+        <div className="border p-8 mb-12" style={{ borderColor: "rgba(201,169,110,0.2)", background: "var(--cl-surface)" }}>
+          <h4 className="font-serif-display text-2xl mb-6" style={{ color: "var(--cl-text)" }}>Your Review</h4>
+          <div className="space-y-6">
+            <div>
+              <label className="text-[11px] tracking-[0.3em] uppercase block mb-3" style={{ color: "var(--cl-subtext)" }}>Rating</label>
+              <StarRating value={form.rating} onChange={(v) => setForm(f => ({ ...f, rating: v }))} size={24} />
+            </div>
+            <div>
+              <label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Your Name</label>
+              <input value={form.reviewer_name} onChange={(e) => setForm(f => ({ ...f, reviewer_name: e.target.value }))} placeholder="e.g. Rahul M." />
+            </div>
+            <div>
+              <label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Title (optional)</label>
+              <input value={form.title} onChange={(e) => setForm(f => ({ ...f, title: e.target.value }))} placeholder="e.g. Perfect fit" />
+            </div>
+            <div>
+              <label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Review</label>
+              <textarea value={form.body} onChange={(e) => setForm(f => ({ ...f, body: e.target.value }))} rows={4} placeholder="Tell us about your experience..." />
+            </div>
+            <button onClick={submit} disabled={submitting} className="btn-gold disabled:opacity-50">
+              {submitting ? "Submitting..." : "Submit Review"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {reviews.length === 0 ? (
+        <div className="text-sm text-center py-12" style={{ color: "var(--cl-subtext)" }}>Be the first to review this piece.</div>
+      ) : (
+        <div className="space-y-8">
+          {reviews.map((r) => (
+            <div key={r.id} className="border-b pb-8" style={{ borderColor: "var(--cl-border)" }}>
+              <div className="flex items-start justify-between gap-4 mb-3">
+                <div>
+                  <div className="flex items-center gap-3 mb-1">
+                    <StarRating value={r.rating} size={14} />
+                    {r.verified && (
+                      <span className="text-[10px] tracking-[0.2em] uppercase border px-2 py-0.5" style={{ color: "#C9A96E", borderColor: "rgba(201,169,110,0.3)" }}>Verified</span>
+                    )}
+                  </div>
+                  {r.title && <div className="font-serif-display text-lg" style={{ color: "var(--cl-text)" }}>{r.title}</div>}
+                </div>
+                <div className="text-right text-xs whitespace-nowrap" style={{ color: "var(--cl-subtext)" }}>
+                  <div>{r.reviewer_name}</div>
+                  <div>{new Date(r.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</div>
+                </div>
+              </div>
+              <p className="text-sm leading-relaxed" style={{ color: "var(--cl-text)", opacity: 0.75 }}>{r.body}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function ProductDetailPage() {
+  const { slug } = useParams();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const [product, setProduct] = useState(null);
+  const [size, setSize] = useState(null);
+  const [qty, setQty] = useState(1);
+  const [variantIdx, setVariantIdx] = useState(0);
+  const [activeImg, setActiveImg] = useState(0);
+  const [related, setRelated] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [average, setAverage] = useState(0);
+  const [total, setTotal] = useState(0);
+  const { addItem } = useCart();
+  const { has, toggle } = useWishlist();
 
   const fetchReviews = async () => {
     try {
@@ -53,156 +165,12 @@ function ReviewsSection({ slug }) {
 
   useEffect(() => { fetchReviews(); }, [slug]);
 
-  const submit = async () => {
-    if (!form.rating) return toast.error("Please select a rating");
-    if (!form.reviewer_name.trim()) return toast.error("Please enter your name");
-    if (form.body.trim().length < 10) return toast.error("Review must be at least 10 characters");
-    setSubmitting(true);
-    try {
-      await api.post("/reviews", { ...form, product_slug: slug });
-      toast.success("Review submitted!");
-      setForm({ rating: 0, reviewer_name: "", title: "", body: "" });
-      setShowForm(false);
-      fetchReviews();
-    } catch (e) {
-      toast.error(e?.response?.data?.detail || "Could not submit review");
-    }
-    setSubmitting(false);
-  };
-
-  return (
-    <div className="mt-32 border-t border-[#C9A96E]/15 pt-16">
-      <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
-        <div>
-          <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E] mb-2">Customer Reviews</div>
-          <div className="flex items-center gap-4">
-            <h3 className="font-serif-display text-3xl md:text-4xl text-[#F5F0E8]">
-              {total > 0 ? (
-                <><span className="italic text-[#C9A96E]/90">{average}</span> out of 5</>
-              ) : (
-                "No reviews yet"
-              )}
-            </h3>
-            {total > 0 && (
-              <div className="flex items-center gap-2">
-                <StarRating value={Math.round(average)} size={16} />
-                <span className="text-[#8A8FA8] text-sm">({total})</span>
-              </div>
-            )}
-          </div>
-        </div>
-        <button onClick={() => setShowForm(!showForm)} className="btn-gold">
-          {showForm ? "Cancel" : "Write a Review"}
-        </button>
-      </div>
-
-      {showForm && (
-        <div className="border border-[#C9A96E]/20 p-8 mb-12 bg-[#0D1020]">
-          <h4 className="font-serif-display text-2xl text-[#F5F0E8] mb-6">Your Review</h4>
-          <div className="space-y-6">
-            <div>
-              <label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8] block mb-3">Rating</label>
-              <StarRating value={form.rating} onChange={(v) => setForm(f => ({ ...f, rating: v }))} size={24} />
-            </div>
-            <div>
-              <label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Your Name</label>
-              <input value={form.reviewer_name} onChange={(e) => setForm(f => ({ ...f, reviewer_name: e.target.value }))} placeholder="e.g. Rahul M." />
-            </div>
-            <div>
-              <label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Title (optional)</label>
-              <input value={form.title} onChange={(e) => setForm(f => ({ ...f, title: e.target.value }))} placeholder="e.g. Perfect fit" />
-            </div>
-            <div>
-              <label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Review</label>
-              <textarea value={form.body} onChange={(e) => setForm(f => ({ ...f, body: e.target.value }))} rows={4} placeholder="Tell us about your experience..." />
-            </div>
-            <button onClick={submit} disabled={submitting} className="btn-gold disabled:opacity-50">
-              {submitting ? "Submitting..." : "Submit Review"}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {reviews.length === 0 ? (
-        <div className="text-[#8A8FA8] text-sm text-center py-12">
-          Be the first to review this piece.
-        </div>
-      ) : (
-        <div className="space-y-8">
-          {reviews.map((r) => (
-            <div key={r.id} className="border-b border-[#C9A96E]/10 pb-8">
-              <div className="flex items-start justify-between gap-4 mb-3">
-                <div>
-                  <div className="flex items-center gap-3 mb-1">
-                    <StarRating value={r.rating} size={14} />
-                    {r.verified && (
-                      <span className="text-[10px] tracking-[0.2em] uppercase text-[#C9A96E] border border-[#C9A96E]/30 px-2 py-0.5">Verified</span>
-                    )}
-                  </div>
-                  {r.title && <div className="font-serif-display text-lg text-[#F5F0E8]">{r.title}</div>}
-                </div>
-                <div className="text-right text-xs text-[#8A8FA8] whitespace-nowrap">
-                  <div>{r.reviewer_name}</div>
-                  <div>{new Date(r.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</div>
-                </div>
-              </div>
-              <p className="text-[#F5F0E8]/75 text-sm leading-relaxed">{r.body}</p>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function ProductHighlights({ highlights }) {
-  if (!highlights) return null;
-  const items = [
-    { label: "Sleeve", value: highlights.sleeve },
-    { label: "Fabric", value: highlights.fabric },
-    { label: "Neck Type", value: highlights.neck_type },
-    { label: "Pattern", value: highlights.pattern },
-  ].filter(i => i.value);
-
-  return (
-    <div className="mt-10 border-t border-[#C9A96E]/15 pt-8">
-      <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E] mb-6">Product Highlights</div>
-      <div className="grid grid-cols-2 gap-0">
-        {items.map((item, idx) => (
-          <div key={item.label} className={`py-4 ${idx % 2 === 0 ? "pr-4 border-r border-[#C9A96E]/10" : "pl-4"} ${idx < items.length - 2 ? "border-b border-[#C9A96E]/10" : ""}`}>
-            <div className="text-[11px] tracking-[0.2em] uppercase text-[#8A8FA8] mb-1">{item.label}</div>
-            <div className="text-[#F5F0E8] text-sm font-medium">{item.value}</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-export default function ProductDetailPage() {
-  const { slug } = useParams();
-  const [searchParams] = useSearchParams();
-  const [product, setProduct] = useState(null);
-  const [size, setSize] = useState(null);
-  const [qty, setQty] = useState(1);
-  const [variantIdx, setVariantIdx] = useState(0);
-  const [activeImg, setActiveImg] = useState(0);
-  const [related, setRelated] = useState([]);
-  const { addItem } = useCart();
-  const { has, toggle } = useWishlist();
-
   useEffect(() => {
     const p = getProductBySlug(slug);
     setProduct(p);
     if (p) {
       if (window.fbq) {
-        window.fbq('track', 'ViewContent', {
-          content_name: p.name,
-          content_ids: [p.id],
-          content_type: 'product',
-          value: p.price,
-          currency: 'INR',
-        });
+        window.fbq('track', 'ViewContent', { content_name: p.name, content_ids: [p.id], content_type: 'product', value: p.price, currency: 'INR' });
       }
       const requestedVariant = searchParams.get("variant");
       const initialIdx = requestedVariant
@@ -229,34 +197,34 @@ export default function ProductDetailPage() {
   }, [product, variant]);
 
   if (!product) {
-    return <div className="pt-40 text-center text-[#8A8FA8] tracking-[0.3em] uppercase text-sm">Loading...</div>;
+    return <div className="pt-40 text-center tracking-[0.3em] uppercase text-sm" style={{ color: "var(--cl-subtext)" }}>Loading...</div>;
   }
 
   const heroImg = images[activeImg] || productImage(product);
+  const variantOutOfStock = variant?.in_stock === false;
+
+  const buildCartItem = () => {
+    const productForCart = { ...product, images: images.length ? images : [productImage(product)] };
+    const meta = { size, quantity: qty };
+    const finalProduct = variant ? { ...productForCart, name: `${product.name} · ${variant.name}` } : productForCart;
+    return { finalProduct, meta };
+  };
 
   const onAdd = () => {
     if (window.fbq) {
-      window.fbq('track', 'AddToCart', {
-        content_name: product.name + (variant ? ' · ' + variant.name : ''),
-        content_ids: [product.id],
-        content_type: 'product',
-        value: product.price * qty,
-        currency: 'INR',
-      });
+      window.fbq('track', 'AddToCart', { content_name: product.name + (variant ? ' · ' + variant.name : ''), content_ids: [product.id], content_type: 'product', value: product.price * qty, currency: 'INR' });
     }
-    const productForCart = {
-      ...product,
-      images: images.length ? images : [productImage(product)],
-    };
-    const meta = { size, quantity: qty };
-    if (variant) {
-      addItem({ ...productForCart, name: `${product.name} · ${variant.name}` }, meta);
-    } else {
-      addItem(productForCart, meta);
-    }
+    const { finalProduct, meta } = buildCartItem();
+    addItem(finalProduct, meta);
     toast.success(`${product.name}${variant ? " · " + variant.name : ""} added to your bag`, {
       description: size ? `Size · ${size}` : undefined,
     });
+  };
+
+  const onBuyNow = () => {
+    const { finalProduct, meta } = buildCartItem();
+    addItem(finalProduct, meta);
+    navigate("/checkout");
   };
 
   const onWish = async () => {
@@ -266,256 +234,35 @@ export default function ProductDetailPage() {
     }
   };
 
-  const variantOutOfStock = variant?.in_stock === false;
+  const checklist = [product.material, product.highlights?.fabric, product.highlights?.pattern, product.highlights?.neck_type].filter(Boolean);
 
   return (
     <div data-testid="product-detail-page" className="page-fade pt-28 md:pt-32 pb-24">
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
-        <div className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8] mb-8">
+      <div className="max-w-none mx-auto px-6 md:px-12">
+        <div className="text-[11px] tracking-[0.3em] uppercase mb-8" style={{ color: "var(--cl-subtext)" }}>
           <Link to="/" className="hover:text-[#C9A96E]">Home</Link> <span className="mx-2">/</span>
           <Link to={`/shop?category=${product.category}`} className="hover:text-[#C9A96E] capitalize">{product.category}</Link> <span className="mx-2">/</span>
-          <span className="text-[#F5F0E8]/85">{product.name}</span>
+          <span style={{ color: "var(--cl-text)", opacity: 0.85 }}>{product.name}</span>
         </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
           {/* Gallery */}
-          <div className="lg:col-span-7">
-            <div
-              className="product-card-img-wrap aspect-[4/5] w-full mb-4"
-              onTouchStart={(e) => {
-                if (images.length <= 1) return;
-                e.currentTarget._startX = e.touches[0].clientX;
-              }}
-              onTouchEnd={(e) => {
-                if (images.length <= 1) return;
-                const startX = e.currentTarget._startX;
-                if (startX === undefined) return;
-                const diff = startX - e.changedTouches[0].clientX;
-                if (Math.abs(diff) > 50) {
-                  if (diff > 0) {
-                    setActiveImg((prev) => (prev + 1) % images.length);
-                  } else {
-                    setActiveImg((prev) => (prev - 1 + images.length) % images.length);
-                  }
-                }
-              }}
-            >
-              {heroImg ? (
-                <img src={heroImg} alt={product.name} className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-[#8A8FA8] text-xs tracking-[0.3em] uppercase">
-                  Awaiting Image
-                </div>
-              )}
-            </div>
+          <div className="lg:col-span-7 flex gap-4">
             {images.length > 1 && (
-              <div className="grid grid-cols-5 gap-3">
+              <div className="hidden md:flex flex-col gap-3 w-20 shrink-0">
                 {images.map((img, i) => (
-                  <button key={i} onClick={() => setActiveImg(i)} data-testid={`product-thumb-${i}`} className={`aspect-square overflow-hidden border ${i === activeImg ? "border-[#C9A96E]" : "border-transparent opacity-70 hover:opacity-100"}`}>
+                  <button key={i} onClick={() => setActiveImg(i)} data-testid={`product-thumb-${i}`} className="aspect-square overflow-hidden border" style={{ borderColor: i === activeImg ? "#C9A96E" : "transparent", opacity: i === activeImg ? 1 : 0.65 }}>
                     <img src={img} alt="" className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>
             )}
-          </div>
-
-          {/* Info */}
-          <div className="lg:col-span-5 lg:pt-6">
-            <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E] mb-3 capitalize">{product.category}</div>
-            <h1 className="font-serif-display text-4xl md:text-5xl lg:text-6xl text-[#F5F0E8] leading-[0.95]">{product.name}</h1>
-            <div className="text-2xl text-[#F5F0E8]/85 mt-6">{formatINR(product.price)}</div>
-
-            {/* Variant selector */}
-            {product.variants?.length > 0 && (
-              <div className="mt-10">
-                <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E] mb-3">
-                  Variant · <span className="text-[#F5F0E8]/85">{variant?.name}</span>
-                </div>
-                <div className="grid grid-cols-6 gap-3" data-testid="product-variant-grid">
-                  {product.variants.map((v, i) => {
-                    const thumb = v.images?.[0];
-                    const selected = i === variantIdx;
-                    return (
-                      <button
-                        key={v.id || i}
-                        onClick={() => {
-                          setVariantIdx(i);
-                          setActiveImg(0);
-                          if (v.in_stock === false) {
-                            setSize(null);
-                          } else {
-                            const outOfStock = v.out_of_stock_sizes || [];
-                            if (!size || outOfStock.includes(size)) {
-                              const firstAvailable = (product.sizes || []).find((s) => !outOfStock.includes(s)) || null;
-                              setSize(firstAvailable);
-                            }
-                          }
-                        }}
-                        data-testid={`product-variant-${i}`}
-                        title={v.name}
-                        className={`aspect-square overflow-hidden border-2 transition-all relative ${selected ? "border-[#C9A96E]" : "border-transparent opacity-70 hover:opacity-100"}`}
-                        style={!thumb && v.color_hex ? { backgroundColor: v.color_hex } : undefined}
-                      >
-                        {thumb ? (
-                          <img src={thumb} alt={v.name} className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-[9px] tracking-[0.15em] uppercase text-[#F5F0E8]/70 bg-[#14172A]">
-                            {v.name.replace(/[^0-9]/g, "") || v.name.slice(0,3)}
-                          </div>
-                        )}
-                        {v.in_stock === false && (
-                          <div className="absolute inset-0 bg-[#0B0E1A]/60 flex items-center justify-center">
-                            <div className="w-full h-[1px] bg-[#8A8FA8]/50 rotate-45 absolute" />
-                          </div>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Out of stock notice */}
-            {variantOutOfStock && (
-              <div className="mt-6 text-[11px] tracking-[0.25em] uppercase text-[#8A8FA8]">
-                <span style={{ color: "#E57373" }}>Currently unavailable</span> — this design is out of stock.
-              </div>
-            )}
-
-            {/* Size selector */}
-            {product.sizes?.length > 0 && !variantOutOfStock && (
-              <div className="mt-10">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">
-                    Size · {size || "Out of stock"}
-                  </div>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <button data-testid="product-size-guide-trigger" className="text-[11px] tracking-[0.25em] uppercase text-[#F5F0E8]/80 gold-underline">Size Guide</button>
-                    </DialogTrigger>
-                    <DialogContent className="bg-[#0B0E1A] text-[#F5F0E8] border-[#C9A96E]/20">
-                      <DialogHeader>
-                        <DialogTitle className="font-serif-display text-3xl">Size Guide</DialogTitle>
-                      </DialogHeader>
-                      <div className="mt-4 text-sm">
-                        <table className="w-full text-left">
-                          <thead className="text-[#C9A96E] text-[11px] tracking-[0.2em] uppercase">
-                            <tr><th className="py-2">Size</th><th>Chest (in)</th><th>Length (in)</th><th>Shoulder (in)</th></tr>
-                          </thead>
-                          <tbody className="text-[#F5F0E8]/80">
-                            {product.slug === "textured-polo-tee" && <>
-                              <tr className="border-t border-[#C9A96E]/15"><td className="py-3">M</td><td>36</td><td>26.5</td><td>15.5</td></tr>
-                              <tr className="border-t border-[#C9A96E]/15"><td className="py-3">L</td><td>37</td><td>26.5</td><td>17</td></tr>
-                              <tr className="border-t border-[#C9A96E]/15"><td className="py-3">XL</td><td>40</td><td>28.5</td><td>17</td></tr>
-                            </>}
-                            {product.slug === "essential-tee" && <>
-                              <tr className="border-t border-[#C9A96E]/15"><td className="py-3">M</td><td>35</td><td>25.2</td><td>15</td></tr>
-                              <tr className="border-t border-[#C9A96E]/15"><td className="py-3">XL</td><td>37</td><td>25.5</td><td>16.5</td></tr>
-                            </>}
-                            {product.slug === "prism-wear-tee" && <>
-                              <tr className="border-t border-[#C9A96E]/15"><td className="py-3">Free Size</td><td>41</td><td>28.5</td><td>18</td></tr>
-                            </>}
-                          </tbody>
-                        </table>
-                        <p className="text-[#8A8FA8] text-xs mt-4">Measurements are approximate. Garments are cut relaxed; pick your usual size.</p>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-                <div className="flex flex-wrap gap-3">
-                  {product.sizes.map((s) => {
-                    const outOfStock = variant?.out_of_stock_sizes?.includes(s);
-                    return (
-                      <button
-                        key={s}
-                        data-testid={`product-size-${s}`}
-                        onClick={() => !outOfStock && setSize(s)}
-                        disabled={outOfStock}
-                        className={`px-4 py-2 text-xs tracking-[0.2em] uppercase border transition-all duration-300 ${
-                          outOfStock
-                            ? "border-[#8A8FA8]/15 text-[#8A8FA8]/30 line-through cursor-not-allowed"
-                            : size === s
-                            ? "border-[#C9A96E] text-[#C9A96E]"
-                            : "border-[#8A8FA8]/30 text-[#F5F0E8]/80 hover:border-[#C9A96E]/60"
-                        }`}
-                      >{s}</button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Quantity + Add to cart */}
-            <div className="mt-10 flex items-center gap-4">
-              <div className="flex items-center border border-[#C9A96E]/30">
-                <button onClick={() => setQty(Math.max(1, qty - 1))} className="px-3 py-3 text-[#F5F0E8] hover:text-[#C9A96E]"><Minus size={14} /></button>
-                <span className="px-4 text-sm text-[#F5F0E8] w-10 text-center" data-testid="product-qty">{qty}</span>
-                <button onClick={() => setQty(qty + 1)} className="px-3 py-3 text-[#F5F0E8] hover:text-[#C9A96E]"><Plus size={14} /></button>
-              </div>
-              <button
-                data-testid="product-add-to-cart"
-                onClick={onAdd}
-                disabled={!size || variantOutOfStock}
-                className="btn-gold flex-1 disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                {variantOutOfStock ? "Out of Stock" : size ? "Add to Bag" : "Out of Stock"}
-              </button>
-              <button data-testid="product-wishlist-button" onClick={onWish} aria-label="Wishlist" className={`p-3 border ${has(product.id) ? "border-[#C9A96E] text-[#C9A96E]" : "border-[#C9A96E]/30 text-[#F5F0E8]"} hover:border-[#C9A96E]`}>
-                <Heart size={16} fill={has(product.id) ? "currentColor" : "none"} />
-              </button>
-            </div>
-
-            <div className="mt-8 divider-thin" />
-
-            {/* Description */}
-            <p className="text-[#F5F0E8]/75 mt-8 leading-relaxed">{product.description}</p>
-
-            {product.material && (
-              <div className="mt-6 text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">
-                Composition · <span className="text-[#F5F0E8]/85">{product.material}</span>
-              </div>
-            )}
-
-            {/* Product Highlights */}
-            <ProductHighlights highlights={product.highlights} />
-
-            <div className="mt-8 divider-thin" />
-            <div className="mt-6 space-y-2">
-              {["Delivered within 3–5 days · Delhi NCR", "Return & Exchange · 7 days", "Made in India"].map((point) => (
-                <div key={point} className="flex items-center gap-2 text-[11px] tracking-[0.25em] uppercase text-[#8A8FA8]">
-                  <span className="w-1 h-1 rounded-full bg-[#C9A96E] flex-shrink-0" />
-                  {point}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Reviews */}
-        <ReviewsSection slug={slug} />
-
-        {/* You May Also Like */}
-        {related.length > 0 && (
-          <div className="mt-32">
-            <div className="flex items-end justify-between mb-10">
-              <div>
-                <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E] mb-2">Continued Reading</div>
-                <h3 className="font-serif-display text-3xl md:text-4xl text-[#F5F0E8]">You may also like</h3>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-12">
-              {related.map((p) => (
-                <Link to={`/product/${p.slug}`} key={p.id} className="group">
-                  <div className="product-card-img-wrap product-card-halo aspect-[3/4] mb-4">
-                    {productImage(p) ? <img src={productImage(p)} alt={p.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-[#8A8FA8] text-xs tracking-[0.3em] uppercase">Awaiting Image</div>}
-                  </div>
-                  <div className="font-serif-display text-xl text-[#F5F0E8]">{p.name}</div>
-                  <div className="text-sm text-[#F5F0E8]/70 mt-1">{formatINR(p.price)}</div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
+            <div className="flex-1">
+              <div
+                className="product-card-img-wrap aspect-[4/5] w-full"
+                onTouchStart={(e) => { if (images.length <= 1) return; e.currentTarget._startX = e.touches[0].clientX; }}
+                onTouchEnd={(e) => {
+                  if (images.length <= 1) return;
+                  const startX = e.currentTarget._startX;
+                  if (startX === undefined) return;
+                  const diff = startX -
