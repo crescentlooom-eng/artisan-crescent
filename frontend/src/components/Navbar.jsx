@@ -71,7 +71,7 @@ export default function Navbar() {
         </Link>
 
         {/* Right icons */}
-        <div className="flex items-center gap-5 justify-self-end text-[var(--cl-text)]/90">
+        <div className="flex items-center gap-6 justify-self-end text-[var(--cl-text)]/90">
           <button
             data-testid="nav-theme-toggle"
             onClick={toggleTheme}
