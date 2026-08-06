@@ -47,7 +47,7 @@ export default function Navbar() {
       }`}
       style={scrolled ? { backgroundColor: "var(--cl-header-bg)" } : undefined}
     >
-      <div className="max-w-[1600px] mx-auto px-6 md:px-10 grid grid-cols-3 items-center">
+      <div className="max-w-none mx-auto px-6 md:px-10 grid grid-cols-3 items-center">
         {/* Left nav */}
         <nav className="hidden md:flex items-center gap-8 text-[11px] tracking-[0.25em] uppercase text-[var(--cl-text)]/85">
           {navLinks.map((l) => (
