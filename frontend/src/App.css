@@ -1,2 +1,2 @@
 /* Crescent Loom - global App overrides (minimal) */
-.App { min-height: 100vh; background: var(--cl-navy); }
+.App { min-height: 100vh; }
