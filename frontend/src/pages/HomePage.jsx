@@ -98,7 +98,7 @@ export default function HomePage() {
       )}
 
       {/* ================= HERO ================= */}
-      <section className="px-6 md:px-12 pb-14 max-w-7xl mx-auto grid md:grid-cols-2 gap-10 items-center">
+      <section className="px-6 md:px-12 pb-14 max-w-[1600px] mx-auto grid md:grid-cols-2 gap-10 items-center">
         <div>
           <p className="text-xs tracking-[0.25em] mb-4 uppercase" style={{ color: "#C9A96E" }}>Wear the New Standard</p>
           <h1 className="font-serif-display text-5xl md:text-6xl leading-[1.05] mb-5" style={{ fontWeight: 400 }}>
@@ -141,7 +141,7 @@ export default function HomePage() {
       </section>
 
       {/* ================= FEATURE BAR ================= */}
-      <section className="px-6 md:px-12 max-w-7xl mx-auto pb-14">
+      <section className="px-6 md:px-12 max-w-[1600px] mx-auto pb-14">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-4 rounded-2xl border px-8 py-6" style={{ borderColor: "var(--cl-border)" }}>
           {[[Truck, "Free Shipping", "On all orders over ₹499"], [PackageCheck, "Easy Returns", "30-day return policy"], [ShieldCheck, "Secure Payment", "100% safe & encrypted"], [Headphones, "24/7 Support", "We're here for you"]].map(([Icon, title, sub]) => (
             <div className="flex items-center gap-3" key={title}>
@@ -158,7 +158,7 @@ export default function HomePage() {
       </section>
 
       {/* ================= SHOP BY CATEGORY ================= */}
-      <section className="px-6 md:px-12 max-w-7xl mx-auto pb-14">
+      <section className="px-6 md:px-12 max-w-[1600px] mx-auto pb-14">
         <div className="flex items-center justify-between mb-5">
           <h2 className="font-serif-display text-2xl">Shop by category</h2>
           <Link to="/shop" className="flex items-center gap-1.5 text-xs font-medium px-4 py-2 rounded-full border" style={{ borderColor: "var(--cl-border)" }}>
@@ -184,7 +184,7 @@ export default function HomePage() {
 
       {/* ================= TRENDING NOW ================= */}
       {trending.length > 0 && (
-        <section className="px-6 md:px-12 max-w-7xl mx-auto pb-14">
+        <section className="px-6 md:px-12 max-w-[1600px] mx-auto pb-14">
           <div className="flex items-center justify-between mb-5">
             <h2 className="font-serif-display text-2xl">Trending now</h2>
             <Link to="/shop" className="flex items-center gap-1.5 text-xs font-medium px-4 py-2 rounded-full border" style={{ borderColor: "var(--cl-border)" }}>
@@ -198,7 +198,7 @@ export default function HomePage() {
       )}
 
       {/* ================= PROMO BANNER ================= */}
-      <section className="px-6 md:px-12 max-w-7xl mx-auto pb-14">
+      <section className="px-6 md:px-12 max-w-[1600px] mx-auto pb-14">
         <div className="rounded-2xl overflow-hidden relative h-64 flex items-center" style={{ background: "var(--cl-surface)" }}>
           {CATEGORY_IMAGES.designer && (
             <img src={CATEGORY_IMAGES.designer} alt="" className="absolute inset-0 w-full h-full object-cover opacity-60" />
@@ -223,7 +223,7 @@ export default function HomePage() {
       </section>
 
       {/* ================= TESTIMONIALS (placeholder copy — swap for real reviews) ================= */}
-      <section className="px-6 md:px-12 max-w-7xl mx-auto pb-14">
+      <section className="px-6 md:px-12 max-w-[1600px] mx-auto pb-14">
         <h2 className="font-serif-display text-2xl mb-5">What our customers say</h2>
         <div className="grid md:grid-cols-3 gap-5">
           {[
@@ -249,7 +249,7 @@ export default function HomePage() {
       </section>
 
       {/* ================= INSTAGRAM ================= */}
-      <section className="px-6 md:px-12 max-w-7xl mx-auto pb-20">
+      <section className="px-6 md:px-12 max-w-[1600px] mx-auto pb-20">
         <div className="flex items-center justify-between mb-5">
           <h2 className="font-serif-display text-2xl">Follow us on Instagram</h2>
           <a href="https://www.instagram.com/crescent_looom" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-xs font-medium px-4 py-2 rounded-full border" style={{ borderColor: "var(--cl-border)" }}>
