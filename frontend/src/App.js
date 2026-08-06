@@ -126,6 +126,7 @@ function App() {
     {splash && <SplashScreen onComplete={() => setSplash(false)} />}
       <BrowserRouter>
         <ThemeProvider>
+        <div className="fabric-bg" />
         <AuthProvider>
           <AdminAuthProvider>
             <CartProvider>
