@@ -78,19 +78,19 @@ export default function Navbar() {
             aria-label="Toggle theme"
             className="hover:text-[#C9A96E] transition-colors"
           >
-            {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+            {theme === "dark" ? <Sun size={21} /> : <Moon size={21} />}
           </button>
           <button data-testid="nav-search-button" onClick={() => setSearchOpen((v) => !v)} aria-label="Search" className="hover:text-[#C9A96E] transition-colors">
-            <Search size={18} />
+            <Search size={21} />
           </button>
           <Link to="/wishlist" data-testid="nav-wishlist-link" className="hover:text-[#C9A96E] transition-colors hidden md:inline">
-            <Heart size={18} />
+            <Heart size={21} />
           </Link>
           <Link to={user ? "/account" : "/login"} data-testid="nav-account-link" className="hover:text-[#C9A96E] transition-colors">
-            <User size={18} />
+            <User size={21} />
           </Link>
           <button data-testid="nav-cart-button" onClick={() => setCartOpen(true)} aria-label="Cart" className="relative hover:text-[#C9A96E] transition-colors">
-            <ShoppingBag size={18} />
+            <ShoppingBag size={21} />
             {count > 0 && (
               <span data-testid="nav-cart-count" className="absolute -top-1.5 -right-2 text-[10px] bg-[#C9A96E] text-[#0B0E1A] rounded-full h-4 min-w-[16px] px-1 flex items-center justify-center font-medium">
                 {count}
@@ -104,7 +104,7 @@ export default function Navbar() {
       {searchOpen && (
         <div className="border-t border-[var(--cl-border)]" style={{ backgroundColor: "var(--cl-header-bg)" }}>
           <form onSubmit={submitSearch} className="max-w-3xl mx-auto px-6 py-5 flex items-center gap-4">
-            <Search size={18} className="text-[#C9A96E]" />
+            <Search size={21} className="text-[#C9A96E]" />
             <input
               data-testid="nav-search-input"
               autoFocus
@@ -113,7 +113,7 @@ export default function Navbar() {
               placeholder="Search the atelier — coats, linen, silk…"
               className="flex-1 text-base"
             />
-            <button type="button" onClick={() => setSearchOpen(false)} aria-label="Close search" className="text-[var(--cl-subtext)]"><X size={18} /></button>
+            <button type="button" onClick={() => setSearchOpen(false)} aria-label="Close search" className="text-[var(--cl-subtext)]"><X size={21} /></button>
           </form>
         </div>
       )}
