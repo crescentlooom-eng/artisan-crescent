@@ -9,11 +9,12 @@
     --cl-gold: #C9A96E;
 
     /* Theme-aware tokens */
-    --cl-bg: #0B0E1A;
-    --cl-surface: #12162A;
+    --cl-bg: #000000;
+    --cl-surface: #111111;
     --cl-text: #F5F0E8;
-    --cl-subtext: #8A8FA8;
-    --cl-border: rgba(245,240,232,0.1);
+    --cl-subtext: #9A9A9A;
+    --cl-border: rgba(255,255,255,0.1);
+    --cl-header-bg: rgba(0,0,0,0.7);
 
     /* Legacy aliases — old code using these still works unchanged */
     --cl-navy: var(--cl-bg);
@@ -22,20 +23,41 @@
 }
 
 html.light {
-    --cl-bg: #F7F4EE;
-    --cl-surface: #FFFFFF;
+    --cl-bg: #FFFFFF;
+    --cl-surface: #F2F2F2;
     --cl-text: #0B0E1A;
     --cl-subtext: #5B5F72;
-    --cl-border: rgba(11,14,26,0.08);
-    --cl-header-bg: rgba(247,244,238,0.75);
+    --cl-border: rgba(0,0,0,0.08);
+    --cl-header-bg: rgba(255,255,255,0.75);
 }
-
-:root {
-    --cl-header-bg: rgba(11,14,26,0.7);
 }
 
 html {
     transition: background-color 0.3s ease, color 0.3s ease;
+}
+/* Ambient cloth texture — placeholder for real macro footage later */
+.fabric-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 900px 700px at 15% 20%, rgba(255,255,255,0.05), transparent 60%),
+        radial-gradient(ellipse 1000px 800px at 85% 75%, rgba(255,255,255,0.035), transparent 60%),
+        repeating-linear-gradient(115deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 3px);
+    background-size: 200% 200%, 200% 200%, 6px 6px;
+    animation: fabricDrift 45s ease-in-out infinite alternate;
+}
+html.light .fabric-bg {
+    background:
+        radial-gradient(ellipse 900px 700px at 15% 20%, rgba(0,0,0,0.04), transparent 60%),
+        radial-gradient(ellipse 1000px 800px at 85% 75%, rgba(0,0,0,0.03), transparent 60%),
+        repeating-linear-gradient(115deg, rgba(0,0,0,0.018) 0px, rgba(0,0,0,0.018) 1px, transparent 1px, transparent 3px);
+    background-size: 200% 200%, 200% 200%, 6px 6px;
+}
+@keyframes fabricDrift {
+    0%   { background-position: 0% 0%, 100% 100%, 0 0; }
+    100% { background-position: 18% 12%, 82% 88%, 6px 6px; }
 }
 
 * {
