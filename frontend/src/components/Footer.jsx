@@ -5,7 +5,7 @@ export default function Footer() {
   return (
     <>
       <footer className="relative mt-32 border-t border-[var(--cl-border)] text-[var(--cl-text)]" style={{ backgroundColor: "var(--cl-bg)" }}>
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-20 grid md:grid-cols-4 gap-12">
+        <div className="max-w-[1600px] mx-auto px-6 md:px-12 py-20 grid md:grid-cols-4 gap-12">
           <div className="md:col-span-2">
             <div className="font-serif-display text-3xl md:text-4xl leading-tight">
               Crafted in Silence.<br/>
@@ -36,7 +36,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="border-t border-[var(--cl-border)]">
-          <div className="max-w-7xl mx-auto px-6 md:px-12 py-6 flex flex-col md:flex-row items-center justify-between gap-2 text-[11px] tracking-[0.25em] uppercase text-[var(--cl-subtext)]">
+          <div className="max-w-[1600px] mx-auto px-6 md:px-12 py-6 flex flex-col md:flex-row items-center justify-between gap-2 text-[11px] tracking-[0.25em] uppercase text-[var(--cl-subtext)]">
             <div>© {new Date().getFullYear()} Crescent Loom</div>
             <div className="flex items-center gap-4">
               <a href="https://www.instagram.com/crescent_looom" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-[#C9A96E] transition-colors">
