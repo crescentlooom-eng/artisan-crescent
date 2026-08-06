@@ -157,9 +157,25 @@ export default function ShopPage() {
                 {filtersOpen.size && (
                   <div className="flex flex-col gap-2.5">
                     {allSizes.map((s) => (
-                      <label key={s} className="flex items-center gap-2.5 text-sm cursor-pointer" style={{ color: "var(--cl-subtext)" }}>
-                        <input type="checkbox" checked={sizes.includes(s)} onChange={() => toggleSize(s)} style={{ accentColor: "#C9A96E" }} />
-                        {s}
+                      <label
+                        key={s}
+                        className="cursor-pointer text-sm"
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "flex-start",
+                          gap: "10px",
+                          color: "var(--cl-subtext)",
+                        }}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={sizes.includes(s)}
+                          onChange={() => toggleSize(s)}
+                          style={{ accentColor: "#C9A96E", margin: 0, flexShrink: 0, width: "16px", height: "16px" }}
+                        />
+                        <span>{s}</span>
                       </label>
                     ))}
                   </div>
