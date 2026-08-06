@@ -100,16 +100,16 @@ export default function HomePage() {
       {/* ================= HERO ================= */}
       <section className="px-6 md:px-12 pb-14 max-w-none mx-auto grid md:grid-cols-2 gap-10 items-center">
         <div>
-          <p className="text-xs tracking-[0.25em] mb-4 uppercase" style={{ color: "#C9A96E" }}>Wear the New Standard</p>
-          <h1 className="font-serif-display text-5xl md:text-6xl leading-[1.05] mb-5" style={{ fontWeight: 400 }}>
+          <p className="text-xs tracking-[0.35em] mb-6 uppercase font-medium" style={{ color: "#C9A96E" }}>Wear the New Standard</p>
+          <h1 className="font-serif-display text-6xl md:text-7xl lg:text-8xl leading-[1.02] mb-7" style={{ fontWeight: 400 }}>
             Where Style Speaks,<br />Trends Resonate.
           </h1>
-          <p className="text-sm mb-8 max-w-sm" style={{ color: "var(--cl-subtext)" }}>
+          <p className="text-base mb-10 max-w-md leading-relaxed" style={{ color: "var(--cl-subtext)" }}>
             Premium essentials for the new generation. Minimal. Clean. Confident.
           </p>
           <div className="flex items-center gap-6 mb-10">
-            <Link to="/shop" className="flex items-center gap-2 text-sm font-medium px-6 py-3 rounded-full" style={{ background: "var(--cl-text)", color: "var(--cl-bg)" }}>
-              Explore Collection <ArrowRight size={15} />
+            <Link to="/shop" className="flex items-center gap-2 text-base font-medium px-8 py-4 rounded-full tracking-wide" style={{ background: "var(--cl-text)", color: "var(--cl-bg)" }}>
+              Explore Collection <ArrowRight size={17} />
             </Link>
             <button className="flex items-center gap-2 text-sm font-medium">
               <span className="w-8 h-8 rounded-full border flex items-center justify-center" style={{ borderColor: "var(--cl-border)" }}>
@@ -118,7 +118,7 @@ export default function HomePage() {
               Watch Lookbook
             </button>
           </div>
-          <div className="flex items-center gap-8 text-sm">
+          <div className="flex items-center gap-10 text-base">
             {[["10K+", "Happy Customers"], ["4.8★", "Product Rating"], ["Pan India", "Free Shipping"]].map(([big, small], i) => (
               <React.Fragment key={big}>
                 {i > 0 && <div className="w-px h-8" style={{ background: "var(--cl-border)" }} />}
