@@ -40,26 +40,21 @@ html {
     z-index: -1;
     pointer-events: none;
     background:
-        radial-gradient(ellipse 700px 500px at 20% 25%, rgba(255,255,255,0.10), transparent 55%),
-        radial-gradient(ellipse 800px 600px at 80% 75%, rgba(255,255,255,0.07), transparent 55%),
-        repeating-linear-gradient(115deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 4px),
-        repeating-linear-gradient(25deg, rgba(255,255,255,0.035) 0px, rgba(255,255,255,0.035) 1px, transparent 1px, transparent 4px);
-    background-size: 200% 200%, 200% 200%, 8px 8px, 8px 8px;
+        radial-gradient(ellipse 700px 500px at 20% 25%, rgba(255,255,255,0.16), transparent 55%),
+        radial-gradient(ellipse 800px 600px at 80% 75%, rgba(255,255,255,0.11), transparent 55%),
+        repeating-linear-gradient(115deg, rgba(255,255,255,0.09) 0px, rgba(255,255,255,0.09) 2px, transparent 2px, transparent 6px),
+        repeating-linear-gradient(25deg, rgba(255,255,255,0.06) 0px, rgba(255,255,255,0.06) 2px, transparent 2px, transparent 6px);
+    background-size: 200% 200%, 200% 200%, 14px 14px, 14px 14px;
     animation: fabricDrift 30s ease-in-out infinite alternate;
 }
 html.light .fabric-bg {
     background:
-        radial-gradient(ellipse 700px 500px at 20% 25%, rgba(0,0,0,0.08), transparent 55%),
-        radial-gradient(ellipse 800px 600px at 80% 75%, rgba(0,0,0,0.055), transparent 55%),
-        repeating-linear-gradient(115deg, rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.04) 1px, transparent 1px, transparent 4px),
-        repeating-linear-gradient(25deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 4px);
-    background-size: 200% 200%, 200% 200%, 8px 8px, 8px 8px;
+        radial-gradient(ellipse 700px 500px at 20% 25%, rgba(0,0,0,0.13), transparent 55%),
+        radial-gradient(ellipse 800px 600px at 80% 75%, rgba(0,0,0,0.09), transparent 55%),
+        repeating-linear-gradient(115deg, rgba(0,0,0,0.07) 0px, rgba(0,0,0,0.07) 2px, transparent 2px, transparent 6px),
+        repeating-linear-gradient(25deg, rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 2px, transparent 2px, transparent 6px);
+    background-size: 200% 200%, 200% 200%, 14px 14px, 14px 14px;
 }
-@keyframes fabricDrift {
-    0%   { background-position: 0% 0%, 100% 100%, 0 0, 0 0; }
-    100% { background-position: 20% 15%, 80% 85%, 8px 8px, -8px 8px; }
-}
-
 * {
     box-sizing: border-box;
 }
