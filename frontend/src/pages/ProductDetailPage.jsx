@@ -265,4 +265,250 @@ export default function ProductDetailPage() {
                   if (images.length <= 1) return;
                   const startX = e.currentTarget._startX;
                   if (startX === undefined) return;
-                  const diff = startX -
+                  const diff = startX - e.changedTouches[0].clientX;
+                  if (Math.abs(diff) > 50) {
+                    if (diff > 0) setActiveImg((prev) => (prev + 1) % images.length);
+                    else setActiveImg((prev) => (prev - 1 + images.length) % images.length);
+                  }
+                }}
+              >
+                {heroImg ? (
+                  <img src={heroImg} alt={product.name} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-xs tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Awaiting Image</div>
+                )}
+              </div>
+              {images.length > 1 && (
+                <div className="flex md:hidden gap-3 mt-3 overflow-x-auto">
+                  {images.map((img, i) => (
+                    <button key={i} onClick={() => setActiveImg(i)} className="w-16 h-16 shrink-0 overflow-hidden border" style={{ borderColor: i === activeImg ? "#C9A96E" : "transparent" }}>
+                      <img src={img} alt="" className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Info */}
+          <div className="lg:col-span-5 lg:pt-6">
+            <h1 className="font-serif-display text-4xl md:text-5xl leading-[0.95]" style={{ color: "var(--cl-text)" }}>{product.name}</h1>
+            <div className="text-2xl mt-4" style={{ color: "var(--cl-text)", opacity: 0.85 }}>{formatINR(product.price)}</div>
+
+            {total > 0 && (
+              <div className="flex items-center gap-2 mt-3">
+                <StarRating value={Math.round(average)} size={14} />
+                <span className="text-sm" style={{ color: "var(--cl-subtext)" }}>({total} review{total !== 1 ? "s" : ""})</span>
+              </div>
+            )}
+
+            {product.description && (
+              <p className="mt-6 leading-relaxed text-sm" style={{ color: "var(--cl-subtext)" }}>{product.description}</p>
+            )}
+
+            {checklist.length > 0 && (
+              <div className="mt-6 space-y-2">
+                {checklist.map((item) => (
+                  <div key={item} className="flex items-center gap-2 text-sm" style={{ color: "var(--cl-text)" }}>
+                    <span style={{ color: "#C9A96E" }}>✓</span> {item}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Variant selector */}
+            {product.variants?.length > 0 && (
+              <div className="mt-10">
+                <div className="text-[11px] tracking-[0.3em] uppercase mb-3" style={{ color: "#C9A96E" }}>
+                  Variant · <span style={{ color: "var(--cl-text)", opacity: 0.85 }}>{variant?.name}</span>
+                </div>
+                <div className="grid grid-cols-6 gap-3" data-testid="product-variant-grid">
+                  {product.variants.map((v, i) => {
+                    const thumb = v.images?.[0];
+                    const selected = i === variantIdx;
+                    return (
+                      <button
+                        key={v.id || i}
+                        onClick={() => {
+                          setVariantIdx(i);
+                          setActiveImg(0);
+                          if (v.in_stock === false) { setSize(null); }
+                          else {
+                            const outOfStock = v.out_of_stock_sizes || [];
+                            if (!size || outOfStock.includes(size)) {
+                              setSize((product.sizes || []).find((s) => !outOfStock.includes(s)) || null);
+                            }
+                          }
+                        }}
+                        data-testid={`product-variant-${i}`}
+                        title={v.name}
+                        className="aspect-square overflow-hidden border-2 transition-all relative"
+                        style={{
+                          borderColor: selected ? "#C9A96E" : "transparent",
+                          opacity: selected ? 1 : 0.7,
+                          backgroundColor: !thumb && v.color_hex ? v.color_hex : undefined,
+                        }}
+                      >
+                        {thumb ? (
+                          <img src={thumb} alt={v.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-[9px] tracking-[0.15em] uppercase" style={{ color: "var(--cl-text)", opacity: 0.7, background: "var(--cl-surface)" }}>
+                            {v.name.replace(/[^0-9]/g, "") || v.name.slice(0,3)}
+                          </div>
+                        )}
+                        {v.in_stock === false && (
+                          <div className="absolute inset-0 flex items-center justify-center" style={{ background: "var(--cl-header-bg)" }}>
+                            <div className="w-full h-[1px] absolute rotate-45" style={{ background: "var(--cl-subtext)", opacity: 0.5 }} />
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {variantOutOfStock && (
+              <div className="mt-6 text-[11px] tracking-[0.25em] uppercase" style={{ color: "var(--cl-subtext)" }}>
+                <span style={{ color: "#E57373" }}>Currently unavailable</span> — this design is out of stock.
+              </div>
+            )}
+
+            {/* Size selector */}
+            {product.sizes?.length > 0 && !variantOutOfStock && (
+              <div className="mt-10">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "#C9A96E" }}>Size · {size || "Out of stock"}</div>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <button data-testid="product-size-guide-trigger" className="text-[11px] tracking-[0.25em] uppercase gold-underline" style={{ color: "var(--cl-text)", opacity: 0.8 }}>Size Guide</button>
+                    </DialogTrigger>
+                    <DialogContent className="bg-[var(--cl-bg)] text-[var(--cl-text)] border-[var(--cl-border)]">
+                      <DialogHeader>
+                        <DialogTitle className="font-serif-display text-3xl">Size Guide</DialogTitle>
+                      </DialogHeader>
+                      <div className="mt-4 text-sm">
+                        <table className="w-full text-left">
+                          <thead className="text-[11px] tracking-[0.2em] uppercase" style={{ color: "#C9A96E" }}>
+                            <tr><th className="py-2">Size</th><th>Chest (in)</th><th>Length (in)</th><th>Shoulder (in)</th></tr>
+                          </thead>
+                          <tbody style={{ color: "var(--cl-text)", opacity: 0.8 }}>
+                            {product.slug === "textured-polo-tee" && <>
+                              <tr className="border-t" style={{ borderColor: "var(--cl-border)" }}><td className="py-3">M</td><td>36</td><td>26.5</td><td>15.5</td></tr>
+                              <tr className="border-t" style={{ borderColor: "var(--cl-border)" }}><td className="py-3">L</td><td>37</td><td>26.5</td><td>17</td></tr>
+                              <tr className="border-t" style={{ borderColor: "var(--cl-border)" }}><td className="py-3">XL</td><td>40</td><td>28.5</td><td>17</td></tr>
+                            </>}
+                            {product.slug === "essential-tee" && <>
+                              <tr className="border-t" style={{ borderColor: "var(--cl-border)" }}><td className="py-3">M</td><td>35</td><td>25.2</td><td>15</td></tr>
+                              <tr className="border-t" style={{ borderColor: "var(--cl-border)" }}><td className="py-3">XL</td><td>37</td><td>25.5</td><td>16.5</td></tr>
+                            </>}
+                            {product.slug === "prism-wear-tee" && <>
+                              <tr className="border-t" style={{ borderColor: "var(--cl-border)" }}><td className="py-3">Free Size</td><td>41</td><td>28.5</td><td>18</td></tr>
+                            </>}
+                          </tbody>
+                        </table>
+                        <p className="text-xs mt-4" style={{ color: "var(--cl-subtext)" }}>Measurements are approximate. Garments are cut relaxed; pick your usual size.</p>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  {product.sizes.map((s) => {
+                    const outOfStock = variant?.out_of_stock_sizes?.includes(s);
+                    return (
+                      <button
+                        key={s}
+                        data-testid={`product-size-${s}`}
+                        onClick={() => !outOfStock && setSize(s)}
+                        disabled={outOfStock}
+                        className="px-4 py-2 text-xs tracking-[0.2em] uppercase border transition-all duration-300"
+                        style={outOfStock
+                          ? { borderColor: "var(--cl-border)", color: "var(--cl-subtext)", opacity: 0.4, textDecoration: "line-through", cursor: "not-allowed" }
+                          : size === s
+                          ? { borderColor: "#C9A96E", color: "#C9A96E" }
+                          : { borderColor: "var(--cl-border)", color: "var(--cl-text)", opacity: 0.8 }}
+                      >{s}</button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Quantity + Add to cart + Buy now */}
+            <div className="mt-10 flex items-center gap-4">
+              <div className="flex items-center border" style={{ borderColor: "rgba(201,169,110,0.3)" }}>
+                <button onClick={() => setQty(Math.max(1, qty - 1))} className="px-3 py-3" style={{ color: "var(--cl-text)" }}><Minus size={14} /></button>
+                <span className="px-4 text-sm w-10 text-center" style={{ color: "var(--cl-text)" }} data-testid="product-qty">{qty}</span>
+                <button onClick={() => setQty(qty + 1)} className="px-3 py-3" style={{ color: "var(--cl-text)" }}><Plus size={14} /></button>
+              </div>
+              <button data-testid="product-wishlist-button" onClick={onWish} aria-label="Wishlist" className="p-3 border" style={{ borderColor: has(product.id) ? "#C9A96E" : "rgba(201,169,110,0.3)", color: has(product.id) ? "#C9A96E" : "var(--cl-text)" }}>
+                <Heart size={16} fill={has(product.id) ? "currentColor" : "none"} />
+              </button>
+            </div>
+            <div className="mt-4 flex items-center gap-4">
+              <button
+                data-testid="product-add-to-cart"
+                onClick={onAdd}
+                disabled={!size || variantOutOfStock}
+                className="btn-gold flex-1 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {variantOutOfStock ? "Out of Stock" : size ? "Add to Bag" : "Out of Stock"}
+              </button>
+              <button
+                data-testid="product-buy-now"
+                onClick={onBuyNow}
+                disabled={!size || variantOutOfStock}
+                className="flex-1 py-3 text-sm font-medium tracking-wide border disabled:opacity-40 disabled:cursor-not-allowed"
+                style={{ borderColor: "#C9A96E", color: "#C9A96E" }}
+              >
+                Buy Now
+              </button>
+            </div>
+
+            <div className="mt-8 divider-thin" />
+
+            {/* Feature icons */}
+            <div className="grid grid-cols-3 gap-3 mt-8">
+              {[[Truck, "Free Shipping", "Over ₹499"], [PackageCheck, "Easy Returns", "7-day policy"], [ShieldCheck, "Secure Payment", "100% safe"]].map(([Icon, title, sub]) => (
+                <div key={title} className="text-center">
+                  <div className="w-9 h-9 mx-auto rounded-full flex items-center justify-center mb-2" style={{ background: "var(--cl-surface)" }}>
+                    <Icon size={14} style={{ color: "var(--cl-text)" }} />
+                  </div>
+                  <div className="text-[11px] font-medium" style={{ color: "var(--cl-text)" }}>{title}</div>
+                  <div className="text-[10px]" style={{ color: "var(--cl-subtext)" }}>{sub}</div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-8 divider-thin" />
+            <div className="mt-6 space-y-2">
+              {["Delivered within 3–5 days · Delhi NCR", "Return & Exchange · 7 days", "Made in India"].map((point) => (
+                <div key={point} className="flex items-center gap-2 text-[11px] tracking-[0.25em] uppercase" style={{ color: "var(--cl-subtext)" }}>
+                  <span className="w-1 h-1 rounded-full flex-shrink-0" style={{ background: "#C9A96E" }} />
+                  {point}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <ReviewsSection slug={slug} average={average} total={total} reviews={reviews} onSubmitted={fetchReviews} />
+
+        {/* You May Also Like */}
+        {related.length > 0 && (
+          <div className="mt-32">
+            <div className="flex items-end justify-between mb-10">
+              <div>
+                <div className="text-[11px] tracking-[0.3em] uppercase mb-2" style={{ color: "#C9A96E" }}>Continued Reading</div>
+                <h3 className="font-serif-display text-3xl md:text-4xl" style={{ color: "var(--cl-text)" }}>You may also like</h3>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-12">
+              {related.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
