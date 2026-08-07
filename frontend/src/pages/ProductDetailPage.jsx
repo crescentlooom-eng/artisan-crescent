@@ -4,6 +4,7 @@ import { Heart, Minus, Plus, Star, Truck, PackageCheck, ShieldCheck } from "luci
 import { formatINR, productImage, api } from "@/lib/api";
 import { getProductBySlug, listProducts } from "@/data/products";
 import { useCart } from "@/context/CartContext";
+import useScrollReveal from "@/hooks/useScrollReveal";
 import { useWishlist } from "@/context/WishlistContext";
 import ProductCard from "@/components/ProductCard";
 import {
@@ -152,6 +153,7 @@ export default function ProductDetailPage() {
   const [average, setAverage] = useState(0);
   const [total, setTotal] = useState(0);
   const { addItem } = useCart();
+    useScrollReveal([related]);
   const { has, toggle } = useWishlist();
 
   const fetchReviews = async () => {
