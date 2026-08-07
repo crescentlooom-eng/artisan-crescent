@@ -184,7 +184,17 @@ export default function ProductDetailPage() {
         : (p.sizes || []).find((s) => !outOfStock.includes(s)) || p.sizes?.[0] || null;
       setSize(firstAvailable);
       setActiveImg(0);
-      setRelated(listProducts({ category: p.category }).filter((x) => x.id !== p.id).slice(0, 4));
+      const otherProducts = listProducts({}).filter((x) => x.id !== p.id);
+      const expandedOthers = otherProducts.flatMap((op) =>
+        op.variants?.length > 0
+          ? op.variants.map((v) => ({
+              ...op, id: `${op.id}__${v.id}`, variantId: v.id,
+              images: v.images?.length ? v.images : op.images,
+              variants: [], color_hex: v.color_hex, __isVariantCard: true,
+            }))
+          : [op]
+      );
+      setRelated(expandedOthers.slice(0, 4));
     }
   }, [slug, searchParams]);
 
@@ -238,7 +248,7 @@ export default function ProductDetailPage() {
 
   return (
     <div data-testid="product-detail-page" className="page-fade pt-28 md:pt-32 pb-24">
-      <div className="max-w-none mx-auto px-6 md:px-12">
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="text-[11px] tracking-[0.3em] uppercase mb-8" style={{ color: "var(--cl-subtext)" }}>
           <Link to="/" className="hover:text-[#C9A96E]">Home</Link> <span className="mx-2">/</span>
           <Link to={`/shop?category=${product.category}`} className="hover:text-[#C9A96E] capitalize">{product.category}</Link> <span className="mx-2">/</span>
