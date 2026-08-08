@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Heart, Minus, Plus, Star, Truck, PackageCheck, ShieldCheck } from "lucide-react";
+import { Heart, Minus, Plus, Star, Truck, PackageCheck, ShieldCheck, MapPin, Loader2, Moon } from "lucide-react";
 import { formatINR, productImage, api } from "@/lib/api";
 import { getProductBySlug, listProducts } from "@/data/products";
 import { useCart } from "@/context/CartContext";
-import useScrollReveal from "@/hooks/useScrollReveal";
 import { useWishlist } from "@/context/WishlistContext";
 import ProductCard from "@/components/ProductCard";
+import useScrollReveal from "@/hooks/useScrollReveal";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger
 } from "@/components/ui/dialog";
@@ -153,8 +153,43 @@ export default function ProductDetailPage() {
   const [average, setAverage] = useState(0);
   const [total, setTotal] = useState(0);
   const { addItem } = useCart();
-    useScrollReveal([related]);
   const { has, toggle } = useWishlist();
+  useScrollReveal([related]);
+
+  // Pincode checker
+  const [pincode, setPincode] = useState("");
+  const [pincodeResult, setPincodeResult] = useState(null);
+  const [pincodeLoading, setPincodeLoading] = useState(false);
+  const [pincodeError, setPincodeError] = useState("");
+
+  // Image zoom
+  const [zoomStyle, setZoomStyle] = useState({});
+  const [isZooming, setIsZooming] = useState(false);
+
+  const checkPincode = async () => {
+    if (!/^\d{6}$/.test(pincode)) {
+      setPincodeError("Enter a valid 6-digit pincode");
+      setPincodeResult(null);
+      return;
+    }
+    setPincodeError("");
+    setPincodeLoading(true);
+    setPincodeResult(null);
+    try {
+      const r = await api.get(`/check-pincode/${pincode}`);
+      setPincodeResult(r.data);
+    } catch (e) {
+      setPincodeError(e?.response?.data?.detail || "Could not check this pincode right now");
+    }
+    setPincodeLoading(false);
+  };
+
+  const onImgMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setZoomStyle({ transformOrigin: `${x}% ${y}%`, transform: "scale(1.9)" });
+  };
 
   const fetchReviews = async () => {
     try {
@@ -170,6 +205,7 @@ export default function ProductDetailPage() {
   useEffect(() => {
     const p = getProductBySlug(slug);
     setProduct(p);
+    setPincode(""); setPincodeResult(null); setPincodeError("");
     if (p) {
       if (window.fbq) {
         window.fbq('track', 'ViewContent', { content_name: p.name, content_ids: [p.id], content_type: 'product', value: p.price, currency: 'INR' });
@@ -186,6 +222,7 @@ export default function ProductDetailPage() {
         : (p.sizes || []).find((s) => !outOfStock.includes(s)) || p.sizes?.[0] || null;
       setSize(firstAvailable);
       setActiveImg(0);
+
       const otherProducts = listProducts({}).filter((x) => x.id !== p.id);
       const expandedOthers = otherProducts.flatMap((op) =>
         op.variants?.length > 0
@@ -272,6 +309,9 @@ export default function ProductDetailPage() {
             <div className="flex-1">
               <div
                 className="product-card-img-wrap aspect-[4/5] w-full"
+                onMouseEnter={() => setIsZooming(true)}
+                onMouseLeave={() => setIsZooming(false)}
+                onMouseMove={onImgMouseMove}
                 onTouchStart={(e) => { if (images.length <= 1) return; e.currentTarget._startX = e.touches[0].clientX; }}
                 onTouchEnd={(e) => {
                   if (images.length <= 1) return;
@@ -285,9 +325,17 @@ export default function ProductDetailPage() {
                 }}
               >
                 {heroImg ? (
-                  <img src={heroImg} alt={product.name} className="w-full h-full object-cover" />
+                  <img
+                    src={heroImg}
+                    alt={product.name}
+                    className="w-full h-full object-cover hidden md:block cursor-zoom-in"
+                    style={isZooming ? { ...zoomStyle, transition: "transform 0.05s linear" } : { transition: "transform 0.3s ease" }}
+                  />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-xs tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Awaiting Image</div>
+                )}
+                {heroImg && (
+                  <img src={heroImg} alt={product.name} className="w-full h-full object-cover md:hidden" />
                 )}
               </div>
               {images.length > 1 && (
@@ -475,6 +523,55 @@ export default function ProductDetailPage() {
               >
                 Buy Now
               </button>
+            </div>
+
+            {/* Loom Credits preview */}
+            <div className="mt-5 flex items-center gap-3 border px-4 py-3" style={{ borderColor: "rgba(201,169,110,0.25)", background: "var(--cl-surface)" }}>
+              <Moon size={16} style={{ color: "#C9A96E" }} />
+              <div className="text-xs" style={{ color: "var(--cl-text)", opacity: 0.85 }}>
+                Earn <span style={{ color: "#C9A96E" }}>1 Loom Credit Card</span> (worth ₹5) with this order — collect 3 to redeem.
+              </div>
+            </div>
+
+            {/* Pincode checker */}
+            <div className="mt-4 border px-4 py-4" style={{ borderColor: "var(--cl-border)" }}>
+              <div className="flex items-center gap-2 mb-3">
+                <MapPin size={14} style={{ color: "#C9A96E" }} />
+                <span className="text-[11px] tracking-[0.25em] uppercase" style={{ color: "var(--cl-text)" }}>Check Delivery</span>
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={6}
+                  value={pincode}
+                  onChange={(e) => setPincode(e.target.value.replace(/\D/g, ""))}
+                  onKeyDown={(e) => e.key === "Enter" && checkPincode()}
+                  placeholder="Enter 6-digit pincode"
+                  className="flex-1 text-sm bg-transparent border px-3 py-2"
+                  style={{ borderColor: "var(--cl-border)", color: "var(--cl-text)" }}
+                />
+                <button
+                  onClick={checkPincode}
+                  disabled={pincodeLoading}
+                  className="px-4 py-2 text-xs tracking-[0.2em] uppercase border shrink-0"
+                  style={{ borderColor: "#C9A96E", color: "#C9A96E" }}
+                >
+                  {pincodeLoading ? <Loader2 size={14} className="animate-spin" /> : "Check"}
+                </button>
+              </div>
+              {pincodeError && <p className="text-xs mt-2" style={{ color: "#E57373" }}>{pincodeError}</p>}
+              {pincodeResult && (
+                pincodeResult.serviceable ? (
+                  <div className="text-xs mt-3 space-y-1" style={{ color: "var(--cl-subtext)" }}>
+                    <div style={{ color: "#8FBC8F" }}>✓ Delivers to {pincodeResult.city || "your area"}{pincodeResult.state ? `, ${pincodeResult.state}` : ""}</div>
+                    <div>Estimated delivery: {pincodeResult.estimated_days}</div>
+                    <div>{pincodeResult.cod ? "✓ Cash on Delivery available" : "Prepaid only for this pincode"}</div>
+                  </div>
+                ) : (
+                  <div className="text-xs mt-3" style={{ color: "#E57373" }}>Sorry, we don't deliver to this pincode yet.</div>
+                )
+              )}
             </div>
 
             <div className="mt-8 divider-thin" />
