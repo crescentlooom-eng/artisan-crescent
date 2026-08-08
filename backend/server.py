@@ -523,6 +523,42 @@ async def auth_login_password(body: CustomerLoginReq, request: Request, response
         "picture": user.get("picture"), "is_admin": bool(user.get("is_admin")), "token": token,
     }
 
+
+class UpdatePhoneReq(BaseModel):
+    phone: str
+
+
+@api_router.post("/auth/update-phone")
+async def update_phone(body: UpdatePhoneReq, user=Depends(require_user)):
+    phone = re.sub(r"\D", "", body.phone or "")
+    if len(phone) < 10 or len(phone) > 13:
+        raise HTTPException(status_code=400, detail="Enter a valid phone number")
+    await db.users.update_one({"user_id": user["user_id"]}, {"$set": {"phone": phone}})
+    return {"ok": True, "phone": phone}
+
+
+class ChangePasswordReq(BaseModel):
+    current_password: Optional[str] = None
+    new_password: str
+
+
+@api_router.post("/auth/change-password")
+async def change_password(body: ChangePasswordReq, user=Depends(require_user)):
+    if len(body.new_password) < 8:
+        raise HTTPException(status_code=400, detail="New password must be at least 8 characters")
+    doc = await db.users.find_one({"user_id": user["user_id"]})
+    if not doc:
+        raise HTTPException(status_code=404, detail="User not found")
+    if doc.get("password_hash"):
+        if not body.current_password or not _check_pw(body.current_password, doc["password_hash"]):
+            raise HTTPException(status_code=401, detail="Current password is incorrect")
+    await db.users.update_one(
+        {"user_id": user["user_id"]},
+        {"$set": {"password_hash": _hash_pw(body.new_password), "auth_provider": "password"}}
+    )
+    return {"ok": True}
+
+
 # ====================== Admin Auth (email + password) ======================
 import admin_auth as adm
 
