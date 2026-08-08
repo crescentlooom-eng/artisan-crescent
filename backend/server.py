@@ -567,6 +567,40 @@ async def get_product(slug: str):
     if not p:
         raise HTTPException(status_code=404, detail="Product not found")
     return p
+    @api_router.get("/check-pincode/{pincode}")
+async def check_pincode(pincode: str):
+    """Public delivery-serviceability checker for the storefront (pre-purchase)."""
+    if not pincode.isdigit() or len(pincode) != 6:
+        raise HTTPException(status_code=400, detail="Enter a valid 6-digit pincode")
+    if not DELHIVERY_API_TOKEN:
+        raise HTTPException(status_code=500, detail="Delivery check is not configured")
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            r = await client.get(
+                f"{DELHIVERY_BASE_URL}/c/api/pin-codes/json/",
+                params={"filter_codes": pincode},
+                headers=_delhivery_headers(),
+            )
+        data = r.json()
+        rows = data.get("delivery_codes", [])
+        if not rows:
+            return {"serviceable": False, "cod": False, "prepaid": False, "estimated_days": None}
+        info = rows[0].get("postal_code", {})
+        cod = str(info.get("cod", "N")).upper() == "Y"
+        prepaid = str(info.get("pre_paid", "N")).upper() == "Y"
+        return {
+            "serviceable": bool(cod or prepaid),
+            "cod": cod,
+            "prepaid": prepaid,
+            "city": info.get("city", ""),
+            "state": info.get("state_code", ""),
+            "estimated_days": "3-5 business days",
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Pincode check failed for {pincode}: {e}")
+        raise HTTPException(status_code=502, detail="Could not check delivery for this pincode right now")
 
 @api_router.post("/admin/products")
 async def create_product(body: ProductCreate, admin=Depends(require_admin)):
