@@ -77,7 +77,7 @@ export default function AccountPage() {
   const memberSince = new Date(user.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
 
   return (
-    <div data-testid="account-page" className="page-fade pt-28 md:pt-32 pb-24 max-w-6xl mx-auto px-6 md:px-12">
+    <div data-testid="account-page" className="page-fade pt-28 md:pt-32 pb-24 max-w-none mx-auto px-6 md:px-12">
       <div className="text-[11px] tracking-[0.4em] uppercase mb-3" style={{ color: "#C9A96E" }}>Your House</div>
       <h1 className="font-serif-display text-4xl md:text-5xl mb-1" style={{ color: "var(--cl-text)" }}>My Account</h1>
       <div className="text-xs mt-2" style={{ color: "var(--cl-subtext)" }}>Home / My Account</div>
