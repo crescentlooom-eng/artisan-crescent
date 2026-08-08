@@ -1,27 +1,59 @@
 import React from "react";
 import { Link, Navigate } from "react-router-dom";
-import { Heart, ShoppingBag } from "lucide-react";
+import { Heart, ShoppingBag, Share2 } from "lucide-react";
 import { useWishlist } from "@/context/WishlistContext";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
 import { formatINR, productImage } from "@/lib/api";
+import { toast } from "sonner";
 
 export default function WishlistPage() {
   const { items, toggle } = useWishlist();
   const { user, loading } = useAuth();
   const { addItem } = useCart();
 
-  if (loading) return <div className="pt-40 text-center text-[#8A8FA8] tracking-[0.3em] uppercase text-sm">Loading...</div>;
+  if (loading) return <div className="pt-40 text-center tracking-[0.3em] uppercase text-sm" style={{ color: "var(--cl-subtext)" }}>Loading...</div>;
   if (!user) return <Navigate to="/login" replace />;
+
+  const moveAllToBag = () => {
+    items.forEach((p) => addItem(p));
+    toast.success(`${items.length} piece${items.length !== 1 ? "s" : ""} added to your bag`);
+  };
+
+  const shareWishlist = async () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      try { await navigator.share({ title: "My Crescent Loom Wishlist", url }); } catch (e) {}
+    } else {
+      await navigator.clipboard.writeText(url);
+      toast.success("Link copied to clipboard");
+    }
+  };
 
   return (
     <div data-testid="wishlist-page" className="page-fade pt-32 pb-24 max-w-7xl mx-auto px-6 md:px-12">
-      <div className="text-[11px] tracking-[0.4em] uppercase text-[#C9A96E] mb-4">Saved Pieces</div>
-      <h1 className="font-serif-display text-5xl md:text-6xl text-[#F5F0E8] leading-[0.95]">Your <span className="italic text-[#C9A96E]/90">Quiet Library</span></h1>
+      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+        <div>
+          <div className="text-[11px] tracking-[0.4em] uppercase mb-4" style={{ color: "#C9A96E" }}>Saved Pieces</div>
+          <h1 className="font-serif-display text-5xl md:text-6xl leading-[0.95]" style={{ color: "var(--cl-text)" }}>
+            Your <span className="italic" style={{ color: "#C9A96E" }}>Quiet Library</span>
+          </h1>
+        </div>
+        {items.length > 0 && (
+          <div className="flex items-center gap-3">
+            <button onClick={shareWishlist} className="flex items-center gap-2 text-[11px] tracking-[0.25em] uppercase border px-4 py-2.5" style={{ borderColor: "var(--cl-border)", color: "var(--cl-text)" }}>
+              <Share2 size={13} /> Share
+            </button>
+            <button onClick={moveAllToBag} className="flex items-center gap-2 text-[11px] tracking-[0.25em] uppercase px-4 py-2.5" style={{ background: "#C9A96E", color: "#0B0E1A" }}>
+              <ShoppingBag size={13} /> Move all to bag
+            </button>
+          </div>
+        )}
+      </div>
 
       {items.length === 0 ? (
         <div className="mt-24 text-center">
-          <p className="text-[#8A8FA8]">Nothing here yet — but the loom is patient.</p>
+          <p style={{ color: "var(--cl-subtext)" }}>Nothing here yet — but the loom is patient.</p>
           <Link to="/shop" className="btn-gold inline-block mt-8">Enter the Collection</Link>
         </div>
       ) : (
@@ -35,14 +67,19 @@ export default function WishlistPage() {
               </Link>
               <div className="flex items-start justify-between">
                 <div>
-                  <div className="font-serif-display text-xl text-[#F5F0E8]">{p.name}</div>
-                  <div className="text-sm text-[#F5F0E8]/70 mt-1">{formatINR(p.price)}</div>
+                  <div className="font-serif-display text-xl" style={{ color: "var(--cl-text)" }}>{p.name}</div>
+                  <div className="text-sm mt-1" style={{ color: "var(--cl-text)", opacity: 0.7 }}>{formatINR(p.price)}</div>
                 </div>
-                <button onClick={() => toggle(p)} className="text-[#C9A96E] hover:text-[#F5F0E8]" data-testid={`wishlist-remove-${p.slug}`}>
+                <button onClick={() => toggle(p)} data-testid={`wishlist-remove-${p.slug}`} style={{ color: "#C9A96E" }}>
                   <Heart size={18} fill="currentColor" />
                 </button>
               </div>
-              <button onClick={() => addItem(p)} className="mt-4 w-full text-[11px] tracking-[0.3em] uppercase border border-[#C9A96E]/40 text-[#C9A96E] py-3 hover:bg-[#C9A96E] hover:text-[#0B0E1A] transition-colors flex items-center justify-center gap-2" data-testid={`wishlist-add-cart-${p.slug}`}>
+              <button
+                onClick={() => addItem(p)}
+                data-testid={`wishlist-add-cart-${p.slug}`}
+                className="mt-4 w-full text-[11px] tracking-[0.3em] uppercase border py-3 transition-colors flex items-center justify-center gap-2"
+                style={{ borderColor: "rgba(201,169,110,0.4)", color: "#C9A96E" }}
+              >
                 <ShoppingBag size={14} /> Add to Bag
               </button>
             </div>
