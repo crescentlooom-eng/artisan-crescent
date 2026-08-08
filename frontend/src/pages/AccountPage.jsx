@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
-import { LayoutGrid, Package, Heart, MapPin, User as UserIcon, Lock, LogOut, ArrowRight } from "lucide-react";
+import { LayoutGrid, Package, Heart, MapPin, User as UserIcon, Lock, LogOut, ArrowRight, Loader2 } from "lucide-react";
 import { api, formatINR } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { useWishlist } from "@/context/WishlistContext";
@@ -53,6 +53,95 @@ const NAV_ITEMS = [
   { key: "details", label: "Account Details", icon: UserIcon },
   { key: "password", label: "Password", icon: Lock },
 ];
+
+function PhoneField({ user }) {
+  const { setUser } = useAuth();
+  const [phone, setPhone] = useState(user.phone || "");
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState("");
+
+  const save = async () => {
+    setMsg(""); setSaving(true);
+    try {
+      const r = await api.post("/auth/update-phone", { phone });
+      setUser((u) => ({ ...u, phone: r.data.phone }));
+      setMsg("Saved");
+    } catch (e) {
+      setMsg(e?.response?.data?.detail || "Could not save phone number");
+    }
+    setSaving(false);
+  };
+
+  return (
+    <div>
+      <div className="text-[11px] tracking-[0.2em] uppercase mb-1" style={{ color: "var(--cl-subtext)" }}>Phone Number</div>
+      <div className="flex gap-2">
+        <input
+          type="tel"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder="e.g. 9876543210"
+          className="flex-1 text-sm bg-transparent border px-3 py-2"
+          style={{ borderColor: "var(--cl-border)", color: "var(--cl-text)" }}
+        />
+        <button onClick={save} disabled={saving} className="px-4 py-2 text-xs tracking-[0.2em] uppercase border shrink-0" style={{ borderColor: "#C9A96E", color: "#C9A96E" }}>
+          {saving ? <Loader2 size={14} className="animate-spin" /> : "Save"}
+        </button>
+      </div>
+      {msg && <p className="text-xs mt-2" style={{ color: msg === "Saved" ? "#8FBC8F" : "#E57373" }}>{msg}</p>}
+    </div>
+  );
+}
+
+function PasswordTab() {
+  const [current, setCurrent] = useState("");
+  const [next, setNext] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState(null);
+
+  const submit = async (e) => {
+    e.preventDefault();
+    setMsg(null);
+    if (next.length < 8) { setMsg({ type: "error", text: "New password must be at least 8 characters" }); return; }
+    setSaving(true);
+    try {
+      await api.post("/auth/change-password", { current_password: current || undefined, new_password: next });
+      setMsg({ type: "success", text: "Password updated" });
+      setCurrent(""); setNext("");
+    } catch (e) {
+      setMsg({ type: "error", text: e?.response?.data?.detail || "Could not update password" });
+    }
+    setSaving(false);
+  };
+
+  return (
+    <div className="border p-8" style={{ borderColor: "var(--cl-border)" }}>
+      <h2 className="font-serif-display text-2xl mb-2" style={{ color: "var(--cl-text)" }}>Password</h2>
+      <p className="text-sm mb-6" style={{ color: "var(--cl-subtext)" }}>
+        Signed in with Google and never set a password? Leave "Current Password" blank — this will create one you can use as a backup login.
+      </p>
+      <form onSubmit={submit} className="space-y-4 max-w-sm">
+        <div>
+          <label className="text-[10px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Current Password (if you have one)</label>
+          <input type="password" value={current} onChange={(e) => setCurrent(e.target.value)} placeholder="Leave blank if signed in via Google" autoComplete="current-password" />
+        </div>
+        <div>
+          <label className="text-[10px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>New Password</label>
+          <input type="password" value={next} onChange={(e) => setNext(e.target.value)} required minLength={8} placeholder="Min 8 characters" autoComplete="new-password" />
+        </div>
+        {msg && (
+          <div className="text-sm px-4 py-3 border" style={{ color: msg.type === "error" ? "#E57373" : "#8FBC8F", borderColor: msg.type === "error" ? "rgba(229,115,115,0.4)" : "rgba(143,188,143,0.4)" }}>
+            {msg.text}
+          </div>
+        )}
+        <button type="submit" disabled={saving} className="btn-gold disabled:opacity-50 flex items-center gap-2">
+          {saving ? <Loader2 size={14} className="animate-spin" /> : null}
+          {saving ? "Saving..." : "Update Password"}
+        </button>
+      </form>
+    </div>
+  );
+}
 
 export default function AccountPage() {
   const { user, loading, logout } = useAuth();
@@ -254,20 +343,13 @@ export default function AccountPage() {
                   <div className="text-[11px] tracking-[0.2em] uppercase mb-1" style={{ color: "var(--cl-subtext)" }}>Member since</div>
                   <div className="text-sm" style={{ color: "var(--cl-text)" }}>{memberSince}</div>
                 </div>
+                <PhoneField user={user} />
               </div>
-              <p className="text-xs mt-8" style={{ color: "var(--cl-subtext)" }}>Editing your profile details isn't available yet.</p>
+              <p className="text-xs mt-8" style={{ color: "var(--cl-subtext)" }}>Editing your name or email isn't available yet.</p>
             </div>
           )}
 
-          {tab === "password" && (
-            <div className="border p-8 text-center" style={{ borderColor: "var(--cl-border)" }}>
-              <Lock size={24} className="mx-auto mb-4" style={{ color: "#C9A96E" }} />
-              <div className="font-serif-display text-xl mb-2" style={{ color: "var(--cl-text)" }}>Password changes aren't available yet</div>
-              <p className="text-sm max-w-sm mx-auto" style={{ color: "var(--cl-subtext)" }}>
-                This is on the way. Reach out if you need your password reset in the meantime.
-              </p>
-            </div>
-          )}
+          {tab === "password" && <PasswordTab />}
         </div>
       </div>
     </div>
