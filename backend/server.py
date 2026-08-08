@@ -560,6 +560,23 @@ async def change_password(body: ChangePasswordReq, user=Depends(require_user)):
     return {"ok": True}
 
 
+@api_router.post("/auth/upload-picture")
+async def upload_profile_picture(file: UploadFile = File(...), user=Depends(require_user)):
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="No filename")
+    ext = (file.filename.rsplit(".", 1)[-1] or "bin").lower()
+    if ext not in MIME_BY_EXT:
+        raise HTTPException(status_code=400, detail="Only jpg/jpeg/png/gif/webp are supported")
+    content_type = file.content_type or MIME_BY_EXT[ext]
+    data = await file.read()
+    if len(data) > 5 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="File too large (max 5MB)")
+    path = f"{APP_NAME}/profile-pictures/{user['user_id']}.{ext}"
+    result = storage_put(path, data, content_type)
+    await db.users.update_one({"user_id": user["user_id"]}, {"$set": {"picture": result["url"]}})
+    return {"ok": True, "picture": result["url"]}
+
+
 # ====================== Admin Auth (email + password) ======================
 import admin_auth as adm
 
