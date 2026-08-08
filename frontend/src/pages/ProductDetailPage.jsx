@@ -338,17 +338,8 @@ export default function ProductDetailPage() {
                   <img src={heroImg} alt={product.name} className="w-full h-full object-cover md:hidden" />
                 )}
               </div>
-              {images.length > 1 && (
-                <div className="flex md:hidden gap-3 mt-3 overflow-x-auto">
-                  {images.map((img, i) => (
-                    <button key={i} onClick={() => setActiveImg(i)} className="w-16 h-16 shrink-0 overflow-hidden border" style={{ borderColor: i === activeImg ? "#C9A96E" : "transparent" }}>
-                      <img src={img} alt="" className="w-full h-full object-cover" />
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
+                            {images.length > 1 && (
+
 
           {/* Info */}
           <div className="lg:col-span-5 lg:pt-6">
@@ -574,31 +565,7 @@ export default function ProductDetailPage() {
               )}
             </div>
 
-            <div className="mt-8 divider-thin" />
-
-            {/* Feature icons */}
-            <div className="grid grid-cols-3 gap-3 mt-8">
-              {[[Truck, "Free Shipping", "Over ₹499"], [PackageCheck, "Easy Returns", "7-day policy"], [ShieldCheck, "Secure Payment", "100% safe"]].map(([Icon, title, sub]) => (
-                <div key={title} className="text-center">
-                  <div className="w-9 h-9 mx-auto rounded-full flex items-center justify-center mb-2" style={{ background: "var(--cl-surface)" }}>
-                    <Icon size={14} style={{ color: "var(--cl-text)" }} />
-                  </div>
-                  <div className="text-[11px] font-medium" style={{ color: "var(--cl-text)" }}>{title}</div>
-                  <div className="text-[10px]" style={{ color: "var(--cl-subtext)" }}>{sub}</div>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-8 divider-thin" />
-            <div className="mt-6 space-y-2">
-              {["Delivered within 3–5 days · Delhi NCR", "Return & Exchange · 7 days", "Made in India"].map((point) => (
-                <div key={point} className="flex items-center gap-2 text-[11px] tracking-[0.25em] uppercase" style={{ color: "var(--cl-subtext)" }}>
-                  <span className="w-1 h-1 rounded-full flex-shrink-0" style={{ background: "#C9A96E" }} />
-                  {point}
-                </div>
-              ))}
-            </div>
-          </div>
+             </div>
         </div>
 
         <ReviewsSection slug={slug} average={average} total={total} reviews={reviews} onSubmitted={fetchReviews} />
