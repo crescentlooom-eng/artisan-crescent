@@ -8,7 +8,7 @@ import { Loader2, Mail, Lock, User } from "lucide-react";
 export default function LoginPage() {
   const { user, setUser } = useAuth();
   const navigate = useNavigate();
-  const [mode, setMode] = useState("login"); // "login" | "register"
+  const [mode, setMode] = useState("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -28,7 +28,6 @@ export default function LoginPage() {
       if (Array.isArray(detail)) return detail.map((x) => x?.msg || JSON.stringify(x)).join(" · ");
       return String(detail);
     }
-    // No response from server = network/CORS/server-down
     if (e?.message) return `Network error: ${e.message}. Please refresh and try again.`;
     return "Something went wrong. Please refresh and try again.";
   };
@@ -44,7 +43,6 @@ export default function LoginPage() {
       setUser(r.data);
       navigate("/account", { replace: true });
     } catch (e) {
-      // eslint-disable-next-line no-console
       console.error("[auth] failed", e?.response?.status, e?.response?.data, e?.message);
       setErr(formatError(e));
     } finally {
@@ -55,8 +53,8 @@ export default function LoginPage() {
   if (user) {
     return (
       <div className="pt-40 max-w-md mx-auto px-6 text-center page-fade">
-        <h1 className="font-serif-display text-4xl text-[#F5F0E8]">Welcome back, {user.name.split(" ")[0]}.</h1>
-        <p className="text-[#8A8FA8] mt-3">You are signed in.</p>
+        <h1 className="font-serif-display text-4xl" style={{ color: "var(--cl-text)" }}>Welcome back, {user.name.split(" ")[0]}.</h1>
+        <p className="mt-3" style={{ color: "var(--cl-subtext)" }}>You are signed in.</p>
         <a href="/account" className="btn-gold inline-block mt-8" data-testid="login-already-go-account">Go to your account</a>
       </div>
     );
@@ -65,17 +63,17 @@ export default function LoginPage() {
   return (
     <div data-testid="login-page" className="page-fade min-h-[88vh] flex items-center justify-center pt-32 pb-20 px-6">
       <div className="max-w-md w-full">
-        <div className="text-[11px] tracking-[0.4em] uppercase text-[#C9A96E] mb-4 text-center">The House</div>
-        <h1 className="font-serif-display text-4xl md:text-5xl text-[#F5F0E8] leading-[1.05] text-center">
-          Welcome to <span className="italic text-[#C9A96E]/90">Crescent Loom.</span>
+        <div className="text-[11px] tracking-[0.4em] uppercase mb-4 text-center" style={{ color: "#C9A96E" }}>The House</div>
+        <h1 className="font-serif-display text-4xl md:text-5xl leading-[1.05] text-center" style={{ color: "var(--cl-text)" }}>
+          Welcome to <span className="italic" style={{ color: "#C9A96E" }}>Crescent Loom.</span>
         </h1>
-        <p className="text-[#F5F0E8]/75 mt-5 text-center text-sm">Sign in to follow pieces, save your bag, and view your orders.</p>
+        <p className="mt-5 text-center text-sm" style={{ color: "var(--cl-subtext)" }}>Sign in to follow pieces, save your bag, and view your orders.</p>
 
-        {/* Google */}
         <button
           data-testid="login-google-button"
           onClick={handleGoogle}
-          className="mt-10 w-full bg-[#F5F0E8] text-[#0B0E1A] py-4 px-6 flex items-center justify-center gap-3 hover:bg-[#F5F0E8]/90 transition-colors"
+          className="mt-10 w-full py-4 px-6 flex items-center justify-center gap-3 transition-colors"
+          style={{ background: "var(--cl-text)", color: "var(--cl-bg)" }}
         >
           <svg width="18" height="18" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -86,87 +84,53 @@ export default function LoginPage() {
           <span className="text-[12px] tracking-[0.3em] uppercase font-medium">Continue with Google</span>
         </button>
 
-        {/* Divider */}
         <div className="flex items-center gap-3 my-8">
-          <div className="flex-1 h-px bg-[#C9A96E]/20" />
-          <span className="text-[10px] tracking-[0.35em] uppercase text-[#8A8FA8]">or with email</span>
-          <div className="flex-1 h-px bg-[#C9A96E]/20" />
+          <div className="flex-1 h-px" style={{ background: "rgba(201,169,110,0.2)" }} />
+          <span className="text-[10px] tracking-[0.35em] uppercase" style={{ color: "var(--cl-subtext)" }}>or with email</span>
+          <div className="flex-1 h-px" style={{ background: "rgba(201,169,110,0.2)" }} />
         </div>
 
-        {/* Tabs */}
-        <div className="grid grid-cols-2 mb-6 border border-[#C9A96E]/20">
+        <div className="grid grid-cols-2 mb-6 border" style={{ borderColor: "rgba(201,169,110,0.2)" }}>
           {["login", "register"].map((m) => (
             <button
               key={m}
               onClick={() => { setMode(m); setErr(null); }}
               data-testid={`login-tab-${m}`}
-              className={`text-[11px] tracking-[0.3em] uppercase py-3 transition-all ${
-                mode === m ? "bg-[#C9A96E] text-[#0B0E1A]" : "text-[#F5F0E8]/80 hover:text-[#C9A96E]"
-              }`}
+              className="text-[11px] tracking-[0.3em] uppercase py-3 transition-all"
+              style={mode === m ? { background: "#C9A96E", color: "#0B0E1A" } : { color: "var(--cl-text)", opacity: 0.8 }}
             >{m === "login" ? "Sign In" : "Create Account"}</button>
           ))}
         </div>
 
-        {/* Form */}
         <form onSubmit={submit} className="space-y-4">
           {mode === "register" && (
             <div>
-              <label className="text-[10px] tracking-[0.3em] uppercase text-[#8A8FA8] flex items-center gap-2"><User size={12}/> Name</label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                data-testid="login-name-input"
-                placeholder="Your name"
-              />
+              <label className="text-[10px] tracking-[0.3em] uppercase flex items-center gap-2" style={{ color: "var(--cl-subtext)" }}><User size={12}/> Name</label>
+              <input type="text" value={name} onChange={(e) => setName(e.target.value)} data-testid="login-name-input" placeholder="Your name" />
             </div>
           )}
           <div>
-            <label className="text-[10px] tracking-[0.3em] uppercase text-[#8A8FA8] flex items-center gap-2"><Mail size={12}/> Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              data-testid="login-email-input"
-              placeholder="you@example.com"
-              autoComplete="email"
-            />
+            <label className="text-[10px] tracking-[0.3em] uppercase flex items-center gap-2" style={{ color: "var(--cl-subtext)" }}><Mail size={12}/> Email</label>
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required data-testid="login-email-input" placeholder="you@example.com" autoComplete="email" />
           </div>
           <div>
-            <label className="text-[10px] tracking-[0.3em] uppercase text-[#8A8FA8] flex items-center gap-2"><Lock size={12}/> Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={mode === "register" ? 8 : undefined}
-              data-testid="login-password-input"
-              placeholder={mode === "register" ? "Min 8 characters" : "Your password"}
-              autoComplete={mode === "register" ? "new-password" : "current-password"}
-            />
+            <label className="text-[10px] tracking-[0.3em] uppercase flex items-center gap-2" style={{ color: "var(--cl-subtext)" }}><Lock size={12}/> Password</label>
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={mode === "register" ? 8 : undefined} data-testid="login-password-input" placeholder={mode === "register" ? "Min 8 characters" : "Your password"} autoComplete={mode === "register" ? "new-password" : "current-password"} />
           </div>
 
           {err && (
-            <div className="text-sm text-red-400 border border-red-400/40 px-4 py-3" data-testid="login-error">
+            <div className="text-sm px-4 py-3 border" style={{ color: "#E57373", borderColor: "rgba(229,115,115,0.4)" }} data-testid="login-error">
               {err}
             </div>
           )}
 
-          <button
-            type="submit"
-            disabled={submitting}
-            data-testid="login-submit-button"
-            className="btn-gold w-full disabled:opacity-50 flex items-center justify-center gap-2 !mt-6"
-          >
+          <button type="submit" disabled={submitting} data-testid="login-submit-button" className="btn-gold w-full disabled:opacity-50 flex items-center justify-center gap-2 !mt-6">
             {submitting ? <Loader2 className="animate-spin" size={14} /> : null}
-            {submitting
-              ? (mode === "register" ? "Creating account..." : "Signing in...")
-              : (mode === "register" ? "Create Account" : "Sign In")}
+            {submitting ? (mode === "register" ? "Creating account..." : "Signing in...") : (mode === "register" ? "Create Account" : "Sign In")}
           </button>
         </form>
 
-        <p className="text-[10px] tracking-[0.25em] uppercase text-[#8A8FA8] mt-10 text-center">
+        <p className="text-[10px] tracking-[0.25em] uppercase mt-10 text-center" style={{ color: "var(--cl-subtext)" }}>
           By signing in you agree to our quiet terms of service.
         </p>
       </div>
