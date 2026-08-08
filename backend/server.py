@@ -567,7 +567,7 @@ async def get_product(slug: str):
     if not p:
         raise HTTPException(status_code=404, detail="Product not found")
     return p
-    @api_router.get("/check-pincode/{pincode}")
+@api_router.get("/check-pincode/{pincode}")
 async def check_pincode(pincode: str):
     """Public delivery-serviceability checker for the storefront (pre-purchase)."""
     if not pincode.isdigit() or len(pincode) != 6:
