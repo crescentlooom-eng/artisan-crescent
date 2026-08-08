@@ -156,13 +156,11 @@ export default function ProductDetailPage() {
   const { has, toggle } = useWishlist();
   useScrollReveal([related]);
 
-  // Pincode checker
   const [pincode, setPincode] = useState("");
   const [pincodeResult, setPincodeResult] = useState(null);
   const [pincodeLoading, setPincodeLoading] = useState(false);
   const [pincodeError, setPincodeError] = useState("");
 
-  // Image zoom
   const [zoomStyle, setZoomStyle] = useState({});
   const [isZooming, setIsZooming] = useState(false);
 
@@ -338,8 +336,41 @@ export default function ProductDetailPage() {
                   <img src={heroImg} alt={product.name} className="w-full h-full object-cover md:hidden" />
                 )}
               </div>
-                            {images.length > 1 && (
 
+              {images.length > 1 && (
+                <div className="flex md:hidden gap-3 mt-3 overflow-x-auto">
+                  {images.map((img, i) => (
+                    <button key={i} onClick={() => setActiveImg(i)} className="w-16 h-16 shrink-0 overflow-hidden border" style={{ borderColor: i === activeImg ? "#C9A96E" : "transparent" }}>
+                      <img src={img} alt="" className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              <div className="mt-8 divider-thin" />
+              <div className="grid grid-cols-3 gap-3 mt-8">
+                {[[Truck, "Free Shipping", "Over ₹499"], [PackageCheck, "Easy Returns", "7-day policy"], [ShieldCheck, "Secure Payment", "100% safe"]].map(([Icon, title, sub]) => (
+                  <div key={title} className="text-center">
+                    <div className="w-9 h-9 mx-auto rounded-full flex items-center justify-center mb-2" style={{ background: "var(--cl-surface)" }}>
+                      <Icon size={14} style={{ color: "var(--cl-text)" }} />
+                    </div>
+                    <div className="text-[11px] font-medium" style={{ color: "var(--cl-text)" }}>{title}</div>
+                    <div className="text-[10px]" style={{ color: "var(--cl-subtext)" }}>{sub}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-8 divider-thin" />
+              <div className="mt-6 space-y-2">
+                {["Delivered within 3–5 days · Delhi NCR", "Return & Exchange · 7 days", "Made in India"].map((point) => (
+                  <div key={point} className="flex items-center gap-2 text-[11px] tracking-[0.25em] uppercase" style={{ color: "var(--cl-subtext)" }}>
+                    <span className="w-1 h-1 rounded-full flex-shrink-0" style={{ background: "#C9A96E" }} />
+                    {point}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
 
           {/* Info */}
           <div className="lg:col-span-5 lg:pt-6">
@@ -367,7 +398,6 @@ export default function ProductDetailPage() {
               </div>
             )}
 
-            {/* Variant selector */}
             {product.variants?.length > 0 && (
               <div className="mt-10">
                 <div className="text-[11px] tracking-[0.3em] uppercase mb-3" style={{ color: "#C9A96E" }}>
@@ -425,7 +455,6 @@ export default function ProductDetailPage() {
               </div>
             )}
 
-            {/* Size selector */}
             {product.sizes?.length > 0 && !variantOutOfStock && (
               <div className="mt-10">
                 <div className="flex items-center justify-between mb-3">
@@ -485,7 +514,6 @@ export default function ProductDetailPage() {
               </div>
             )}
 
-            {/* Quantity + Add to cart + Buy now */}
             <div className="mt-10 flex items-center gap-4">
               <div className="flex items-center border" style={{ borderColor: "rgba(201,169,110,0.3)" }}>
                 <button onClick={() => setQty(Math.max(1, qty - 1))} className="px-3 py-3" style={{ color: "var(--cl-text)" }}><Minus size={14} /></button>
@@ -516,7 +544,6 @@ export default function ProductDetailPage() {
               </button>
             </div>
 
-            {/* Loom Credits preview */}
             <div className="mt-5 flex items-center gap-3 border px-4 py-3" style={{ borderColor: "rgba(201,169,110,0.25)", background: "var(--cl-surface)" }}>
               <Moon size={16} style={{ color: "#C9A96E" }} />
               <div className="text-xs" style={{ color: "var(--cl-text)", opacity: 0.85 }}>
@@ -524,7 +551,6 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-            {/* Pincode checker */}
             <div className="mt-4 border px-4 py-4" style={{ borderColor: "var(--cl-border)" }}>
               <div className="flex items-center gap-2 mb-3">
                 <MapPin size={14} style={{ color: "#C9A96E" }} />
@@ -564,13 +590,11 @@ export default function ProductDetailPage() {
                 )
               )}
             </div>
-
-             </div>
+          </div>
         </div>
 
         <ReviewsSection slug={slug} average={average} total={total} reviews={reviews} onSubmitted={fetchReviews} />
 
-        {/* You May Also Like */}
         {related.length > 0 && (
           <div className="mt-32">
             <div className="flex items-end justify-between mb-10">
