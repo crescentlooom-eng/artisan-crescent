@@ -16,7 +16,7 @@ export default function AboutPage() {
 
   return (
     <div data-testid="about-page" className="page-fade pt-28 md:pt-32 pb-24">
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
+      <div className="max-w-none mx-auto px-6 md:px-12">
         <div className="text-[11px] tracking-[0.3em] uppercase mb-8" style={{ color: "var(--cl-subtext)" }}>
           <Link to="/" className="hover:text-[#C9A96E]">Home</Link> <span className="mx-2">/</span>
           <span style={{ color: "var(--cl-text)", opacity: 0.85 }}>About Us</span>
@@ -56,10 +56,10 @@ export default function AboutPage() {
         </div>
       </div>
 
-      <div className="divider-thin max-w-7xl mx-auto px-6 md:px-12 mt-20" />
+      <div className="divider-thin max-w-none mx-auto px-6 md:px-12 mt-20" />
 
       {/* Why We Started */}
-      <section className="py-24 md:py-32 max-w-7xl mx-auto px-6 md:px-12">
+      <section className="py-24 md:py-32 max-w-none mx-auto px-6 md:px-12">
         <div className="grid md:grid-cols-12 gap-12 md:gap-20 items-center">
           <div className="md:col-span-5 reveal-up">
             <div className="text-[11px] tracking-[0.4em] uppercase mb-4" style={{ color: "#C9A96E" }}>Why We Started</div>
@@ -78,10 +78,10 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <div className="divider-thin max-w-7xl mx-auto px-6 md:px-12" />
+      <div className="divider-thin max-w-none mx-auto px-6 md:px-12" />
 
       {/* What Makes Us Different */}
-      <section className="py-24 md:py-32 max-w-7xl mx-auto px-6 md:px-12">
+      <section className="py-24 md:py-32 max-w-none mx-auto px-6 md:px-12">
         <div className="text-[11px] tracking-[0.4em] uppercase mb-4 reveal-up" style={{ color: "#C9A96E" }}>Our Craft</div>
         <h2 className="font-serif-display text-4xl md:text-5xl max-w-2xl leading-tight reveal-up" style={{ color: "var(--cl-text)", transitionDelay: "80ms" }}>
           Fabric chosen. Form considered. <span className="italic" style={{ color: "#C9A96E" }}>Nothing wasted.</span>
@@ -100,7 +100,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <div className="divider-thin max-w-7xl mx-auto px-6 md:px-12" />
+      <div className="divider-thin max-w-none mx-auto px-6 md:px-12" />
 
       {/* Vision */}
       <section className="py-24 md:py-36" style={{ background: "var(--cl-surface)" }}>
@@ -115,10 +115,10 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <div className="divider-thin max-w-7xl mx-auto px-6 md:px-12" />
+      <div className="divider-thin max-w-none mx-auto px-6 md:px-12" />
 
       {/* Team */}
-      <section className="py-24 md:py-32 max-w-7xl mx-auto px-6 md:px-12">
+      <section className="py-24 md:py-32 max-w-none mx-auto px-6 md:px-12">
         <div className="text-[11px] tracking-[0.4em] uppercase mb-4 reveal-up" style={{ color: "#C9A96E" }}>Triad</div>
         <h2 className="font-serif-display text-4xl md:text-5xl reveal-up" style={{ color: "var(--cl-text)", transitionDelay: "80ms" }}>
           Three people. <span className="italic" style={{ color: "#C9A96E" }}>One quiet vision.</span>
@@ -138,7 +138,7 @@ export default function AboutPage() {
 
       {/* CTA */}
       <section className="py-20 md:py-28 border-t" style={{ borderColor: "rgba(201,169,110,0.1)", background: "var(--cl-bg)" }}>
-        <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-8">
+        <div className="max-w-none mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-8">
           <div>
             <div className="text-[11px] tracking-[0.4em] uppercase mb-3" style={{ color: "#C9A96E" }}>The Collection</div>
             <h3 className="font-serif-display text-4xl" style={{ color: "var(--cl-text)" }}>Wear the <span className="italic" style={{ color: "#C9A96E" }}>intention.</span></h3>
