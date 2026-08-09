@@ -38,7 +38,7 @@ export default function ReturnPolicyPage() {
 
   return (
     <div className="page-fade pt-28 md:pt-32 pb-24">
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
+      <div className="max-w-none mx-auto px-6 md:px-12">
         <div className="text-[11px] tracking-[0.3em] uppercase mb-8" style={{ color: "var(--cl-subtext)" }}>
           <Link to="/" className="hover:text-[#C9A96E]">Home</Link> <span className="mx-2">/</span>
           <span style={{ color: "var(--cl-text)", opacity: 0.85 }}>Returns & Exchanges</span>
