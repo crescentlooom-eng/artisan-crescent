@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { LayoutGrid, Package, Heart, MapPin, User as UserIcon, Lock, LogOut, ArrowRight, Loader2 } from "lucide-react";
 import { api, formatINR } from "@/lib/api";
@@ -53,6 +53,60 @@ const NAV_ITEMS = [
   { key: "details", label: "Account Details", icon: UserIcon },
   { key: "password", label: "Password", icon: Lock },
 ];
+
+function Avatar({ user, size = 64 }) {
+  return (
+    <div
+      className="rounded-full overflow-hidden shrink-0"
+      style={{ width: size, height: size, background: "var(--cl-surface)", border: "1px solid var(--cl-border)" }}
+    >
+      {user.picture ? (
+        <img src={user.picture} alt={user.name} className="w-full h-full object-cover" />
+      ) : (
+        <div className="w-full h-full flex items-center justify-center font-serif-display" style={{ color: "#C9A96E", fontSize: size * 0.4 }}>
+          {user.name.charAt(0).toUpperCase()}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function AvatarUpload({ user }) {
+  const { setUser } = useAuth();
+  const [uploading, setUploading] = useState(false);
+  const [msg, setMsg] = useState("");
+  const fileRef = useRef(null);
+
+  const onFile = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setMsg(""); setUploading(true);
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      const r = await api.post("/auth/upload-picture", form, { headers: { "Content-Type": "multipart/form-data" } });
+      setUser((u) => ({ ...u, picture: r.data.picture }));
+    } catch (err) {
+      setMsg(err?.response?.data?.detail || "Could not upload photo");
+    }
+    setUploading(false);
+    if (fileRef.current) fileRef.current.value = "";
+  };
+
+  return (
+    <div className="flex items-center gap-4">
+      <Avatar user={user} size={64} />
+      <div>
+        <button onClick={() => fileRef.current?.click()} disabled={uploading} className="text-xs tracking-[0.2em] uppercase border px-4 py-2 flex items-center gap-2" style={{ borderColor: "#C9A96E", color: "#C9A96E" }}>
+          {uploading ? <Loader2 size={13} className="animate-spin" /> : null}
+          {uploading ? "Uploading..." : "Change Photo"}
+        </button>
+        <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onFile} />
+        {msg && <p className="text-xs mt-2" style={{ color: "#E57373" }}>{msg}</p>}
+      </div>
+    </div>
+  );
+}
 
 function PhoneField({ user }) {
   const { setUser } = useAuth();
@@ -202,9 +256,12 @@ export default function AccountPage() {
         <div className="flex-1 min-w-0">
           {tab === "overview" && (
             <div>
-              <div className="p-6 mb-6" style={{ background: "var(--cl-surface)" }}>
-                <div className="font-serif-display text-2xl" style={{ color: "var(--cl-text)" }}>Hey, {firstName} 👋</div>
-                <p className="text-sm mt-1" style={{ color: "var(--cl-subtext)" }}>Here's what's happening with your account today.</p>
+              <div className="p-6 mb-6 flex items-center gap-5" style={{ background: "var(--cl-surface)" }}>
+                <Avatar user={user} size={56} />
+                <div>
+                  <div className="font-serif-display text-2xl" style={{ color: "var(--cl-text)" }}>Hey, {firstName} 👋</div>
+                  <p className="text-sm mt-1" style={{ color: "var(--cl-subtext)" }}>Here's what's happening with your account today.</p>
+                </div>
               </div>
 
               <div className="grid md:grid-cols-3 gap-4 mb-6">
@@ -330,6 +387,9 @@ export default function AccountPage() {
           {tab === "details" && (
             <div className="border p-8" style={{ borderColor: "var(--cl-border)" }}>
               <h2 className="font-serif-display text-2xl mb-6" style={{ color: "var(--cl-text)" }}>Account Details</h2>
+              <div className="mb-8">
+                <AvatarUpload user={user} />
+              </div>
               <div className="space-y-5 max-w-sm">
                 <div>
                   <div className="text-[11px] tracking-[0.2em] uppercase mb-1" style={{ color: "var(--cl-subtext)" }}>Name</div>
