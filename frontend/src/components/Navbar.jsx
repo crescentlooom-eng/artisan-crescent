@@ -87,7 +87,11 @@ export default function Navbar() {
             <Heart size={21} />
           </Link>
           <Link to={user ? "/account" : "/login"} data-testid="nav-account-link" className="hover:text-[#C9A96E] transition-colors">
-            <User size={21} />
+            {user?.picture ? (
+              <img src={user.picture} alt={user.name} className="w-6 h-6 rounded-full object-cover" style={{ border: "1px solid rgba(201,169,110,0.4)" }} />
+            ) : (
+              <User size={21} />
+            )}
           </Link>
           <button data-testid="nav-cart-button" onClick={() => setCartOpen(true)} aria-label="Cart" className="relative hover:text-[#C9A96E] transition-colors">
             <ShoppingBag size={21} />
