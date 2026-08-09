@@ -73,7 +73,7 @@ export default function HomePage() {
   }, [user]);
 
   const firstName = user?.name?.split(" ")[0] || "";
-  const heroImg = trending[0] ? productImage(trending[0]) : null;
+  const heroImg = "/hero-polo.png";
 
   return (
     <div data-testid="home-page" className="page-fade pt-24" style={{ color: "var(--cl-text)" }}>
