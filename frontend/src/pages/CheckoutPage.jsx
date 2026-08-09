@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Minus, Plus, Trash2, ShieldCheck } from "lucide-react";
 import { api, formatINR } from "@/lib/api";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
@@ -19,14 +20,14 @@ const loadRazorpayScript = () =>
 const COD_TOKEN_AMOUNT = 49;
 
 export default function CheckoutPage() {
-  const { items, subtotal, clear } = useCart();
+  const { items, subtotal, clear, updateQty, removeItem } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [processing, setProcessing] = useState(false);
   const [config, setConfig] = useState({ enabled: false, key_id: "" });
   const [loom, setLoom] = useState(null);
   const [redeemCards, setRedeemCards] = useState(0);
-  const [paymentMode, setPaymentMode] = useState("prepaid"); // prepaid | cod_partial | cod_full
+  const [paymentMode, setPaymentMode] = useState("prepaid");
   const [shipping, setShipping] = useState({
     full_name: user?.name || "",
     phone: "",
@@ -59,7 +60,7 @@ export default function CheckoutPage() {
   if (items.length === 0) {
     return (
       <div data-testid="checkout-empty" className="pt-40 text-center page-fade min-h-[60vh]">
-        <div className="font-serif-display text-4xl text-[#F5F0E8]">Your bag is quiet.</div>
+        <div className="font-serif-display text-4xl" style={{ color: "var(--cl-text)" }}>Your bag is quiet.</div>
         <button onClick={() => navigate("/shop")} className="btn-gold mt-8">Discover the Collection</button>
       </div>
     );
@@ -88,15 +89,6 @@ export default function CheckoutPage() {
 
       if (cod_full_no_charge) {
         toast.success("Order placed — pay cash on delivery");
-        clear();
-        navigate("/thank-you", { state: { order: { ...order, items: orderItems, total } } });
-        return;
-      }
-
-     if (demo_mode) {
-        // Demo mode — simulate success
-        await api.post(`/payments/demo-complete/${order.id}`);
-        toast.success("Order placed (demo mode — no Razorpay keys configured)");
         clear();
         navigate("/thank-you", { state: { order: { ...order, items: orderItems, total } } });
         return;
@@ -141,48 +133,51 @@ export default function CheckoutPage() {
 
   return (
     <div data-testid="checkout-page" className="page-fade pt-32 pb-24 max-w-7xl mx-auto px-6 md:px-12">
-      <div className="text-[11px] tracking-[0.4em] uppercase text-[#C9A96E] mb-4">Checkout</div>
-      <h1 className="font-serif-display text-5xl md:text-6xl text-[#F5F0E8] leading-[0.95]">A Quiet <span className="italic text-[#C9A96E]/90">Finish</span></h1>
+      <div className="text-[11px] tracking-[0.4em] uppercase mb-4" style={{ color: "#C9A96E" }}>Checkout</div>
+      <h1 className="font-serif-display text-5xl md:text-6xl leading-[0.95]" style={{ color: "var(--cl-text)" }}>
+        Your <span className="italic" style={{ color: "#C9A96E" }}>Bag</span>
+      </h1>
 
       <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 mt-12">
         <div className="lg:col-span-7 space-y-12">
           <section>
-            <h2 className="font-serif-display text-2xl md:text-3xl text-[#F5F0E8] mb-6">Shipping</h2>
+            <h2 className="font-serif-display text-2xl md:text-3xl mb-6" style={{ color: "var(--cl-text)" }}>Shipping</h2>
             <div className="grid sm:grid-cols-2 gap-x-6 gap-y-2">
-              <div className="sm:col-span-2"><label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Full Name</label><input data-testid="checkout-name" value={shipping.full_name} onChange={(e) => update("full_name", e.target.value)} /></div>
-              <div><label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Phone</label><input data-testid="checkout-phone" value={shipping.phone} onChange={(e) => update("phone", e.target.value)} /></div>
-              <div><label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Pincode</label><input data-testid="checkout-pincode" value={shipping.pincode} onChange={(e) => update("pincode", e.target.value)} /></div>
-              <div className="sm:col-span-2"><label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Address</label><input data-testid="checkout-address" value={shipping.address_line} onChange={(e) => update("address_line", e.target.value)} /></div>
-              <div><label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">City</label><input data-testid="checkout-city" value={shipping.city} onChange={(e) => update("city", e.target.value)} /></div>
-              <div><label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">State</label><input data-testid="checkout-state" value={shipping.state} onChange={(e) => update("state", e.target.value)} /></div>
+              <div className="sm:col-span-2"><label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Full Name</label><input data-testid="checkout-name" value={shipping.full_name} onChange={(e) => update("full_name", e.target.value)} /></div>
+              <div><label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Phone</label><input data-testid="checkout-phone" value={shipping.phone} onChange={(e) => update("phone", e.target.value)} /></div>
+              <div><label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Pincode</label><input data-testid="checkout-pincode" value={shipping.pincode} onChange={(e) => update("pincode", e.target.value)} /></div>
+              <div className="sm:col-span-2"><label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Address</label><input data-testid="checkout-address" value={shipping.address_line} onChange={(e) => update("address_line", e.target.value)} /></div>
+              <div><label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>City</label><input data-testid="checkout-city" value={shipping.city} onChange={(e) => update("city", e.target.value)} /></div>
+              <div><label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>State</label><input data-testid="checkout-state" value={shipping.state} onChange={(e) => update("state", e.target.value)} /></div>
             </div>
           </section>
 
           <section>
-            <h2 className="font-serif-display text-2xl md:text-3xl text-[#F5F0E8] mb-6">Loom Credits</h2>
+            <h2 className="font-serif-display text-2xl md:text-3xl mb-6" style={{ color: "var(--cl-text)" }}>Loom Credits</h2>
             {!user ? (
-              <div className="border border-[#C9A96E]/20 p-6 text-sm text-[#F5F0E8]/75">
-                <a href="/login" className="text-[#C9A96E] gold-underline">Sign in</a> to redeem Loom Credit Cards collected from past orders.
+              <div className="border p-6 text-sm" style={{ borderColor: "rgba(201,169,110,0.2)", color: "var(--cl-text)", opacity: 0.85 }}>
+                <a href="/login" className="gold-underline" style={{ color: "#C9A96E" }}>Sign in</a> to redeem Loom Credit Cards collected from past orders.
               </div>
             ) : balance === 0 ? (
-              <div className="border border-[#C9A96E]/20 p-6 text-sm text-[#F5F0E8]/75">
+              <div className="border p-6 text-sm" style={{ borderColor: "rgba(201,169,110,0.2)", color: "var(--cl-text)", opacity: 0.85 }}>
                 You have no Loom Credit Cards yet. Each order ships with one — collect {minRedeem} to redeem ₹{minRedeem * perCard} off.
               </div>
             ) : (
-              <div className="border border-[#C9A96E]/20 p-6" data-testid="checkout-loom-section">
+              <div className="border p-6" style={{ borderColor: "rgba(201,169,110,0.2)" }} data-testid="checkout-loom-section">
                 <div className="flex items-baseline justify-between mb-4">
                   <div>
-                    <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">Your Balance</div>
-                    <div className="font-serif-display text-3xl text-[#F5F0E8] mt-1">{balance} {balance === 1 ? "card" : "cards"} <span className="text-[#8A8FA8] text-lg">· ₹{balance * perCard}</span></div>
+                    <div className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "#C9A96E" }}>Your Balance</div>
+                    <div className="font-serif-display text-3xl mt-1" style={{ color: "var(--cl-text)" }}>{balance} {balance === 1 ? "card" : "cards"} <span className="text-lg" style={{ color: "var(--cl-subtext)" }}>· ₹{balance * perCard}</span></div>
                   </div>
                   <button
                     type="button"
                     onClick={() => setRedeemCards(balance)}
-                    className="text-[11px] tracking-[0.3em] uppercase gold-underline text-[#F5F0E8]/80"
+                    className="text-[11px] tracking-[0.3em] uppercase gold-underline"
+                    style={{ color: "var(--cl-text)", opacity: 0.85 }}
                     data-testid="checkout-loom-redeem-max"
                   >Redeem All</button>
                 </div>
-                <label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Cards to redeem</label>
+                <label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Cards to redeem</label>
                 <input
                   type="number"
                   min="0"
@@ -192,12 +187,12 @@ export default function CheckoutPage() {
                   data-testid="checkout-loom-cards-input"
                 />
                 {redeemCards > 0 && redeemCards < minRedeem && (
-                  <p className="text-[#8A8FA8] text-xs mt-3" data-testid="checkout-loom-min-warning">
+                  <p className="text-xs mt-3" style={{ color: "var(--cl-subtext)" }} data-testid="checkout-loom-min-warning">
                     Minimum {minRedeem} cards required — you&rsquo;ll need {minRedeem - redeemCards} more before this discount applies.
                   </p>
                 )}
                 {redeemCards >= minRedeem && (
-                  <p className="text-[#C9A96E] text-xs mt-3 tracking-[0.2em] uppercase" data-testid="checkout-loom-discount-msg">
+                  <p className="text-xs mt-3 tracking-[0.2em] uppercase" style={{ color: "#C9A96E" }} data-testid="checkout-loom-discount-msg">
                     ₹{redeemCards * perCard} discount will be applied.
                   </p>
                 )}
@@ -206,81 +201,70 @@ export default function CheckoutPage() {
           </section>
 
           <section>
-            <h2 className="font-serif-display text-2xl md:text-3xl text-[#F5F0E8] mb-6">Payment</h2>
+            <h2 className="font-serif-display text-2xl md:text-3xl mb-6" style={{ color: "var(--cl-text)" }}>Payment</h2>
             <div className="space-y-3">
-
-              <button
-                type="button"
-                onClick={() => setPaymentMode("prepaid")}
-                data-testid="payment-mode-prepaid"
-                className={`w-full text-left border p-5 transition ${paymentMode === "prepaid" ? "border-[#C9A96E]" : "border-[#C9A96E]/20"}`}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="text-[11px] tracking-[0.3em] uppercase text-[#F5F0E8]">Prepaid</div>
-                  <span className="text-[10px] tracking-[0.2em] uppercase text-[#C9A96E]">⚡ Priority packing — ships faster</span>
-                </div>
-                <p className="text-[#F5F0E8]/60 text-sm mt-2">Pay {formatINR(total)} now via UPI, card, or netbanking.</p>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setPaymentMode("cod_partial")}
-                data-testid="payment-mode-cod-partial"
-                className={`w-full text-left border p-5 transition ${paymentMode === "cod_partial" ? "border-[#C9A96E]" : "border-[#C9A96E]/20"}`}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="text-[11px] tracking-[0.3em] uppercase text-[#F5F0E8]">Partial COD</div>
-                  <span className="text-[10px] tracking-[0.2em] uppercase text-[#C9A96E]">⚡ Priority packing — ships faster</span>
-                </div>
-                <p className="text-[#F5F0E8]/60 text-sm mt-2">
-                  Pay {formatINR(Math.min(COD_TOKEN_AMOUNT, total))} now, {formatINR(Math.max(0, total - COD_TOKEN_AMOUNT))} cash on delivery.
-                </p>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setPaymentMode("cod_full")}
-                data-testid="payment-mode-cod-full"
-                className={`w-full text-left border p-5 transition ${paymentMode === "cod_full" ? "border-[#C9A96E]" : "border-[#C9A96E]/20"}`}
-              >
-                <div className="text-[11px] tracking-[0.3em] uppercase text-[#F5F0E8]">Cash on Delivery</div>
-                <p className="text-[#F5F0E8]/60 text-sm mt-2">Pay {formatINR(total)} in cash when your order arrives.</p>
-              </button>
-
+              {[
+                { key: "prepaid", label: "Prepaid", badge: "⚡ Priority packing — ships faster", desc: `Pay ${formatINR(total)} now via UPI, card, or netbanking.` },
+                { key: "cod_partial", label: "Partial COD", badge: "⚡ Priority packing — ships faster", desc: `Pay ${formatINR(Math.min(COD_TOKEN_AMOUNT, total))} now, ${formatINR(Math.max(0, total - COD_TOKEN_AMOUNT))} cash on delivery.` },
+                { key: "cod_full", label: "Cash on Delivery", badge: null, desc: `Pay ${formatINR(total)} in cash when your order arrives.` },
+              ].map((opt) => (
+                <button
+                  key={opt.key}
+                  type="button"
+                  onClick={() => setPaymentMode(opt.key)}
+                  data-testid={`payment-mode-${opt.key.replace("_", "-")}`}
+                  className="w-full text-left border p-5 transition"
+                  style={{ borderColor: paymentMode === opt.key ? "#C9A96E" : "rgba(201,169,110,0.2)" }}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-text)" }}>{opt.label}</div>
+                    {opt.badge && <span className="text-[10px] tracking-[0.2em] uppercase" style={{ color: "#C9A96E" }}>{opt.badge}</span>}
+                  </div>
+                  <p className="text-sm mt-2" style={{ color: "var(--cl-subtext)" }}>{opt.desc}</p>
+                </button>
+              ))}
             </div>
           </section>
         </div>
 
         <div className="lg:col-span-5">
-          <div className="border border-[#C9A96E]/20 p-6 lg:sticky lg:top-32">
-            <h3 className="font-serif-display text-2xl text-[#F5F0E8] mb-6">Your Bag</h3>
+          <div className="border p-6 lg:sticky lg:top-32" style={{ borderColor: "rgba(201,169,110,0.2)", background: "var(--cl-surface)" }}>
+            <h3 className="font-serif-display text-2xl mb-6" style={{ color: "var(--cl-text)" }}>Order Summary</h3>
             <div className="space-y-5 max-h-[40vh] overflow-y-auto pr-1">
               {items.map((it) => (
                 <div key={it.key} className="flex gap-3">
-                  <div className="w-16 h-20 bg-[#14172A] flex-shrink-0 overflow-hidden">
+                  <div className="w-16 h-20 flex-shrink-0 overflow-hidden" style={{ background: "var(--cl-bg)" }}>
                     {it.image && <img src={it.image} alt={it.name} className="w-full h-full object-cover" />}
                   </div>
-                  <div className="flex-1 text-sm">
-                    <div className="font-serif-display text-lg text-[#F5F0E8] leading-tight">{it.name}</div>
-                    <div className="text-[11px] tracking-[0.2em] uppercase text-[#8A8FA8] mt-1">
-                      {it.size && <>Size · {it.size} · </>}Qty {it.quantity}
+                  <div className="flex-1 text-sm min-w-0">
+                    <div className="font-serif-display text-lg leading-tight truncate" style={{ color: "var(--cl-text)" }}>{it.name}</div>
+                    <div className="text-[11px] tracking-[0.2em] uppercase mt-1" style={{ color: "var(--cl-subtext)" }}>
+                      {it.size && <>Size · {it.size}</>}
+                    </div>
+                    <div className="flex items-center gap-3 mt-2">
+                      <div className="flex items-center border" style={{ borderColor: "var(--cl-border)" }}>
+                        <button onClick={() => updateQty(it.key, Math.max(1, it.quantity - 1))} className="px-2 py-1" style={{ color: "var(--cl-text)" }}><Minus size={11} /></button>
+                        <span className="px-2 text-xs" style={{ color: "var(--cl-text)" }}>{it.quantity}</span>
+                        <button onClick={() => updateQty(it.key, it.quantity + 1)} className="px-2 py-1" style={{ color: "var(--cl-text)" }}><Plus size={11} /></button>
+                      </div>
+                      <button onClick={() => removeItem(it.key)} aria-label="Remove" style={{ color: "var(--cl-subtext)" }}><Trash2 size={14} /></button>
                     </div>
                   </div>
-                  <div className="text-sm text-[#F5F0E8]">{formatINR(it.price * it.quantity)}</div>
+                  <div className="text-sm shrink-0" style={{ color: "var(--cl-text)" }}>{formatINR(it.price * it.quantity)}</div>
                 </div>
               ))}
             </div>
             <div className="divider-thin my-6" />
-            <div className="flex items-center justify-between text-sm text-[#F5F0E8]/85"><span>Subtotal</span><span>{formatINR(subtotal)}</span></div>
-            <div className="flex items-center justify-between text-sm text-[#F5F0E8]/85 mt-2"><span>Shipping</span><span>Complimentary</span></div>
+            <div className="flex items-center justify-between text-sm" style={{ color: "var(--cl-text)", opacity: 0.85 }}><span>Subtotal</span><span>{formatINR(subtotal)}</span></div>
+            <div className="flex items-center justify-between text-sm mt-2" style={{ color: "var(--cl-text)", opacity: 0.85 }}><span>Shipping</span><span>Complimentary</span></div>
             {discount > 0 && (
-              <div className="flex items-center justify-between text-sm text-[#C9A96E] mt-2" data-testid="checkout-loom-discount-row">
+              <div className="flex items-center justify-between text-sm mt-2" style={{ color: "#C9A96E" }} data-testid="checkout-loom-discount-row">
                 <span>Loom Credits ({redeemCards} × ₹{perCard})</span>
                 <span>−{formatINR(discount)}</span>
               </div>
             )}
             <div className="divider-thin my-6" />
-            <div className="flex items-center justify-between"><span className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">Total</span><span className="text-2xl text-[#F5F0E8]" data-testid="checkout-total">{formatINR(total)}</span></div>
+            <div className="flex items-center justify-between"><span className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "#C9A96E" }}>Total</span><span className="text-2xl" style={{ color: "var(--cl-text)" }} data-testid="checkout-total">{formatINR(total)}</span></div>
             <button data-testid="checkout-place-order" onClick={placeOrder} disabled={processing} className="btn-gold w-full mt-8 disabled:opacity-50">
               {processing
                 ? "Processing..."
@@ -290,7 +274,10 @@ export default function CheckoutPage() {
                 ? `Pay ${formatINR(Math.min(COD_TOKEN_AMOUNT, total))} & Place Order`
                 : "Place Order"}
             </button>
-            <p className="text-[11px] tracking-[0.2em] uppercase text-[#8A8FA8] mt-4 text-center">Secure payments via Razorpay</p>
+            <div className="flex items-center justify-center gap-2 mt-5">
+              <ShieldCheck size={13} style={{ color: "var(--cl-subtext)" }} />
+              <span className="text-[11px] tracking-[0.2em] uppercase" style={{ color: "var(--cl-subtext)" }}>Secure Checkout via Razorpay</span>
+            </div>
           </div>
         </div>
       </div>
