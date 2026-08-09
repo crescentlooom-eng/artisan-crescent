@@ -1,109 +1,170 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { RotateCcw, Repeat, Wallet, ShieldCheck, MessageCircle, Camera, Clock, PackageCheck, ChevronDown, X, Check } from "lucide-react";
 
-const Section = ({ title, children }) => (
-  <div className="border-t border-[#C9A96E]/15 pt-10 mt-10">
-    <div className="text-[11px] tracking-[0.4em] uppercase text-[#C9A96E] mb-4">{title}</div>
-    <div className="text-[#F5F0E8]/80 leading-relaxed space-y-4 text-sm md:text-base">{children}</div>
-  </div>
-);
+const HERO_IMG = "https://customer-assets.emergentagent.com/job_artisan-crescent/artifacts/dp4xzzoz_plain%20black%201%20.png";
 
-export default function ReturnPolicyPage() {
+const STEPS = [
+  { Icon: MessageCircle, title: "WhatsApp Us", body: "Message us with your Order ID and reason for return." },
+  { Icon: Camera, title: "Share Photos", body: "Attach clear photos of the item showing the issue." },
+  { Icon: Clock, title: "We Review", body: "Our team responds within 24–48 hours with next steps." },
+  { Icon: PackageCheck, title: "Ship It Back", body: "Once approved, send the item to us via trackable courier." },
+  { Icon: RotateCcw, title: "Credit or Exchange", body: "We verify the item and issue store credit or dispatch your exchange." },
+];
+
+const FAQS = [
+  { q: "How many days do I have to return a product?", a: "You have 7 days from the date of delivery to raise a return or exchange request." },
+  { q: "Do I get a cash refund?", a: "No — we issue store credit as Loom Credits to your account, or a size exchange. Cash refunds aren't available at this time." },
+  { q: "Is return shipping free?", a: "No, return shipping is currently borne by the customer. We recommend using a trackable courier service." },
+  { q: "Can I return for a different size instead?", a: "Yes, size exchanges are available for eligible items — just mention this when you message us." },
+  { q: "What if I receive a wrong or defective product?", a: "We accept these cases without question — message us with photos and we'll make it right." },
+  { q: "How do I track my return status?", a: "We'll keep you updated directly over WhatsApp throughout the process." },
+];
+
+function FaqItem({ q, a, open, onClick }) {
   return (
-    <div className="page-fade pt-32 pb-24 max-w-3xl mx-auto px-6 md:px-12">
-      <div className="text-[11px] tracking-[0.4em] uppercase text-[#C9A96E] mb-4">Policies</div>
-      <h1 className="font-serif-display text-5xl md:text-6xl text-[#F5F0E8] leading-[0.95]">
-        Returns &amp; <span className="italic text-[#C9A96E]/90">Exchanges</span>
-      </h1>
-      <p className="text-[#F5F0E8]/60 mt-6 text-sm leading-relaxed max-w-xl">
-        We make few things, but we make them carefully. If something isn't right, we'll make it right.
-      </p>
-
-      <Section title="Return Window">
-        <p>
-          We accept return and exchange requests within <strong className="text-[#F5F0E8]">7 days</strong> of delivery. Requests raised after 7 days will not be accepted.
-        </p>
-        <p>
-          To be eligible, items must be unworn, unwashed, and in their original condition with all tags intact.
-        </p>
-      </Section>
-
-      <Section title="What We Accept">
-        <p>We accept returns or exchanges only in the following cases:</p>
-        <ul className="space-y-2 mt-2">
-          {[
-            "Wrong item delivered",
-            "Defective or damaged product",
-            "Wrong size delivered (different from what was ordered)",
-          ].map((item) => (
-            <li key={item} className="flex items-start gap-3">
-              <span className="text-[#C9A96E] mt-1">—</span>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-4 text-[#F5F0E8]/50 text-xs tracking-wide">
-          We do not accept returns for change of mind or incorrect size selection. Please refer to our size guide before ordering.
-        </p>
-      </Section>
-
-      <Section title="Exchange or Store Credit">
-        <p>
-          We offer <strong className="text-[#F5F0E8]">size exchanges</strong> and <strong className="text-[#F5F0E8]">store credit</strong> for eligible returns. Cash refunds are not available at this time.
-        </p>
-        <p>
-          Store credit is issued as <strong className="text-[#F5F0E8]">Loom Credits</strong> to your account and can be used on your next order.
-        </p>
-      </Section>
-
-      <Section title="Return Shipping">
-        <p>
-          Return shipping charges are to be borne by the customer. We recommend using a trackable courier service. Crescent Loom is not responsible for items lost in transit during return.
-        </p>
-      </Section>
-
-      <Section title="How to Initiate a Return">
-        <p>To raise a return or exchange request:</p>
-        <ul className="space-y-3 mt-2">
-          {[
-            "WhatsApp us at the number given below with your Order ID and reason",
-            "Attach clear photos of the item showing the issue",
-            "Our team will respond within 24–48 hours",
-            "Once approved, ship the item to the address provided",
-          ].map((step, i) => (
-            <li key={i} className="flex items-start gap-3">
-              <span className="text-[#C9A96E] font-serif-display text-lg leading-none mt-0.5">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <span>{step}</span>
-            </li>
-          ))}
-        </ul>
-      </Section>
-
-      <Section title="Contact">
-        <p>
-          For any queries regarding returns, write to us at{" "}
-          <a href="mailto:crescent.looom@gmail.com" className="text-[#C9A96E] gold-underline">
-            crescent.looom@gmail.com
-          </a>
-        </p>
-        <p>Or WhatsApp us at:</p>
-        <ul className="space-y-2 mt-2">
-          {["+91 9810924300", "+91 8810607608", "+91 8920989377"].map((num) => (
-            <li key={num} className="flex items-center gap-3">
-              <span className="text-[#C9A96E]">—</span>
-              <a href={`https://wa.me/91${num.replace(/\D/g,"")}`} className="text-[#C9A96E] gold-underline">{num}</a>
-            </li>
-          ))}
-        </ul>
-      </Section>
-
-      <div className="mt-16 pt-10 border-t border-[#C9A96E]/15 flex flex-wrap gap-6">
-        <Link to="/shop" className="btn-gold">Continue Shopping</Link>
-        <Link to="/account" className="text-[11px] tracking-[0.3em] uppercase text-[#F5F0E8]/60 gold-underline self-center">My Orders</Link>
-      </div>
+    <div className="border-t" style={{ borderColor: "var(--cl-border)" }}>
+      <button onClick={onClick} className="w-full flex items-center justify-between py-5 text-left">
+        <span className="text-sm md:text-base pr-4" style={{ color: "var(--cl-text)" }}>{q}</span>
+        <ChevronDown size={16} style={{ color: "#C9A96E", transform: open ? "rotate(180deg)" : "none", transition: "transform 0.2s ease", flexShrink: 0 }} />
+      </button>
+      {open && <p className="pb-5 text-sm leading-relaxed" style={{ color: "var(--cl-subtext)" }}>{a}</p>}
     </div>
   );
 }
 
+export default function ReturnPolicyPage() {
+  const [openFaq, setOpenFaq] = useState(null);
+
+  return (
+    <div className="page-fade pt-28 md:pt-32 pb-24">
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
+        <div className="text-[11px] tracking-[0.3em] uppercase mb-8" style={{ color: "var(--cl-subtext)" }}>
+          <Link to="/" className="hover:text-[#C9A96E]">Home</Link> <span className="mx-2">/</span>
+          <span style={{ color: "var(--cl-text)", opacity: 0.85 }}>Returns & Exchanges</span>
+        </div>
+
+        {/* Hero */}
+        <div className="grid md:grid-cols-2 gap-10 items-center mb-16">
+          <div>
+            <h1 className="font-serif-display text-5xl md:text-6xl leading-[0.95]" style={{ color: "var(--cl-text)" }}>
+              Returns &amp; <span className="italic" style={{ color: "#C9A96E" }}>Exchange Policy</span>
+            </h1>
+            <p className="mt-5 text-sm" style={{ color: "var(--cl-subtext)" }}>
+              We make few things, but we make them carefully. Simple · Transparent · Hassle-Free.
+            </p>
+          </div>
+          <div className="rounded-2xl overflow-hidden" style={{ aspectRatio: "16/9" }}>
+            <img src={HERO_IMG} alt="" className="w-full h-full object-cover" />
+          </div>
+        </div>
+
+        {/* Promise badges */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-20">
+          {[
+            ["7 Days", "Easy Returns"],
+            ["Size", "Exchange Available"],
+            ["Store Credit", "Loom Credits Issued"],
+            ["100%", "Original Products"],
+          ].map(([big, small]) => (
+            <div key={small} className="border p-4 text-center" style={{ borderColor: "var(--cl-border)" }}>
+              <div className="font-serif-display text-xl" style={{ color: "var(--cl-text)" }}>{big}</div>
+              <div className="text-[10px] tracking-[0.15em] uppercase mt-1" style={{ color: "var(--cl-subtext)" }}>{small}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Our Promise */}
+        <div className="mb-20">
+          <h2 className="font-serif-display text-3xl mb-8" style={{ color: "var(--cl-text)" }}>Our Promise</h2>
+          <div className="grid md:grid-cols-3 gap-5">
+            {[
+              [RotateCcw, "Returns", "Not satisfied? Return it within 7 days of delivery."],
+              [Repeat, "Exchanges", "Need a different size or color, subject to availability."],
+              [Wallet, "Store Credit", "Get Loom Credits once we receive and verify the item."],
+            ].map(([Icon, title, body]) => (
+              <div key={title} className="border p-6" style={{ borderColor: "var(--cl-border)" }}>
+                <div className="w-10 h-10 rounded-full flex items-center justify-center mb-4" style={{ background: "var(--cl-surface)" }}>
+                  <Icon size={16} style={{ color: "#C9A96E" }} />
+                </div>
+                <div className="font-serif-display text-xl mb-2" style={{ color: "var(--cl-text)" }}>{title}</div>
+                <p className="text-sm" style={{ color: "var(--cl-subtext)" }}>{body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* How to raise */}
+        <div className="mb-20">
+          <h2 className="font-serif-display text-3xl mb-8" style={{ color: "var(--cl-text)" }}>How to raise a return / exchange</h2>
+          <div className="grid md:grid-cols-5 gap-4">
+            {STEPS.map((s, i) => (
+              <div key={s.title} className="border p-5" style={{ borderColor: "var(--cl-border)" }}>
+                <div className="w-8 h-8 rounded-full flex items-center justify-center mb-4 text-xs" style={{ background: "var(--cl-surface)", color: "#C9A96E" }}>
+                  {String(i + 1).padStart(2, "0")}
+                </div>
+                <s.Icon size={18} style={{ color: "#C9A96E" }} className="mb-3" />
+                <div className="text-sm font-medium mb-1.5" style={{ color: "var(--cl-text)" }}>{s.title}</div>
+                <p className="text-xs leading-relaxed" style={{ color: "var(--cl-subtext)" }}>{s.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Eligibility vs Non-returnable */}
+        <div className="grid md:grid-cols-2 gap-5 mb-20">
+          <div className="border p-6" style={{ borderColor: "rgba(143,188,143,0.3)", background: "var(--cl-surface)" }}>
+            <div className="text-[11px] tracking-[0.3em] uppercase mb-4" style={{ color: "#8FBC8F" }}>Return / Exchange Eligibility</div>
+            <ul className="space-y-3 text-sm">
+              {["Product must be unused, unwashed and in original condition", "All tags and packaging must be intact", "Return or exchange request must be raised within 7 days of delivery", "Products bought during special sales may be subject to different terms"].map((item) => (
+                <li key={item} className="flex items-start gap-2" style={{ color: "var(--cl-text)", opacity: 0.85 }}>
+                  <Check size={14} style={{ color: "#8FBC8F" }} className="mt-0.5 shrink-0" /> {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="border p-6" style={{ borderColor: "rgba(229,115,115,0.3)", background: "var(--cl-surface)" }}>
+            <div className="text-[11px] tracking-[0.3em] uppercase mb-4" style={{ color: "#E57373" }}>Non-Returnable Cases</div>
+            <ul className="space-y-3 text-sm">
+              {["Change of mind after purchase", "Incorrect size selected (please check our size guide first)", "Items washed, worn, or damaged by the customer", "Items without original tags or packaging"].map((item) => (
+                <li key={item} className="flex items-start gap-2" style={{ color: "var(--cl-text)", opacity: 0.85 }}>
+                  <X size={14} style={{ color: "#E57373" }} className="mt-0.5 shrink-0" /> {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* FAQ */}
+        <div className="mb-20">
+          <h2 className="font-serif-display text-3xl mb-4" style={{ color: "var(--cl-text)" }}>Frequently Asked Questions</h2>
+          <div>
+            {FAQS.map((f, i) => (
+              <FaqItem key={f.q} q={f.q} a={f.a} open={openFaq === i} onClick={() => setOpenFaq(openFaq === i ? null : i)} />
+            ))}
+          </div>
+        </div>
+
+        {/* Still need help */}
+        <div className="border p-8 flex flex-col md:flex-row items-center justify-between gap-6 mb-16" style={{ borderColor: "rgba(201,169,110,0.25)", background: "var(--cl-surface)" }}>
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <ShieldCheck size={16} style={{ color: "#C9A96E" }} />
+              <span className="font-serif-display text-xl" style={{ color: "var(--cl-text)" }}>Still need help?</span>
+            </div>
+            <p className="text-sm" style={{ color: "var(--cl-subtext)" }}>Our team typically responds within 24–48 hours.</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <a href="mailto:crescent.looom@gmail.com" className="text-[11px] tracking-[0.25em] uppercase border px-5 py-3" style={{ borderColor: "var(--cl-border)", color: "var(--cl-text)" }}>Email Us</a>
+            <a href="https://wa.me/919810924300" target="_blank" rel="noopener noreferrer" className="btn-gold">Message on WhatsApp</a>
+          </div>
+        </div>
+
+        <div className="pt-10 border-t flex flex-wrap gap-6" style={{ borderColor: "rgba(201,169,110,0.15)" }}>
+          <Link to="/shop" className="btn-gold">Continue Shopping</Link>
+          <Link to="/account" className="text-[11px] tracking-[0.3em] uppercase gold-underline self-center" style={{ color: "var(--cl-text)", opacity: 0.7 }}>My Orders</Link>
+        </div>
+      </div>
+    </div>
+  );
+}
