@@ -88,7 +88,7 @@ export default function MagneticHero() {
           size: Math.random() * 2.2 + 0.5,
           color:
             gold > 0.7
-              ? `rgba(201,169,110,${Math.random() * 0.6 + 0.4})`
+              ? `rgba(184,192,200,${Math.random() * 0.6 + 0.4})`
               : gold > 0.4
               ? `rgba(245,240,232,${Math.random() * 0.5 + 0.3})`
               : `rgba(184,145,74,${Math.random() * 0.4 + 0.3})`,
@@ -108,7 +108,7 @@ export default function MagneticHero() {
           originX: x,
           originY: y,
           size: Math.random() * 1 + 0.2,
-          color: `rgba(201,169,110,${Math.random() * 0.25 + 0.05})`,
+          color: `rgba(184,192,200,${Math.random() * 0.25 + 0.05})`,
           vx: 0,
           vy: 0,
           mass: Math.random() * 0.2 + 0.1,
@@ -166,7 +166,7 @@ export default function MagneticHero() {
         W / 2, H / 2, 0,
         W / 2, H / 2, 220
       );
-      glow.addColorStop(0, "rgba(201,169,110,0.06)");
+      glow.addColorStop(0, "rgba(184,192,200,0.06)");
       glow.addColorStop(1, "rgba(10,15,26,0)");
       ctx.fillStyle = glow;
       ctx.fillRect(0, 0, W, H);
@@ -207,7 +207,7 @@ export default function MagneticHero() {
       {/* Overlay content */}
       <div className="absolute inset-0 flex flex-col items-center justify-center z-10 pointer-events-none">
         {/* Brand label */}
-        <div className="text-[10px] tracking-[0.5em] uppercase text-[#C9A96E]/70 mb-16">
+        <div className="text-[10px] tracking-[0.5em] uppercase text-[#B8C0C8]/70 mb-16">
           Crescent Loom
         </div>
       </div>
@@ -215,12 +215,12 @@ export default function MagneticHero() {
       {/* Bottom content */}
       <div className="absolute bottom-0 left-0 right-0 pb-20 px-12 z-10 flex items-end justify-between">
         <div>
-          <div className="text-[10px] tracking-[0.4em] uppercase text-[#C9A96E] mb-4">
+          <div className="text-[10px] tracking-[0.4em] uppercase text-[#B8C0C8] mb-4">
             Subtle By Design
           </div>
           <h1 className="font-serif-display text-6xl xl:text-7xl text-[#F5F0E8] leading-[0.92]">
             Crafted For The<br />
-            <span className="italic text-[#C9A96E]/90">Modern Chapter</span>
+            <span className="italic text-[#B8C0C8]/90">Modern Chapter</span>
           </h1>
           <p className="text-[#8A8FA8] mt-5 text-sm tracking-wide max-w-sm leading-relaxed">
             Timeless essentials designed with intention.
@@ -228,13 +228,13 @@ export default function MagneticHero() {
           <div className="mt-8 flex gap-4 pointer-events-auto">
             <Link
               to="/shop"
-              className="text-[11px] tracking-[0.3em] uppercase text-[#0A0F1A] bg-[#C9A96E] px-8 py-3 hover:bg-[#B8914A] transition-colors"
+              className="text-[11px] tracking-[0.3em] uppercase text-[#0A0F1A] bg-[#B8C0C8] px-8 py-3 hover:bg-[#9CA6AF] transition-colors"
             >
               Explore Collection
             </Link>
             <Link
               to="/shop?category=polo"
-              className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E] border border-[#C9A96E]/40 px-8 py-3 hover:border-[#C9A96E] transition-colors"
+              className="text-[11px] tracking-[0.3em] uppercase text-[#B8C0C8] border border-[#B8C0C8]/40 px-8 py-3 hover:border-[#B8C0C8] transition-colors"
             >
               Shop Chapter I
             </Link>
@@ -246,7 +246,7 @@ export default function MagneticHero() {
           <div className="text-[9px] tracking-[0.4em] uppercase text-[#8A8FA8] rotate-90 mb-4">
             Scroll
           </div>
-          <div className="w-px h-16 bg-gradient-to-b from-[#C9A96E]/50 to-transparent" />
+          <div className="w-px h-16 bg-gradient-to-b from-[#B8C0C8]/50 to-transparent" />
         </div>
       </div>
     </section>
