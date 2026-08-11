@@ -38,7 +38,7 @@ function VariantImageUploader({ images, onChange, variantName }) {
             <button
               type="button"
               onClick={() => onChange(images.filter((_, j) => j !== i))}
-              className="absolute -top-2 -right-2 bg-[#0B0E1A] border border-[#C9A96E]/40 text-[#C9A96E] rounded-full w-5 h-5 text-xs flex items-center justify-center"
+              className="absolute -top-2 -right-2 bg-[#0B0E1A] border border-[#B8C0C8]/40 text-[#B8C0C8] rounded-full w-5 h-5 text-xs flex items-center justify-center"
               data-testid={`variant-img-remove-${i}`}
             >×</button>
           </div>
@@ -47,7 +47,7 @@ function VariantImageUploader({ images, onChange, variantName }) {
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={uploading}
-          className="w-20 h-24 border border-dashed border-[#C9A96E]/40 hover:border-[#C9A96E] text-[#C9A96E] text-xs flex flex-col items-center justify-center gap-1 disabled:opacity-50"
+          className="w-20 h-24 border border-dashed border-[#B8C0C8]/40 hover:border-[#B8C0C8] text-[#B8C0C8] text-xs flex flex-col items-center justify-center gap-1 disabled:opacity-50"
           data-testid={`variant-img-upload-${variantName}`}
         >
           {uploading ? <Loader2 size={16} className="animate-spin" /> : <><Upload size={14} /><span>Upload</span></>}
@@ -75,16 +75,16 @@ export default function VariantEditor({ variants, onChange }) {
   const add = () => onChange([...variants, { id: `v_${Math.random().toString(36).slice(2,10)}`, name: `Variant ${variants.length+1}`, color_hex: "", images: [] }]);
 
   return (
-    <div className="border border-[#C9A96E]/15 p-4">
+    <div className="border border-[#B8C0C8]/15 p-4">
       <div className="flex items-center justify-between mb-4">
-        <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">Variants ({variants.length})</div>
+        <div className="text-[11px] tracking-[0.3em] uppercase text-[#B8C0C8]">Variants ({variants.length})</div>
         <button type="button" onClick={add} className="text-[11px] tracking-[0.3em] uppercase gold-underline text-[#F5F0E8]/80 flex items-center gap-2" data-testid="variant-add">
           <Plus size={14} /> Add Variant
         </button>
       </div>
       <div className="space-y-6">
         {variants.map((v, i) => (
-          <div key={v.id || i} className="border border-[#C9A96E]/10 p-4" data-testid={`variant-row-${i}`}>
+          <div key={v.id || i} className="border border-[#B8C0C8]/10 p-4" data-testid={`variant-row-${i}`}>
             <div className="grid grid-cols-12 gap-3 items-end mb-3">
               <div className="col-span-6">
                 <label className="text-[10px] tracking-[0.3em] uppercase text-[#8A8FA8]">Variant Name</label>
@@ -95,7 +95,7 @@ export default function VariantEditor({ variants, onChange }) {
                 <input value={v.color_hex || ""} placeholder="#0B0E1A" onChange={(e) => update(i, { color_hex: e.target.value })} />
               </div>
               <div className="col-span-2 flex justify-end">
-                <button type="button" onClick={() => remove(i)} className="text-[#8A8FA8] hover:text-[#C9A96E]" data-testid={`variant-remove-${i}`}>
+                <button type="button" onClick={() => remove(i)} className="text-[#8A8FA8] hover:text-[#B8C0C8]" data-testid={`variant-remove-${i}`}>
                   <X size={16} />
                 </button>
               </div>

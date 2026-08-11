@@ -112,7 +112,7 @@ export default function WeaveHero() {
       // Draw gold thread lines on top (fading out as they finish)
       const threadOpacity = Math.max(0, 1 - eased * 1.3);
       if (threadOpacity > 0.01) {
-        ctx.strokeStyle = `rgba(201,169,110,${threadOpacity * 0.5})`;
+        ctx.strokeStyle = `rgba(184,192,200,${threadOpacity * 0.5})`;
         ctx.lineWidth = 1;
 
         for (let i = 0; i <= NUM_H; i++) {
@@ -127,7 +127,7 @@ export default function WeaveHero() {
           if (w > 0 && w < W) {
             ctx.beginPath();
             ctx.arc(w, y, 2.5, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(201,169,110,${threadOpacity})`;
+            ctx.fillStyle = `rgba(184,192,200,${threadOpacity})`;
             ctx.fill();
           }
         }
@@ -143,7 +143,7 @@ export default function WeaveHero() {
           if (h > 0 && h < H) {
             ctx.beginPath();
             ctx.arc(x, h, 2.5, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(201,169,110,${threadOpacity})`;
+            ctx.fillStyle = `rgba(184,192,200,${threadOpacity})`;
             ctx.fill();
           }
         }
@@ -180,12 +180,12 @@ export default function WeaveHero() {
           transition: "opacity 1.2s ease, transform 1.2s ease",
         }}
       >
-        <div className="text-[11px] tracking-[0.5em] uppercase text-[#C9A96E] mb-4">
+        <div className="text-[11px] tracking-[0.5em] uppercase text-[#B8C0C8] mb-4">
           Autumn / Winter — Volume IV
         </div>
         <h1 className="font-serif-display text-6xl md:text-8xl text-[#F5F0E8] leading-[0.95]">
           Woven in<br />
-          <span className="italic text-[#C9A96E]/90">Moonlight</span>
+          <span className="italic text-[#B8C0C8]/90">Moonlight</span>
         </h1>
         <p className="text-[#F5F0E8]/70 mt-6 text-base md:text-lg leading-relaxed max-w-md font-light">
           A quiet wardrobe. Cut from natural fibers, made in small numbers, intended to last beyond the season.
@@ -194,7 +194,7 @@ export default function WeaveHero() {
           <Link to="/shop" className="btn-gold text-xs">Enter the Collection</Link>
           <Link to="/about" className="text-[11px] tracking-[0.3em] uppercase text-[#F5F0E8]/60 gold-underline self-center">Our Philosophy</Link>
         </div>
-        <div className="mt-12 text-[11px] tracking-[0.4em] uppercase text-[#C9A96E]/50">
+        <div className="mt-12 text-[11px] tracking-[0.4em] uppercase text-[#B8C0C8]/50">
           Crescent Loom
         </div>
       </div>

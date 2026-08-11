@@ -35,13 +35,13 @@ export default function AdminLoginPage() {
     <div data-testid="admin-login-page" className="page-fade min-h-[88vh] flex items-center justify-center px-6 pt-28">
       <div className="max-w-md w-full">
         <div className="flex justify-center mb-6">
-          <div className="w-12 h-12 rounded-full border border-[#C9A96E]/40 flex items-center justify-center">
-            <Lock size={18} className="text-[#C9A96E]" />
+          <div className="w-12 h-12 rounded-full border border-[#B8C0C8]/40 flex items-center justify-center">
+            <Lock size={18} className="text-[#B8C0C8]" />
           </div>
         </div>
-        <div className="text-[11px] tracking-[0.4em] uppercase text-[#C9A96E] mb-3 text-center">Atelier</div>
+        <div className="text-[11px] tracking-[0.4em] uppercase text-[#B8C0C8] mb-3 text-center">Atelier</div>
         <h1 className="font-serif-display text-4xl md:text-5xl text-[#F5F0E8] leading-[1.05] text-center">
-          Private <span className="italic text-[#C9A96E]/90">Admin</span>
+          Private <span className="italic text-[#B8C0C8]/90">Admin</span>
         </h1>
         <p className="text-center text-[#8A8FA8] text-sm mt-4">Sign in to manage orders, customers, and the loom.</p>
 

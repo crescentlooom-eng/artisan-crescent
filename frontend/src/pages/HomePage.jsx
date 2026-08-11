@@ -38,7 +38,7 @@ function TrendCard({ product, index }) {
           onClick={onWish}
           aria-label="Wishlist"
           className={`absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-md transition-colors ${
-            isWished ? "bg-[#C9A96E] text-[#0B0E1A]" : "text-[var(--cl-text)]"
+            isWished ? "bg-[#B8C0C8] text-[#0B0E1A]" : "text-[var(--cl-text)]"
           }`}
           style={!isWished ? { background: "var(--cl-header-bg)" } : undefined}
         >
@@ -87,11 +87,11 @@ export default function HomePage() {
           transition: "opacity 0.6s ease, transform 0.6s ease",
           zIndex: 9999, pointerEvents: "none",
           background: "var(--cl-header-bg)",
-          border: "1px solid rgba(201,169,110,0.35)",
+          border: "1px solid rgba(184,192,200,0.35)",
           backdropFilter: "blur(12px)",
           padding: "12px 28px", whiteSpace: "nowrap",
         }}>
-          <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontSize: "14px", letterSpacing: "0.08em", color: "#C9A96E" }}>
+          <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontSize: "14px", letterSpacing: "0.08em", color: "#B8C0C8" }}>
             Welcome back, {firstName} 🌙
           </span>
         </div>
@@ -100,7 +100,7 @@ export default function HomePage() {
       {/* ================= HERO ================= */}
       <section className="px-6 md:px-12 pb-14 max-w-none mx-auto grid md:grid-cols-2 gap-10 items-center">
         <div>
-          <p className="text-xs tracking-[0.35em] mb-6 uppercase font-medium" style={{ color: "#C9A96E" }}>Wear the New Standard</p>
+          <p className="text-xs tracking-[0.35em] mb-6 uppercase font-medium" style={{ color: "#B8C0C8" }}>Wear the New Standard</p>
           <h1 className="font-serif-display text-6xl md:text-7xl lg:text-8xl leading-[1.02] mb-7" style={{ fontWeight: 400 }}>
             Where Style Speaks,<br />Trends Resonate.
           </h1>
@@ -213,7 +213,7 @@ export default function HomePage() {
                 Shop Now <ArrowRight size={14} />
               </Link>
             </div>
-            <div className="hidden md:flex flex-col items-center justify-center w-28 h-28 rounded-full border-2 shrink-0" style={{ borderColor: "#C9A96E" }}>
+            <div className="hidden md:flex flex-col items-center justify-center w-28 h-28 rounded-full border-2 shrink-0" style={{ borderColor: "#B8C0C8" }}>
               <span className="text-xs" style={{ color: "var(--cl-subtext)" }}>Up to</span>
               <span className="text-3xl font-serif-display">30%</span>
               <span className="text-xs" style={{ color: "var(--cl-subtext)" }}>OFF</span>
@@ -232,14 +232,14 @@ export default function HomePage() {
             { quote: "Fast delivery, great packaging and the t-shirts are even better in person.", name: "Jay Mehta" },
           ].map((t) => (
             <div key={t.name} className="rounded-2xl border p-6" style={{ borderColor: "var(--cl-border)", background: "var(--cl-surface)" }}>
-              <p className="text-2xl mb-3 font-serif-display" style={{ color: "#C9A96E" }}>&ldquo;</p>
+              <p className="text-2xl mb-3 font-serif-display" style={{ color: "#B8C0C8" }}>&ldquo;</p>
               <p className="text-sm mb-5" style={{ color: "var(--cl-subtext)" }}>{t.quote}</p>
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full" style={{ background: "var(--cl-border)" }} />
                 <div>
                   <p className="text-sm font-medium">{t.name}</p>
                   <div className="flex gap-0.5">
-                    {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={12} fill="#C9A96E" stroke="#C9A96E" />)}
+                    {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={12} fill="#B8C0C8" stroke="#B8C0C8" />)}
                   </div>
                 </div>
               </div>

@@ -29,20 +29,20 @@ export default function ThankYouPage() {
 
   return (
     <div data-testid="thank-you-page" className="page-fade pt-32 pb-24 max-w-3xl mx-auto px-6 md:px-12 text-center">
-      <div className="w-16 h-16 rounded-full mx-auto mb-6 flex items-center justify-center" style={{ border: "1px solid rgba(201,169,110,0.4)" }}>
-        <CheckCircle2 size={28} style={{ color: "#C9A96E" }} />
+      <div className="w-16 h-16 rounded-full mx-auto mb-6 flex items-center justify-center" style={{ border: "1px solid rgba(184,192,200,0.4)" }}>
+        <CheckCircle2 size={28} style={{ color: "#B8C0C8" }} />
       </div>
 
-      <div className="text-[11px] tracking-[0.4em] uppercase mb-4" style={{ color: "#C9A96E" }}>Order Confirmed</div>
+      <div className="text-[11px] tracking-[0.4em] uppercase mb-4" style={{ color: "#B8C0C8" }}>Order Confirmed</div>
       <h1 className="font-serif-display text-5xl md:text-6xl leading-[0.95]" style={{ color: "var(--cl-text)" }}>
-        Crafted in Silence. <span className="italic" style={{ color: "#C9A96E" }}>On Its Way.</span>
+        Crafted in Silence. <span className="italic" style={{ color: "#B8C0C8" }}>On Its Way.</span>
       </h1>
       <p className="mt-6 max-w-xl mx-auto" style={{ color: "var(--cl-subtext)" }}>
         Thank you for choosing Crescent Loom. Your order has been placed and our atelier is preparing it for shipment.
         You'll receive updates by email as it moves.
       </p>
 
-      <div className="border p-8 mt-10 text-left" style={{ borderColor: "rgba(201,169,110,0.2)", background: "var(--cl-surface)" }}>
+      <div className="border p-8 mt-10 text-left" style={{ borderColor: "rgba(184,192,200,0.2)", background: "var(--cl-surface)" }}>
         <div className="flex items-center justify-between mb-6">
           <div>
             <div className="text-[10px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Order ID</div>

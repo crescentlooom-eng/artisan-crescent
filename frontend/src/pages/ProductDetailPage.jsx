@@ -27,8 +27,8 @@ function StarRating({ value, onChange, size = 20 }) {
         >
           <Star
             size={size}
-            fill={(hover || value) >= star ? "#C9A96E" : "none"}
-            stroke={(hover || value) >= star ? "#C9A96E" : "var(--cl-subtext)"}
+            fill={(hover || value) >= star ? "#B8C0C8" : "none"}
+            stroke={(hover || value) >= star ? "#B8C0C8" : "var(--cl-subtext)"}
           />
         </button>
       ))}
@@ -62,11 +62,11 @@ function ReviewsSection({ slug, average, total, reviews, onSubmitted }) {
     <div className="mt-32 border-t pt-16" style={{ borderColor: "var(--cl-border)" }}>
       <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
         <div>
-          <div className="text-[11px] tracking-[0.3em] uppercase mb-2" style={{ color: "#C9A96E" }}>Customer Reviews</div>
+          <div className="text-[11px] tracking-[0.3em] uppercase mb-2" style={{ color: "#B8C0C8" }}>Customer Reviews</div>
           <div className="flex items-center gap-4">
             <h3 className="font-serif-display text-3xl md:text-4xl" style={{ color: "var(--cl-text)" }}>
               {total > 0 ? (
-                <><span className="italic" style={{ color: "#C9A96E" }}>{average}</span> out of 5</>
+                <><span className="italic" style={{ color: "#B8C0C8" }}>{average}</span> out of 5</>
               ) : "No reviews yet"}
             </h3>
             {total > 0 && (
@@ -83,7 +83,7 @@ function ReviewsSection({ slug, average, total, reviews, onSubmitted }) {
       </div>
 
       {showForm && (
-        <div className="border p-8 mb-12" style={{ borderColor: "rgba(201,169,110,0.2)", background: "var(--cl-surface)" }}>
+        <div className="border p-8 mb-12" style={{ borderColor: "rgba(184,192,200,0.2)", background: "var(--cl-surface)" }}>
           <h4 className="font-serif-display text-2xl mb-6" style={{ color: "var(--cl-text)" }}>Your Review</h4>
           <div className="space-y-6">
             <div>
@@ -120,7 +120,7 @@ function ReviewsSection({ slug, average, total, reviews, onSubmitted }) {
                   <div className="flex items-center gap-3 mb-1">
                     <StarRating value={r.rating} size={14} />
                     {r.verified && (
-                      <span className="text-[10px] tracking-[0.2em] uppercase border px-2 py-0.5" style={{ color: "#C9A96E", borderColor: "rgba(201,169,110,0.3)" }}>Verified</span>
+                      <span className="text-[10px] tracking-[0.2em] uppercase border px-2 py-0.5" style={{ color: "#B8C0C8", borderColor: "rgba(184,192,200,0.3)" }}>Verified</span>
                     )}
                   </div>
                   {r.title && <div className="font-serif-display text-lg" style={{ color: "var(--cl-text)" }}>{r.title}</div>}
@@ -287,8 +287,8 @@ export default function ProductDetailPage() {
     <div data-testid="product-detail-page" className="page-fade pt-28 md:pt-32 pb-24">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="text-[11px] tracking-[0.3em] uppercase mb-8" style={{ color: "var(--cl-subtext)" }}>
-          <Link to="/" className="hover:text-[#C9A96E]">Home</Link> <span className="mx-2">/</span>
-          <Link to={`/shop?category=${product.category}`} className="hover:text-[#C9A96E] capitalize">{product.category}</Link> <span className="mx-2">/</span>
+          <Link to="/" className="hover:text-[#B8C0C8]">Home</Link> <span className="mx-2">/</span>
+          <Link to={`/shop?category=${product.category}`} className="hover:text-[#B8C0C8] capitalize">{product.category}</Link> <span className="mx-2">/</span>
           <span style={{ color: "var(--cl-text)", opacity: 0.85 }}>{product.name}</span>
         </div>
 
@@ -298,7 +298,7 @@ export default function ProductDetailPage() {
             {images.length > 1 && (
               <div className="hidden md:flex flex-col gap-3 w-20 shrink-0">
                 {images.map((img, i) => (
-                  <button key={i} onClick={() => setActiveImg(i)} data-testid={`product-thumb-${i}`} className="aspect-square overflow-hidden border" style={{ borderColor: i === activeImg ? "#C9A96E" : "transparent", opacity: i === activeImg ? 1 : 0.65 }}>
+                  <button key={i} onClick={() => setActiveImg(i)} data-testid={`product-thumb-${i}`} className="aspect-square overflow-hidden border" style={{ borderColor: i === activeImg ? "#B8C0C8" : "transparent", opacity: i === activeImg ? 1 : 0.65 }}>
                     <img src={img} alt="" className="w-full h-full object-cover" />
                   </button>
                 ))}
@@ -340,7 +340,7 @@ export default function ProductDetailPage() {
               {images.length > 1 && (
                 <div className="flex md:hidden gap-3 mt-3 overflow-x-auto">
                   {images.map((img, i) => (
-                    <button key={i} onClick={() => setActiveImg(i)} className="w-16 h-16 shrink-0 overflow-hidden border" style={{ borderColor: i === activeImg ? "#C9A96E" : "transparent" }}>
+                    <button key={i} onClick={() => setActiveImg(i)} className="w-16 h-16 shrink-0 overflow-hidden border" style={{ borderColor: i === activeImg ? "#B8C0C8" : "transparent" }}>
                       <img src={img} alt="" className="w-full h-full object-cover" />
                     </button>
                   ))}
@@ -364,7 +364,7 @@ export default function ProductDetailPage() {
               <div className="mt-6 space-y-2">
                 {["Delivered within 3–5 days · Delhi NCR", "Return & Exchange · 7 days", "Made in India"].map((point) => (
                   <div key={point} className="flex items-center gap-2 text-[11px] tracking-[0.25em] uppercase" style={{ color: "var(--cl-subtext)" }}>
-                    <span className="w-1 h-1 rounded-full flex-shrink-0" style={{ background: "#C9A96E" }} />
+                    <span className="w-1 h-1 rounded-full flex-shrink-0" style={{ background: "#B8C0C8" }} />
                     {point}
                   </div>
                 ))}
@@ -392,7 +392,7 @@ export default function ProductDetailPage() {
               <div className="mt-6 space-y-2">
                 {checklist.map((item) => (
                   <div key={item} className="flex items-center gap-2 text-sm" style={{ color: "var(--cl-text)" }}>
-                    <span style={{ color: "#C9A96E" }}>✓</span> {item}
+                    <span style={{ color: "#B8C0C8" }}>✓</span> {item}
                   </div>
                 ))}
               </div>
@@ -400,7 +400,7 @@ export default function ProductDetailPage() {
 
             {product.variants?.length > 0 && (
               <div className="mt-10">
-                <div className="text-[11px] tracking-[0.3em] uppercase mb-3" style={{ color: "#C9A96E" }}>
+                <div className="text-[11px] tracking-[0.3em] uppercase mb-3" style={{ color: "#B8C0C8" }}>
                   Variant · <span style={{ color: "var(--cl-text)", opacity: 0.85 }}>{variant?.name}</span>
                 </div>
                 <div className="grid grid-cols-6 gap-3" data-testid="product-variant-grid">
@@ -425,7 +425,7 @@ export default function ProductDetailPage() {
                         title={v.name}
                         className="aspect-square overflow-hidden border-2 transition-all relative"
                         style={{
-                          borderColor: selected ? "#C9A96E" : "transparent",
+                          borderColor: selected ? "#B8C0C8" : "transparent",
                           opacity: selected ? 1 : 0.7,
                           backgroundColor: !thumb && v.color_hex ? v.color_hex : undefined,
                         }}
@@ -458,7 +458,7 @@ export default function ProductDetailPage() {
             {product.sizes?.length > 0 && !variantOutOfStock && (
               <div className="mt-10">
                 <div className="flex items-center justify-between mb-3">
-                  <div className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "#C9A96E" }}>Size · {size || "Out of stock"}</div>
+                  <div className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "#B8C0C8" }}>Size · {size || "Out of stock"}</div>
                   <Dialog>
                     <DialogTrigger asChild>
                       <button data-testid="product-size-guide-trigger" className="text-[11px] tracking-[0.25em] uppercase gold-underline" style={{ color: "var(--cl-text)", opacity: 0.8 }}>Size Guide</button>
@@ -469,7 +469,7 @@ export default function ProductDetailPage() {
                       </DialogHeader>
                       <div className="mt-4 text-sm">
                         <table className="w-full text-left">
-                          <thead className="text-[11px] tracking-[0.2em] uppercase" style={{ color: "#C9A96E" }}>
+                          <thead className="text-[11px] tracking-[0.2em] uppercase" style={{ color: "#B8C0C8" }}>
                             <tr><th className="py-2">Size</th><th>Chest (in)</th><th>Length (in)</th><th>Shoulder (in)</th></tr>
                           </thead>
                           <tbody style={{ color: "var(--cl-text)", opacity: 0.8 }}>
@@ -505,7 +505,7 @@ export default function ProductDetailPage() {
                         style={outOfStock
                           ? { borderColor: "var(--cl-border)", color: "var(--cl-subtext)", opacity: 0.4, textDecoration: "line-through", cursor: "not-allowed" }
                           : size === s
-                          ? { borderColor: "#C9A96E", color: "#C9A96E" }
+                          ? { borderColor: "#B8C0C8", color: "#B8C0C8" }
                           : { borderColor: "var(--cl-border)", color: "var(--cl-text)", opacity: 0.8 }}
                       >{s}</button>
                     );
@@ -515,12 +515,12 @@ export default function ProductDetailPage() {
             )}
 
             <div className="mt-10 flex items-center gap-4">
-              <div className="flex items-center border" style={{ borderColor: "rgba(201,169,110,0.3)" }}>
+              <div className="flex items-center border" style={{ borderColor: "rgba(184,192,200,0.3)" }}>
                 <button onClick={() => setQty(Math.max(1, qty - 1))} className="px-3 py-3" style={{ color: "var(--cl-text)" }}><Minus size={14} /></button>
                 <span className="px-4 text-sm w-10 text-center" style={{ color: "var(--cl-text)" }} data-testid="product-qty">{qty}</span>
                 <button onClick={() => setQty(qty + 1)} className="px-3 py-3" style={{ color: "var(--cl-text)" }}><Plus size={14} /></button>
               </div>
-              <button data-testid="product-wishlist-button" onClick={onWish} aria-label="Wishlist" className="p-3 border" style={{ borderColor: has(product.id) ? "#C9A96E" : "rgba(201,169,110,0.3)", color: has(product.id) ? "#C9A96E" : "var(--cl-text)" }}>
+              <button data-testid="product-wishlist-button" onClick={onWish} aria-label="Wishlist" className="p-3 border" style={{ borderColor: has(product.id) ? "#B8C0C8" : "rgba(184,192,200,0.3)", color: has(product.id) ? "#B8C0C8" : "var(--cl-text)" }}>
                 <Heart size={16} fill={has(product.id) ? "currentColor" : "none"} />
               </button>
             </div>
@@ -538,22 +538,22 @@ export default function ProductDetailPage() {
                 onClick={onBuyNow}
                 disabled={!size || variantOutOfStock}
                 className="flex-1 py-3 text-sm font-medium tracking-wide border disabled:opacity-40 disabled:cursor-not-allowed"
-                style={{ borderColor: "#C9A96E", color: "#C9A96E" }}
+                style={{ borderColor: "#B8C0C8", color: "#B8C0C8" }}
               >
                 Buy Now
               </button>
             </div>
 
-            <div className="mt-5 flex items-center gap-3 border px-4 py-3" style={{ borderColor: "rgba(201,169,110,0.25)", background: "var(--cl-surface)" }}>
-              <Moon size={16} style={{ color: "#C9A96E" }} />
+            <div className="mt-5 flex items-center gap-3 border px-4 py-3" style={{ borderColor: "rgba(184,192,200,0.25)", background: "var(--cl-surface)" }}>
+              <Moon size={16} style={{ color: "#B8C0C8" }} />
               <div className="text-xs" style={{ color: "var(--cl-text)", opacity: 0.85 }}>
-                Earn <span style={{ color: "#C9A96E" }}>1 Loom Credit Card</span> (worth ₹5) with this order — collect 3 to redeem.
+                Earn <span style={{ color: "#B8C0C8" }}>1 Loom Credit Card</span> (worth ₹5) with this order — collect 3 to redeem.
               </div>
             </div>
 
             <div className="mt-4 border px-4 py-4" style={{ borderColor: "var(--cl-border)" }}>
               <div className="flex items-center gap-2 mb-3">
-                <MapPin size={14} style={{ color: "#C9A96E" }} />
+                <MapPin size={14} style={{ color: "#B8C0C8" }} />
                 <span className="text-[11px] tracking-[0.25em] uppercase" style={{ color: "var(--cl-text)" }}>Check Delivery</span>
               </div>
               <div className="flex gap-2">
@@ -572,7 +572,7 @@ export default function ProductDetailPage() {
                   onClick={checkPincode}
                   disabled={pincodeLoading}
                   className="px-4 py-2 text-xs tracking-[0.2em] uppercase border shrink-0"
-                  style={{ borderColor: "#C9A96E", color: "#C9A96E" }}
+                  style={{ borderColor: "#B8C0C8", color: "#B8C0C8" }}
                 >
                   {pincodeLoading ? <Loader2 size={14} className="animate-spin" /> : "Check"}
                 </button>
@@ -599,7 +599,7 @@ export default function ProductDetailPage() {
           <div className="mt-32">
             <div className="flex items-end justify-between mb-10">
               <div>
-                <div className="text-[11px] tracking-[0.3em] uppercase mb-2" style={{ color: "#C9A96E" }}>Continued Reading</div>
+                <div className="text-[11px] tracking-[0.3em] uppercase mb-2" style={{ color: "#B8C0C8" }}>Continued Reading</div>
                 <h3 className="font-serif-display text-3xl md:text-4xl" style={{ color: "var(--cl-text)" }}>You may also like</h3>
               </div>
             </div>

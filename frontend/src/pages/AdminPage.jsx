@@ -39,10 +39,10 @@ function ProductForm({ initial, onClose, onSaved }) {
 
   return (
     <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-start justify-center p-4 overflow-y-auto">
-      <div className="bg-[#0B0E1A] border border-[#C9A96E]/20 max-w-3xl w-full p-8 my-4">
+      <div className="bg-[#0B0E1A] border border-[#B8C0C8]/20 max-w-3xl w-full p-8 my-4">
         <div className="flex items-center justify-between mb-6">
           <h3 className="font-serif-display text-3xl text-[#F5F0E8]">{initial?.id ? "Edit Piece" : "New Piece"}</h3>
-          <button onClick={onClose} className="text-[#8A8FA8] hover:text-[#C9A96E]"><X /></button>
+          <button onClick={onClose} className="text-[#8A8FA8] hover:text-[#B8C0C8]"><X /></button>
         </div>
         <div className="grid grid-cols-2 gap-x-6 gap-y-3">
           <div className="col-span-2"><label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Name</label><input value={form.name} onChange={(e) => set("name", e.target.value)} /></div>
@@ -115,17 +115,17 @@ function ReviewsTab() {
       ) : (
         <div className="space-y-4">
           {reviews.map((r) => (
-            <div key={r.id} className="border border-[#C9A96E]/15 p-5">
+            <div key={r.id} className="border border-[#B8C0C8]/15 p-5">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2 flex-wrap">
                     <div className="flex gap-0.5">
                       {[1,2,3,4,5].map((s) => (
-                        <Star key={s} size={13} fill={r.rating >= s ? "#C9A96E" : "none"} stroke={r.rating >= s ? "#C9A96E" : "#8A8FA8"} />
+                        <Star key={s} size={13} fill={r.rating >= s ? "#B8C0C8" : "none"} stroke={r.rating >= s ? "#B8C0C8" : "#8A8FA8"} />
                       ))}
                     </div>
-                    <span className="text-[11px] tracking-[0.2em] uppercase text-[#C9A96E]">{r.product_slug}</span>
-                    {r.verified && <span className="text-[10px] tracking-[0.2em] uppercase text-[#C9A96E] border border-[#C9A96E]/30 px-2 py-0.5">Verified</span>}
+                    <span className="text-[11px] tracking-[0.2em] uppercase text-[#B8C0C8]">{r.product_slug}</span>
+                    {r.verified && <span className="text-[10px] tracking-[0.2em] uppercase text-[#B8C0C8] border border-[#B8C0C8]/30 px-2 py-0.5">Verified</span>}
                   </div>
                   {r.title && <div className="font-serif-display text-lg text-[#F5F0E8] mb-1">{r.title}</div>}
                   <p className="text-[#F5F0E8]/75 text-sm leading-relaxed mb-2">{r.body}</p>
@@ -168,14 +168,14 @@ export default function AdminPage() {
 
   return (
     <div data-testid="admin-page" className="page-fade max-w-7xl">
-      <div className="text-[11px] tracking-[0.4em] uppercase text-[#C9A96E] mb-3">Atelier</div>
+      <div className="text-[11px] tracking-[0.4em] uppercase text-[#B8C0C8] mb-3">Atelier</div>
       <h1 className="font-serif-display text-3xl md:text-4xl text-[#F5F0E8]">Pieces</h1>
 
-      <div className="mt-8 flex gap-8 border-b border-[#C9A96E]/15 pb-3 overflow-x-auto">
-        <button onClick={() => setTab("products")} className={`text-[11px] tracking-[0.3em] uppercase gold-underline whitespace-nowrap ${tab === "products" ? "active text-[#C9A96E]" : "text-[#F5F0E8]/80"}`}>Pieces ({products.length})</button>
-        <button onClick={() => setTab("orders")} className={`text-[11px] tracking-[0.3em] uppercase gold-underline whitespace-nowrap ${tab === "orders" ? "active text-[#C9A96E]" : "text-[#F5F0E8]/80"}`}>Orders ({orders.length})</button>
-        <button onClick={() => setTab("loom")} className={`text-[11px] tracking-[0.3em] uppercase gold-underline whitespace-nowrap ${tab === "loom" ? "active text-[#C9A96E]" : "text-[#F5F0E8]/80"}`}>Loom Credits</button>
-        <button onClick={() => setTab("reviews")} className={`text-[11px] tracking-[0.3em] uppercase gold-underline whitespace-nowrap ${tab === "reviews" ? "active text-[#C9A96E]" : "text-[#F5F0E8]/80"}`}>Reviews</button>
+      <div className="mt-8 flex gap-8 border-b border-[#B8C0C8]/15 pb-3 overflow-x-auto">
+        <button onClick={() => setTab("products")} className={`text-[11px] tracking-[0.3em] uppercase gold-underline whitespace-nowrap ${tab === "products" ? "active text-[#B8C0C8]" : "text-[#F5F0E8]/80"}`}>Pieces ({products.length})</button>
+        <button onClick={() => setTab("orders")} className={`text-[11px] tracking-[0.3em] uppercase gold-underline whitespace-nowrap ${tab === "orders" ? "active text-[#B8C0C8]" : "text-[#F5F0E8]/80"}`}>Orders ({orders.length})</button>
+        <button onClick={() => setTab("loom")} className={`text-[11px] tracking-[0.3em] uppercase gold-underline whitespace-nowrap ${tab === "loom" ? "active text-[#B8C0C8]" : "text-[#F5F0E8]/80"}`}>Loom Credits</button>
+        <button onClick={() => setTab("reviews")} className={`text-[11px] tracking-[0.3em] uppercase gold-underline whitespace-nowrap ${tab === "reviews" ? "active text-[#B8C0C8]" : "text-[#F5F0E8]/80"}`}>Reviews</button>
       </div>
 
       {tab === "products" && (
@@ -183,14 +183,14 @@ export default function AdminPage() {
           <button data-testid="admin-new-product" onClick={() => setEditing({})} className="btn-gold inline-flex items-center gap-2"><Plus size={14} /> New Piece</button>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
             {products.map((p) => (
-              <div key={p.id} className="border border-[#C9A96E]/15 p-4 flex gap-4">
+              <div key={p.id} className="border border-[#B8C0C8]/15 p-4 flex gap-4">
                 <div className="w-20 h-24 bg-[#14172A] overflow-hidden flex-shrink-0">{(p.variants?.find(v => v.images?.length)?.images?.[0] || p.images?.[0]) && <img src={p.variants?.find(v => v.images?.length)?.images?.[0] || p.images?.[0]} className="w-full h-full object-cover" alt="" />}</div>
                 <div className="flex-1 min-w-0">
                   <div className="font-serif-display text-lg text-[#F5F0E8] truncate">{p.name}</div>
                   <div className="text-[11px] tracking-[0.2em] uppercase text-[#8A8FA8] mt-1">{p.category} · {formatINR(p.price)}</div>
                   <div className="flex gap-2 mt-3">
-                    <button onClick={() => setEditing(p)} className="text-[#C9A96E] hover:text-[#F5F0E8]"><Edit2 size={14} /></button>
-                    <button onClick={() => del(p.id)} className="text-[#C9A96E] hover:text-[#F5F0E8]"><Trash2 size={14} /></button>
+                    <button onClick={() => setEditing(p)} className="text-[#B8C0C8] hover:text-[#F5F0E8]"><Edit2 size={14} /></button>
+                    <button onClick={() => del(p.id)} className="text-[#B8C0C8] hover:text-[#F5F0E8]"><Trash2 size={14} /></button>
                   </div>
                 </div>
               </div>
@@ -204,24 +204,24 @@ export default function AdminPage() {
           {orders.length === 0 ? (
             <div className="text-[#8A8FA8] text-sm">No orders yet.</div>
           ) : orders.map((o) => (
-            <div key={o.id} className="border border-[#C9A96E]/15 p-5 grid md:grid-cols-4 gap-3">
+            <div key={o.id} className="border border-[#B8C0C8]/15 p-5 grid md:grid-cols-4 gap-3">
               <div>
-                <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">Order</div>
+                <div className="text-[11px] tracking-[0.3em] uppercase text-[#B8C0C8]">Order</div>
                 <div className="text-[#F5F0E8] text-sm mt-1">{o.id.slice(0,12)}</div>
                 <div className="text-xs text-[#8A8FA8] mt-1">{new Date(o.created_at).toLocaleString()}</div>
               </div>
               <div>
-                <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">Customer</div>
+                <div className="text-[11px] tracking-[0.3em] uppercase text-[#B8C0C8]">Customer</div>
                 <div className="text-[#F5F0E8] text-sm mt-1">{o.shipping?.full_name}</div>
                 <div className="text-xs text-[#8A8FA8]">{o.email}</div>
               </div>
               <div>
-                <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">Items</div>
+                <div className="text-[11px] tracking-[0.3em] uppercase text-[#B8C0C8]">Items</div>
                 <div className="text-[#F5F0E8] text-sm mt-1 truncate">{o.items.map((i) => `${i.name} ×${i.quantity}`).join(", ")}</div>
               </div>
               <div className="text-right">
                 <div className="text-[#F5F0E8] text-lg">{formatINR(o.total)}</div>
-                <div className={`text-[11px] tracking-[0.3em] uppercase mt-1 ${o.status === "paid" ? "text-[#C9A96E]" : "text-[#8A8FA8]"}`}>{o.status}</div>
+                <div className={`text-[11px] tracking-[0.3em] uppercase mt-1 ${o.status === "paid" ? "text-[#B8C0C8]" : "text-[#8A8FA8]"}`}>{o.status}</div>
               </div>
             </div>
           ))}

@@ -22,7 +22,7 @@ export default function ComingSoon() {
         style={{
           fontFamily: "'Cormorant Garamond', serif",
           fontSize: "clamp(2rem, 5vw, 3.5rem)",
-          color: "#C9A96E",
+          color: "#B8C0C8",
           marginBottom: "16px",
           letterSpacing: "0.02em",
         }}
@@ -58,8 +58,8 @@ export default function ComingSoon() {
         target="_blank"
         rel="noopener noreferrer"
         style={{
-          border: "1px solid #C9A96E",
-          color: "#C9A96E",
+          border: "1px solid #B8C0C8",
+          color: "#B8C0C8",
           padding: "12px 28px",
           borderRadius: "2px",
           fontSize: "0.85rem",

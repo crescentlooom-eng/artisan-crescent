@@ -18,7 +18,7 @@ export default function AboutPage() {
     <div data-testid="about-page" className="page-fade pt-28 md:pt-32 pb-24">
       <div className="max-w-none mx-auto px-6 md:px-12">
         <div className="text-[11px] tracking-[0.3em] uppercase mb-8" style={{ color: "var(--cl-subtext)" }}>
-          <Link to="/" className="hover:text-[#C9A96E]">Home</Link> <span className="mx-2">/</span>
+          <Link to="/" className="hover:text-[#B8C0C8]">Home</Link> <span className="mx-2">/</span>
           <span style={{ color: "var(--cl-text)", opacity: 0.85 }}>About Us</span>
         </div>
 
@@ -47,7 +47,7 @@ export default function AboutPage() {
           ].map((item, i) => (
             <div key={item.title} className="reveal-up" style={{ transitionDelay: `${i * 100}ms` }}>
               <div className="w-10 h-10 rounded-full flex items-center justify-center mb-4" style={{ background: "var(--cl-surface)" }}>
-                <item.Icon size={16} style={{ color: "#C9A96E" }} />
+                <item.Icon size={16} style={{ color: "#B8C0C8" }} />
               </div>
               <div className="font-serif-display text-xl mb-2" style={{ color: "var(--cl-text)" }}>{item.title}</div>
               <p className="text-sm" style={{ color: "var(--cl-subtext)" }}>{item.body}</p>
@@ -62,9 +62,9 @@ export default function AboutPage() {
       <section className="py-24 md:py-32 max-w-none mx-auto px-6 md:px-12">
         <div className="grid md:grid-cols-12 gap-12 md:gap-20 items-center">
           <div className="md:col-span-5 reveal-up">
-            <div className="text-[11px] tracking-[0.4em] uppercase mb-4" style={{ color: "#C9A96E" }}>Why We Started</div>
+            <div className="text-[11px] tracking-[0.4em] uppercase mb-4" style={{ color: "#B8C0C8" }}>Why We Started</div>
             <h2 className="font-serif-display text-4xl md:text-5xl leading-tight" style={{ color: "var(--cl-text)" }}>
-              In a world of mass production, we chose to <span className="italic" style={{ color: "#C9A96E" }}>slow down.</span>
+              In a world of mass production, we chose to <span className="italic" style={{ color: "#B8C0C8" }}>slow down.</span>
             </h2>
           </div>
           <div className="md:col-span-7 reveal-up" style={{ transitionDelay: "120ms" }}>
@@ -82,9 +82,9 @@ export default function AboutPage() {
 
       {/* What Makes Us Different */}
       <section className="py-24 md:py-32 max-w-none mx-auto px-6 md:px-12">
-        <div className="text-[11px] tracking-[0.4em] uppercase mb-4 reveal-up" style={{ color: "#C9A96E" }}>Our Craft</div>
+        <div className="text-[11px] tracking-[0.4em] uppercase mb-4 reveal-up" style={{ color: "#B8C0C8" }}>Our Craft</div>
         <h2 className="font-serif-display text-4xl md:text-5xl max-w-2xl leading-tight reveal-up" style={{ color: "var(--cl-text)", transitionDelay: "80ms" }}>
-          Fabric chosen. Form considered. <span className="italic" style={{ color: "#C9A96E" }}>Nothing wasted.</span>
+          Fabric chosen. Form considered. <span className="italic" style={{ color: "#B8C0C8" }}>Nothing wasted.</span>
         </h2>
         <div className="grid md:grid-cols-3 gap-8 mt-16">
           {[
@@ -92,7 +92,7 @@ export default function AboutPage() {
             { title: "Small Batch", body: "Every piece is produced in limited quantities — enough to maintain quality, not enough to contribute to excess." },
             { title: "Built to Last", body: "Every piece is designed to be worn repeatedly, not replaced after a few washes. Timeless over trend." },
           ].map((item, i) => (
-            <div key={item.title} className="border-t pt-8 reveal-up" style={{ borderColor: "rgba(201,169,110,0.2)", transitionDelay: `${i * 100}ms` }}>
+            <div key={item.title} className="border-t pt-8 reveal-up" style={{ borderColor: "rgba(184,192,200,0.2)", transitionDelay: `${i * 100}ms` }}>
               <div className="font-serif-display text-2xl mb-4" style={{ color: "var(--cl-text)" }}>{item.title}</div>
               <p className="text-sm leading-relaxed" style={{ color: "var(--cl-subtext)" }}>{item.body}</p>
             </div>
@@ -105,7 +105,7 @@ export default function AboutPage() {
       {/* Vision */}
       <section className="py-24 md:py-36" style={{ background: "var(--cl-surface)" }}>
         <div className="max-w-4xl mx-auto px-6 md:px-12 text-center reveal-up">
-          <div className="text-[11px] tracking-[0.4em] uppercase mb-6" style={{ color: "#C9A96E" }}>Our Vision</div>
+          <div className="text-[11px] tracking-[0.4em] uppercase mb-6" style={{ color: "#B8C0C8" }}>Our Vision</div>
           <p className="font-serif-display text-3xl md:text-5xl leading-[1.15] italic font-light" style={{ color: "var(--cl-text)" }}>
             &ldquo;To build a world where clothing is chosen with intention, crafted with care, and valued for years.&rdquo;
           </p>
@@ -119,29 +119,29 @@ export default function AboutPage() {
 
       {/* Team */}
       <section className="py-24 md:py-32 max-w-none mx-auto px-6 md:px-12">
-        <div className="text-[11px] tracking-[0.4em] uppercase mb-4 reveal-up" style={{ color: "#C9A96E" }}>Triad</div>
+        <div className="text-[11px] tracking-[0.4em] uppercase mb-4 reveal-up" style={{ color: "#B8C0C8" }}>Triad</div>
         <h2 className="font-serif-display text-4xl md:text-5xl reveal-up" style={{ color: "var(--cl-text)", transitionDelay: "80ms" }}>
-          Three people. <span className="italic" style={{ color: "#C9A96E" }}>One quiet vision.</span>
+          Three people. <span className="italic" style={{ color: "#B8C0C8" }}>One quiet vision.</span>
         </h2>
         <div className="grid md:grid-cols-3 gap-8 mt-16">
           {TEAM.map((member, i) => (
-            <div key={member.name} className="border p-8 reveal-up" style={{ borderColor: "rgba(201,169,110,0.15)", transitionDelay: `${i * 100}ms` }}>
-              <div className="w-12 h-12 rounded-full flex items-center justify-center mb-6" style={{ background: "rgba(201,169,110,0.1)", border: "1px solid rgba(201,169,110,0.3)" }}>
-                <span className="font-serif-display text-xl" style={{ color: "#C9A96E" }}>{member.name[0]}</span>
+            <div key={member.name} className="border p-8 reveal-up" style={{ borderColor: "rgba(184,192,200,0.15)", transitionDelay: `${i * 100}ms` }}>
+              <div className="w-12 h-12 rounded-full flex items-center justify-center mb-6" style={{ background: "rgba(184,192,200,0.1)", border: "1px solid rgba(184,192,200,0.3)" }}>
+                <span className="font-serif-display text-xl" style={{ color: "#B8C0C8" }}>{member.name[0]}</span>
               </div>
               <div className="font-serif-display text-2xl" style={{ color: "var(--cl-text)" }}>{member.name}</div>
-              <div className="text-[11px] tracking-[0.3em] uppercase mt-2" style={{ color: "#C9A96E" }}>{member.role}</div>
+              <div className="text-[11px] tracking-[0.3em] uppercase mt-2" style={{ color: "#B8C0C8" }}>{member.role}</div>
             </div>
           ))}
         </div>
       </section>
 
       {/* CTA */}
-      <section className="py-20 md:py-28 border-t" style={{ borderColor: "rgba(201,169,110,0.1)", background: "var(--cl-bg)" }}>
+      <section className="py-20 md:py-28 border-t" style={{ borderColor: "rgba(184,192,200,0.1)", background: "var(--cl-bg)" }}>
         <div className="max-w-none mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-8">
           <div>
-            <div className="text-[11px] tracking-[0.4em] uppercase mb-3" style={{ color: "#C9A96E" }}>The Collection</div>
-            <h3 className="font-serif-display text-4xl" style={{ color: "var(--cl-text)" }}>Wear the <span className="italic" style={{ color: "#C9A96E" }}>intention.</span></h3>
+            <div className="text-[11px] tracking-[0.4em] uppercase mb-3" style={{ color: "#B8C0C8" }}>The Collection</div>
+            <h3 className="font-serif-display text-4xl" style={{ color: "var(--cl-text)" }}>Wear the <span className="italic" style={{ color: "#B8C0C8" }}>intention.</span></h3>
           </div>
           <Link to="/shop" className="btn-gold whitespace-nowrap">Enter the Collection</Link>
         </div>

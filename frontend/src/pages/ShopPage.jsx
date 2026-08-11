@@ -107,7 +107,7 @@ export default function ShopPage() {
   return (
     <div data-testid="shop-page" className="page-fade pt-32 md:pt-40 pb-24">
       <div className="max-w-none mx-auto px-6 md:px-12">
-        <div className="text-[11px] tracking-[0.4em] uppercase mb-3" style={{ color: "#C9A96E" }}>The Collection</div>
+        <div className="text-[11px] tracking-[0.4em] uppercase mb-3" style={{ color: "#B8C0C8" }}>The Collection</div>
         <h1 className="font-serif-display text-4xl md:text-5xl mb-2" style={{ color: "var(--cl-text)" }}>
           {q ? <>Searching for &ldquo;{q}&rdquo;</> : "Shop"}
         </h1>
@@ -121,7 +121,7 @@ export default function ShopPage() {
             <div className="flex items-center justify-between mb-6">
               <span className="text-sm font-medium" style={{ color: "var(--cl-text)" }}>Filters</span>
               {hasActiveFilters && (
-                <button onClick={clearAll} className="text-xs" style={{ color: "#C9A96E" }}>Clear all</button>
+                <button onClick={clearAll} className="text-xs" style={{ color: "#B8C0C8" }}>Clear all</button>
               )}
             </div>
 
@@ -133,12 +133,12 @@ export default function ShopPage() {
               </button>
               {filtersOpen.cat && (
                 <div className="flex flex-col gap-2.5">
-                  <button onClick={() => setCategory("all")} className="flex items-center justify-between text-sm text-left" style={{ color: category === "all" ? "#C9A96E" : "var(--cl-subtext)" }}>
+                  <button onClick={() => setCategory("all")} className="flex items-center justify-between text-sm text-left" style={{ color: category === "all" ? "#B8C0C8" : "var(--cl-subtext)" }}>
                     <span>All Collections</span>
                     <span className="text-xs">({allCards.length})</span>
                   </button>
                   {CATEGORIES.map((c) => (
-                    <button key={c.value} onClick={() => setCategory(c.value)} className="flex items-center justify-between text-sm text-left" style={{ color: category === c.value ? "#C9A96E" : "var(--cl-subtext)" }}>
+                    <button key={c.value} onClick={() => setCategory(c.value)} className="flex items-center justify-between text-sm text-left" style={{ color: category === c.value ? "#B8C0C8" : "var(--cl-subtext)" }}>
                       <span>{c.label}</span>
                       <span className="text-xs">({categoryCounts[c.value] || 0})</span>
                     </button>
@@ -173,7 +173,7 @@ export default function ShopPage() {
                           type="checkbox"
                           checked={sizes.includes(s)}
                           onChange={() => toggleSize(s)}
-                          style={{ accentColor: "#C9A96E", margin: 0, flexShrink: 0, width: "16px", height: "16px" }}
+                          style={{ accentColor: "#B8C0C8", margin: 0, flexShrink: 0, width: "16px", height: "16px" }}
                         />
                         <span>{s}</span>
                       </label>
@@ -200,8 +200,8 @@ export default function ShopPage() {
                         className="w-7 h-7 rounded-full"
                         style={{
                           background: hex,
-                          border: colors.includes(hex) ? "2px solid #C9A96E" : "1px solid var(--cl-border)",
-                          boxShadow: colors.includes(hex) ? "0 0 0 2px var(--cl-bg), 0 0 0 3px #C9A96E" : "none",
+                          border: colors.includes(hex) ? "2px solid #B8C0C8" : "1px solid var(--cl-border)",
+                          boxShadow: colors.includes(hex) ? "0 0 0 2px var(--cl-bg), 0 0 0 3px #B8C0C8" : "none",
                         }}
                       />
                     ))}
@@ -225,7 +225,7 @@ export default function ShopPage() {
                     value={maxPrice}
                     onChange={(e) => setMaxPrice(Number(e.target.value))}
                     className="w-full"
-                    style={{ accentColor: "#C9A96E" }}
+                    style={{ accentColor: "#B8C0C8" }}
                   />
                   <div className="flex justify-between text-xs mt-2" style={{ color: "var(--cl-subtext)" }}>
                     <span>₹{priceBounds.min}</span>
@@ -274,7 +274,7 @@ export default function ShopPage() {
                     onClick={() => setPage(i + 1)}
                     className="w-9 h-9 rounded-full text-sm"
                     style={page === i + 1
-                      ? { background: "#C9A96E", color: "#0B0E1A" }
+                      ? { background: "#B8C0C8", color: "#0B0E1A" }
                       : { border: "1px solid var(--cl-border)", color: "var(--cl-text)" }}
                   >
                     {i + 1}

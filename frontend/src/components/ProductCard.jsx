@@ -60,10 +60,10 @@ export default function ProductCard({ product, index = 0 }) {
         style={isMobile ? {
           // Gold border — faint always, brighter after sweep
           boxShadow: swept
-            ? "0 0 0 1px rgba(201,169,110,0.35), inset 0 0 20px rgba(201,169,110,0.06)"
+            ? "0 0 0 1px rgba(184,192,200,0.35), inset 0 0 20px rgba(184,192,200,0.06)"
             : animated
-            ? "0 0 0 1px rgba(201,169,110,0.35), inset 0 0 20px rgba(201,169,110,0.06)"
-            : "0 0 0 1px rgba(201,169,110,0.08)",
+            ? "0 0 0 1px rgba(184,192,200,0.35), inset 0 0 20px rgba(184,192,200,0.06)"
+            : "0 0 0 1px rgba(184,192,200,0.08)",
           transition: "box-shadow 0.6s ease",
         } : {}}
       >
@@ -74,7 +74,7 @@ export default function ProductCard({ product, index = 0 }) {
             style={{
               fontSize: "5rem",
               lineHeight: 1,
-              color: "rgba(201,169,110,0.12)",
+              color: "rgba(184,192,200,0.12)",
               opacity: animated ? 1 : 0,
               transition: "opacity 0.8s ease 0.2s",
               fontStyle: "italic",
@@ -108,7 +108,7 @@ export default function ProductCard({ product, index = 0 }) {
             ref={sweepRef}
             className="absolute inset-0 pointer-events-none z-20"
             style={{
-              background: "linear-gradient(105deg, transparent 30%, rgba(201,169,110,0.45) 50%, rgba(245,240,232,0.25) 52%, transparent 70%)",
+              background: "linear-gradient(105deg, transparent 30%, rgba(184,192,200,0.45) 50%, rgba(245,240,232,0.25) 52%, transparent 70%)",
               animation: "goldSweep 0.85s ease forwards",
             }}
           />
@@ -120,7 +120,7 @@ export default function ProductCard({ product, index = 0 }) {
           data-testid={`product-card-wishlist-${product.slug}${product.variantId ? `-${product.variantId}` : ""}`}
           aria-label="Wishlist"
           className={`absolute top-4 right-4 p-2 rounded-full backdrop-blur-md transition-all duration-300 z-30 ${
-            isWished ? "bg-[#C9A96E] text-[#0B0E1A]" : "bg-[#0B0E1A]/40 text-[#F5F0E8] hover:bg-[#0B0E1A]/70"
+            isWished ? "bg-[#B8C0C8] text-[#0B0E1A]" : "bg-[#0B0E1A]/40 text-[#F5F0E8] hover:bg-[#0B0E1A]/70"
           }`}
         >
           <Heart size={15} fill={isWished ? "currentColor" : "none"} />
@@ -128,7 +128,7 @@ export default function ProductCard({ product, index = 0 }) {
 
         {/* New badge */}
         {product.new_arrival && (
-          <div className="absolute top-4 left-4 text-[10px] tracking-[0.25em] uppercase text-[#C9A96E] bg-[#0B0E1A]/60 backdrop-blur-md px-3 py-1 z-30">
+          <div className="absolute top-4 left-4 text-[10px] tracking-[0.25em] uppercase text-[#B8C0C8] bg-[#0B0E1A]/60 backdrop-blur-md px-3 py-1 z-30">
             New
           </div>
         )}

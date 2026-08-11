@@ -31,8 +31,8 @@ export default function AdminShell() {
     <div className="min-h-screen bg-[#0B0E1A] flex flex-col md:flex-row" data-testid="admin-shell">
       <CursorDot />
       {/* Sidebar (desktop) */}
-      <aside className="hidden md:flex md:flex-col w-64 border-r border-[#C9A96E]/15 px-6 py-8 sticky top-0 h-screen">
-        <Link to="/" className="text-[11px] tracking-[0.4em] uppercase text-[#C9A96E]">Crescent Loom</Link>
+      <aside className="hidden md:flex md:flex-col w-64 border-r border-[#B8C0C8]/15 px-6 py-8 sticky top-0 h-screen">
+        <Link to="/" className="text-[11px] tracking-[0.4em] uppercase text-[#B8C0C8]">Crescent Loom</Link>
         <div className="font-serif-display text-2xl text-[#F5F0E8] mt-2 leading-tight">Atelier</div>
         <nav className="mt-12 flex-1 space-y-1">
           {NAV.map((n) => (
@@ -43,7 +43,7 @@ export default function AdminShell() {
               data-testid={n.testId}
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-3 text-[12px] tracking-[0.2em] uppercase transition-all ${
-                  isActive ? "bg-[#C9A96E]/10 text-[#C9A96E] border-l-2 border-[#C9A96E]" : "text-[#F5F0E8]/75 hover:text-[#C9A96E] border-l-2 border-transparent"
+                  isActive ? "bg-[#B8C0C8]/10 text-[#B8C0C8] border-l-2 border-[#B8C0C8]" : "text-[#F5F0E8]/75 hover:text-[#B8C0C8] border-l-2 border-transparent"
                 }`
               }
             >
@@ -52,24 +52,24 @@ export default function AdminShell() {
             </NavLink>
           ))}
         </nav>
-        <div className="pt-6 border-t border-[#C9A96E]/15">
+        <div className="pt-6 border-t border-[#B8C0C8]/15">
           <div className="text-[10px] tracking-[0.3em] uppercase text-[#8A8FA8]">Signed in</div>
           <div className="text-sm text-[#F5F0E8] mt-1 truncate">{admin.email}</div>
-          <button onClick={onLogout} data-testid="adm-logout" className="mt-4 text-[11px] tracking-[0.3em] uppercase text-[#F5F0E8]/80 hover:text-[#C9A96E] flex items-center gap-2">
+          <button onClick={onLogout} data-testid="adm-logout" className="mt-4 text-[11px] tracking-[0.3em] uppercase text-[#F5F0E8]/80 hover:text-[#B8C0C8] flex items-center gap-2">
             <LogOut size={13} /> Sign Out
           </button>
         </div>
       </aside>
 
       {/* Top bar (mobile) */}
-      <header className="md:hidden sticky top-0 z-30 bg-[#0B0E1A]/90 backdrop-blur-md border-b border-[#C9A96E]/15 px-5 py-4 flex items-center justify-between">
-        <Link to="/" className="text-[10px] tracking-[0.3em] uppercase text-[#C9A96E]">Crescent Loom · Atelier</Link>
+      <header className="md:hidden sticky top-0 z-30 bg-[#0B0E1A]/90 backdrop-blur-md border-b border-[#B8C0C8]/15 px-5 py-4 flex items-center justify-between">
+        <Link to="/" className="text-[10px] tracking-[0.3em] uppercase text-[#B8C0C8]">Crescent Loom · Atelier</Link>
         <button onClick={() => setMobileOpen((v) => !v)} className="text-[#F5F0E8]" data-testid="adm-mobile-toggle">
           {mobileOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
       </header>
       {mobileOpen && (
-        <div className="md:hidden border-b border-[#C9A96E]/15 bg-[#0B0E1A]">
+        <div className="md:hidden border-b border-[#B8C0C8]/15 bg-[#0B0E1A]">
           <nav className="px-3 py-3 grid grid-cols-2 gap-1">
             {NAV.map((n) => (
               <NavLink
@@ -79,7 +79,7 @@ export default function AdminShell() {
                 onClick={() => setMobileOpen(false)}
                 className={({ isActive }) =>
                   `flex items-center gap-2 px-3 py-3 text-[11px] tracking-[0.2em] uppercase ${
-                    isActive ? "bg-[#C9A96E]/10 text-[#C9A96E]" : "text-[#F5F0E8]/80"
+                    isActive ? "bg-[#B8C0C8]/10 text-[#B8C0C8]" : "text-[#F5F0E8]/80"
                   }`
                 }
               >
@@ -87,7 +87,7 @@ export default function AdminShell() {
                 {n.label}
               </NavLink>
             ))}
-            <button onClick={onLogout} className="col-span-2 mt-2 px-3 py-3 text-[11px] tracking-[0.2em] uppercase text-[#F5F0E8]/80 flex items-center gap-2 border-t border-[#C9A96E]/15">
+            <button onClick={onLogout} className="col-span-2 mt-2 px-3 py-3 text-[11px] tracking-[0.2em] uppercase text-[#F5F0E8]/80 flex items-center gap-2 border-t border-[#B8C0C8]/15">
               <LogOut size={13} /> Sign Out
             </button>
           </nav>

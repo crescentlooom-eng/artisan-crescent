@@ -28,14 +28,14 @@ function AdjustModal({ row, onClose, onSaved }) {
 
   return (
     <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4" onClick={onClose}>
-      <div className="bg-[#0B0E1A] border border-[#C9A96E]/20 max-w-md w-full p-8" onClick={(e) => e.stopPropagation()}>
-        <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E] mb-2">Adjust Cards</div>
+      <div className="bg-[#0B0E1A] border border-[#B8C0C8]/20 max-w-md w-full p-8" onClick={(e) => e.stopPropagation()}>
+        <div className="text-[11px] tracking-[0.3em] uppercase text-[#B8C0C8] mb-2">Adjust Cards</div>
         <h3 className="font-serif-display text-2xl text-[#F5F0E8] mb-1">{row.name}</h3>
         <div className="text-[#8A8FA8] text-sm mb-6">{row.email} · Current balance {row.balance}</div>
 
         <label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Change (+ to add, − to deduct)</label>
         <div className="flex items-center gap-3 mt-2">
-          <button onClick={() => setChange(change - 1)} className="px-3 py-3 border border-[#C9A96E]/30 text-[#C9A96E]"><Minus size={14} /></button>
+          <button onClick={() => setChange(change - 1)} className="px-3 py-3 border border-[#B8C0C8]/30 text-[#B8C0C8]"><Minus size={14} /></button>
           <input
             type="number"
             value={change}
@@ -43,7 +43,7 @@ function AdjustModal({ row, onClose, onSaved }) {
             data-testid="admin-loom-adjust-input"
             className="text-center"
           />
-          <button onClick={() => setChange(change + 1)} className="px-3 py-3 border border-[#C9A96E]/30 text-[#C9A96E]"><Plus size={14} /></button>
+          <button onClick={() => setChange(change + 1)} className="px-3 py-3 border border-[#B8C0C8]/30 text-[#B8C0C8]"><Plus size={14} /></button>
         </div>
 
         <label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8] mt-6 block">Note (optional)</label>
@@ -89,8 +89,8 @@ export default function LoomCreditsAdmin() {
             { label: "Outstanding", value: summary.outstanding },
             { label: "Discount Given", value: formatINR(summary.discount_given_inr) },
           ].map((s) => (
-            <div key={s.label} className="border border-[#C9A96E]/15 p-5" data-testid={`admin-loom-summary-${s.label.toLowerCase().replace(/\s+/g, "-")}`}>
-              <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">{s.label}</div>
+            <div key={s.label} className="border border-[#B8C0C8]/15 p-5" data-testid={`admin-loom-summary-${s.label.toLowerCase().replace(/\s+/g, "-")}`}>
+              <div className="text-[11px] tracking-[0.3em] uppercase text-[#B8C0C8]">{s.label}</div>
               <div className="font-serif-display text-3xl text-[#F5F0E8] mt-2">{s.value}</div>
             </div>
           ))}
@@ -101,9 +101,9 @@ export default function LoomCreditsAdmin() {
       {rows.length === 0 ? (
         <div className="text-[#8A8FA8] text-sm">No Loom Credit activity yet.</div>
       ) : (
-        <div className="overflow-x-auto border border-[#C9A96E]/15">
+        <div className="overflow-x-auto border border-[#B8C0C8]/15">
           <table className="w-full text-left text-sm">
-            <thead className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E] bg-[#11142A]">
+            <thead className="text-[11px] tracking-[0.3em] uppercase text-[#B8C0C8] bg-[#11142A]">
               <tr>
                 <th className="p-4">Customer</th>
                 <th className="p-4">Balance</th>
@@ -115,12 +115,12 @@ export default function LoomCreditsAdmin() {
             </thead>
             <tbody className="text-[#F5F0E8]/85">
               {rows.map((r) => (
-                <tr key={r.user_id} className="border-t border-[#C9A96E]/10" data-testid={`admin-loom-row-${r.user_id}`}>
+                <tr key={r.user_id} className="border-t border-[#B8C0C8]/10" data-testid={`admin-loom-row-${r.user_id}`}>
                   <td className="p-4">
                     <div className="text-[#F5F0E8]">{r.name}</div>
                     <div className="text-xs text-[#8A8FA8]">{r.email}</div>
                   </td>
-                  <td className="p-4 font-serif-display text-xl text-[#C9A96E]">{r.balance}</td>
+                  <td className="p-4 font-serif-display text-xl text-[#B8C0C8]">{r.balance}</td>
                   <td className="p-4">{r.total_earned}</td>
                   <td className="p-4">{r.total_redeemed}</td>
                   <td className="p-4">{r.total_adjusted >= 0 ? `+${r.total_adjusted}` : r.total_adjusted}</td>
@@ -142,29 +142,29 @@ export default function LoomCreditsAdmin() {
       ) : (
         <div className="space-y-3">
           {redeemedOrders.map((o) => (
-            <div key={o.id} className="border border-[#C9A96E]/15 p-5 grid md:grid-cols-5 gap-3" data-testid={`admin-loom-order-${o.id}`}>
+            <div key={o.id} className="border border-[#B8C0C8]/15 p-5 grid md:grid-cols-5 gap-3" data-testid={`admin-loom-order-${o.id}`}>
               <div>
-                <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">Order</div>
+                <div className="text-[11px] tracking-[0.3em] uppercase text-[#B8C0C8]">Order</div>
                 <div className="text-[#F5F0E8] text-sm mt-1">{o.id.slice(0,12)}</div>
                 <div className="text-xs text-[#8A8FA8] mt-1">{new Date(o.created_at).toLocaleString()}</div>
               </div>
               <div>
-                <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">Customer</div>
+                <div className="text-[11px] tracking-[0.3em] uppercase text-[#B8C0C8]">Customer</div>
                 <div className="text-[#F5F0E8] text-sm mt-1">{o.shipping?.full_name}</div>
                 <div className="text-xs text-[#8A8FA8]">{o.email}</div>
               </div>
               <div>
-                <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">Cards Used</div>
+                <div className="text-[11px] tracking-[0.3em] uppercase text-[#B8C0C8]">Cards Used</div>
                 <div className="text-[#F5F0E8] text-lg mt-1">{o.loom_credits_redeemed}</div>
               </div>
               <div>
-                <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">Discount</div>
-                <div className="text-[#C9A96E] text-lg mt-1">{formatINR(o.loom_credits_discount)}</div>
+                <div className="text-[11px] tracking-[0.3em] uppercase text-[#B8C0C8]">Discount</div>
+                <div className="text-[#B8C0C8] text-lg mt-1">{formatINR(o.loom_credits_discount)}</div>
               </div>
               <div className="text-right">
-                <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">Total Paid</div>
+                <div className="text-[11px] tracking-[0.3em] uppercase text-[#B8C0C8]">Total Paid</div>
                 <div className="text-[#F5F0E8] text-lg mt-1">{formatINR(o.total)}</div>
-                <div className={`text-[10px] tracking-[0.3em] uppercase mt-1 ${o.status === "paid" ? "text-[#C9A96E]" : "text-[#8A8FA8]"}`}>{o.status}</div>
+                <div className={`text-[10px] tracking-[0.3em] uppercase mt-1 ${o.status === "paid" ? "text-[#B8C0C8]" : "text-[#8A8FA8]"}`}>{o.status}</div>
               </div>
             </div>
           ))}

@@ -18,7 +18,7 @@ export default function SplashScreen({ onComplete }) {
     }}>
       <div style={{
         position: "absolute", width: "320px", height: "320px", borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(201,169,110,0.12) 0%, transparent 70%)",
+        background: "radial-gradient(circle, rgba(184,192,200,0.12) 0%, transparent 70%)",
         transition: "transform 2s ease, opacity 2s ease",
         transform: phase === "shimmer" ? "scale(1.5)" : "scale(1)",
         opacity: phase === "shimmer" ? 1 : 0.3,
@@ -48,7 +48,7 @@ export default function SplashScreen({ onComplete }) {
             marginLeft: "auto",
             marginRight: "auto",
             opacity: 1,
-            filter: phase === "shimmer" ? "drop-shadow(0 0 20px rgba(201,169,110,0.6))" : "none",
+            filter: phase === "shimmer" ? "drop-shadow(0 0 20px rgba(184,192,200,0.6))" : "none",
             transition: "filter 1s ease",
           }}
         />
@@ -59,7 +59,7 @@ export default function SplashScreen({ onComplete }) {
           &ldquo;Clothing that feels like coming home.&rdquo;
         </div>
         <div style={{
-          margin: "20px auto 0", height: "1px", background: "rgba(201,169,110,0.5)",
+          margin: "20px auto 0", height: "1px", background: "rgba(184,192,200,0.5)",
           transition: "width 1.2s ease 0.8s",
           width: phase === "shimmer" ? "60px" : "0px",
         }} />

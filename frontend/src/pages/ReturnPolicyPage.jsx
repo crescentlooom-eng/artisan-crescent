@@ -26,7 +26,7 @@ function FaqItem({ q, a, open, onClick }) {
     <div className="border-t" style={{ borderColor: "var(--cl-border)" }}>
       <button onClick={onClick} className="w-full flex items-center justify-between py-5 text-left">
         <span className="text-sm md:text-base pr-4" style={{ color: "var(--cl-text)" }}>{q}</span>
-        <ChevronDown size={16} style={{ color: "#C9A96E", transform: open ? "rotate(180deg)" : "none", transition: "transform 0.2s ease", flexShrink: 0 }} />
+        <ChevronDown size={16} style={{ color: "#B8C0C8", transform: open ? "rotate(180deg)" : "none", transition: "transform 0.2s ease", flexShrink: 0 }} />
       </button>
       {open && <p className="pb-5 text-sm leading-relaxed" style={{ color: "var(--cl-subtext)" }}>{a}</p>}
     </div>
@@ -40,7 +40,7 @@ export default function ReturnPolicyPage() {
     <div className="page-fade pt-28 md:pt-32 pb-24">
       <div className="max-w-none mx-auto px-6 md:px-12">
         <div className="text-[11px] tracking-[0.3em] uppercase mb-8" style={{ color: "var(--cl-subtext)" }}>
-          <Link to="/" className="hover:text-[#C9A96E]">Home</Link> <span className="mx-2">/</span>
+          <Link to="/" className="hover:text-[#B8C0C8]">Home</Link> <span className="mx-2">/</span>
           <span style={{ color: "var(--cl-text)", opacity: 0.85 }}>Returns & Exchanges</span>
         </div>
 
@@ -48,7 +48,7 @@ export default function ReturnPolicyPage() {
         <div className="grid md:grid-cols-2 gap-10 items-center mb-16">
           <div>
             <h1 className="font-serif-display text-5xl md:text-6xl leading-[0.95]" style={{ color: "var(--cl-text)" }}>
-              Returns &amp; <span className="italic" style={{ color: "#C9A96E" }}>Exchange Policy</span>
+              Returns &amp; <span className="italic" style={{ color: "#B8C0C8" }}>Exchange Policy</span>
             </h1>
             <p className="mt-5 text-sm" style={{ color: "var(--cl-subtext)" }}>
               We make few things, but we make them carefully. Simple · Transparent · Hassle-Free.
@@ -85,7 +85,7 @@ export default function ReturnPolicyPage() {
             ].map(([Icon, title, body]) => (
               <div key={title} className="border p-6" style={{ borderColor: "var(--cl-border)" }}>
                 <div className="w-10 h-10 rounded-full flex items-center justify-center mb-4" style={{ background: "var(--cl-surface)" }}>
-                  <Icon size={16} style={{ color: "#C9A96E" }} />
+                  <Icon size={16} style={{ color: "#B8C0C8" }} />
                 </div>
                 <div className="font-serif-display text-xl mb-2" style={{ color: "var(--cl-text)" }}>{title}</div>
                 <p className="text-sm" style={{ color: "var(--cl-subtext)" }}>{body}</p>
@@ -100,10 +100,10 @@ export default function ReturnPolicyPage() {
           <div className="grid md:grid-cols-5 gap-4">
             {STEPS.map((s, i) => (
               <div key={s.title} className="border p-5" style={{ borderColor: "var(--cl-border)" }}>
-                <div className="w-8 h-8 rounded-full flex items-center justify-center mb-4 text-xs" style={{ background: "var(--cl-surface)", color: "#C9A96E" }}>
+                <div className="w-8 h-8 rounded-full flex items-center justify-center mb-4 text-xs" style={{ background: "var(--cl-surface)", color: "#B8C0C8" }}>
                   {String(i + 1).padStart(2, "0")}
                 </div>
-                <s.Icon size={18} style={{ color: "#C9A96E" }} className="mb-3" />
+                <s.Icon size={18} style={{ color: "#B8C0C8" }} className="mb-3" />
                 <div className="text-sm font-medium mb-1.5" style={{ color: "var(--cl-text)" }}>{s.title}</div>
                 <p className="text-xs leading-relaxed" style={{ color: "var(--cl-subtext)" }}>{s.body}</p>
               </div>
@@ -146,10 +146,10 @@ export default function ReturnPolicyPage() {
         </div>
 
         {/* Still need help */}
-        <div className="border p-8 flex flex-col md:flex-row items-center justify-between gap-6 mb-16" style={{ borderColor: "rgba(201,169,110,0.25)", background: "var(--cl-surface)" }}>
+        <div className="border p-8 flex flex-col md:flex-row items-center justify-between gap-6 mb-16" style={{ borderColor: "rgba(184,192,200,0.25)", background: "var(--cl-surface)" }}>
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <ShieldCheck size={16} style={{ color: "#C9A96E" }} />
+              <ShieldCheck size={16} style={{ color: "#B8C0C8" }} />
               <span className="font-serif-display text-xl" style={{ color: "var(--cl-text)" }}>Still need help?</span>
             </div>
             <p className="text-sm" style={{ color: "var(--cl-subtext)" }}>Our team typically responds within 24–48 hours.</p>
@@ -160,7 +160,7 @@ export default function ReturnPolicyPage() {
           </div>
         </div>
 
-        <div className="pt-10 border-t flex flex-wrap gap-6" style={{ borderColor: "rgba(201,169,110,0.15)" }}>
+        <div className="pt-10 border-t flex flex-wrap gap-6" style={{ borderColor: "rgba(184,192,200,0.15)" }}>
           <Link to="/shop" className="btn-gold">Continue Shopping</Link>
           <Link to="/account" className="text-[11px] tracking-[0.3em] uppercase gold-underline self-center" style={{ color: "var(--cl-text)", opacity: 0.7 }}>My Orders</Link>
         </div>

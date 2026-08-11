@@ -21,12 +21,12 @@ export default function StaticHero() {
       />
 
       <div className="absolute inset-0 flex flex-col items-start justify-end pb-20 px-8 md:px-16 z-10">
-        <div className="text-[11px] tracking-[0.5em] uppercase text-[#C9A96E] mb-4">
+        <div className="text-[11px] tracking-[0.5em] uppercase text-[#B8C0C8] mb-4">
           Autumn / Winter — Volume IV
         </div>
         <h1 className="font-serif-display text-6xl md:text-8xl text-[#F5F0E8] leading-[0.95]">
           Woven in<br />
-          <span className="italic text-[#C9A96E]/90">Moonlight</span>
+          <span className="italic text-[#B8C0C8]/90">Moonlight</span>
         </h1>
         <p className="text-[#F5F0E8]/70 mt-6 text-base md:text-lg leading-relaxed max-w-md font-light">
           A quiet wardrobe. Cut from natural fibers, made in small numbers, intended to last beyond the season.
@@ -35,7 +35,7 @@ export default function StaticHero() {
           <Link to="/shop" className="btn-gold text-xs">Enter the Collection</Link>
           <Link to="/about" className="text-[11px] tracking-[0.3em] uppercase text-[#F5F0E8]/60 gold-underline self-center">Our Philosophy</Link>
         </div>
-        <div className="mt-12 text-[11px] tracking-[0.4em] uppercase text-[#C9A96E]/50">
+        <div className="mt-12 text-[11px] tracking-[0.4em] uppercase text-[#B8C0C8]/50">
           Crescent Loom
         </div>
       </div>

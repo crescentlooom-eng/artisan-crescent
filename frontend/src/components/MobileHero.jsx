@@ -92,7 +92,7 @@ export default function MobileHero() {
         // Outer gold ring
         ctx.beginPath();
         ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(201,169,110,${r.opacity * 0.55})`;
+        ctx.strokeStyle = `rgba(184,192,200,${r.opacity * 0.55})`;
         ctx.lineWidth = 1.5;
         ctx.stroke();
 
@@ -108,8 +108,8 @@ export default function MobileHero() {
         // Inner glow dot
         if (r.radius < 60) {
           const innerGlow = ctx.createRadialGradient(r.x, r.y, 0, r.x, r.y, 30);
-          innerGlow.addColorStop(0, `rgba(201,169,110,${r.opacity * 0.3})`);
-          innerGlow.addColorStop(1, "rgba(201,169,110,0)");
+          innerGlow.addColorStop(0, `rgba(184,192,200,${r.opacity * 0.3})`);
+          innerGlow.addColorStop(1, "rgba(184,192,200,0)");
           ctx.fillStyle = innerGlow;
           ctx.beginPath();
           ctx.arc(r.x, r.y, 30, 0, Math.PI * 2);
@@ -128,7 +128,7 @@ export default function MobileHero() {
         if (p.y < -5) { p.y = H + 5; p.x = Math.random() * W; }
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(201,169,110,${p.opacity})`;
+        ctx.fillStyle = `rgba(184,192,200,${p.opacity})`;
         ctx.fill();
       });
 
@@ -202,7 +202,7 @@ export default function MobileHero() {
           <div className="pointer-events-auto">
             <Link
               to="/shop"
-              className="inline-block text-[11px] tracking-[0.35em] uppercase text-[#0B0E1A] bg-[#B8C0C8] px-10 py-4 hover:bg-[#B8914A] active:bg-[#838E99] transition-colors"
+              className="inline-block text-[11px] tracking-[0.35em] uppercase text-[#0B0E1A] bg-[#B8C0C8] px-10 py-4 hover:bg-[#9CA6AF] active:bg-[#838E99] transition-colors"
               onClick={e => e.stopPropagation()}
             >
               Shop Now

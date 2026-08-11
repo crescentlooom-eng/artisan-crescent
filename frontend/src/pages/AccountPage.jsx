@@ -29,8 +29,8 @@ function OrderTimeline({ status }) {
         return (
           <div key={label} className="flex gap-3">
             <div className="flex flex-col items-center">
-              <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={isDone ? { background: "#C9A96E" } : { background: "transparent", border: "1px solid var(--cl-subtext)" }} />
-              {!isLast && <div className="w-px flex-1 min-h-[22px]" style={{ background: isDone && i < activeIndex ? "#C9A96E" : "var(--cl-border)" }} />}
+              <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={isDone ? { background: "#B8C0C8" } : { background: "transparent", border: "1px solid var(--cl-subtext)" }} />
+              {!isLast && <div className="w-px flex-1 min-h-[22px]" style={{ background: isDone && i < activeIndex ? "#B8C0C8" : "var(--cl-border)" }} />}
             </div>
             <div className="pb-5 text-[13px]" style={{ color: isDone ? "var(--cl-text)" : "var(--cl-subtext)" }}>{label}</div>
           </div>
@@ -42,7 +42,7 @@ function OrderTimeline({ status }) {
 
 function StatusBadge({ status }) {
   const label = status === "out_for_delivery" ? "Out for Delivery" : status.charAt(0).toUpperCase() + status.slice(1);
-  const color = status === "delivered" ? "#8FBC8F" : status === "cancelled" ? "#E57373" : "#C9A96E";
+  const color = status === "delivered" ? "#8FBC8F" : status === "cancelled" ? "#E57373" : "#B8C0C8";
   return <span className="text-[10px] tracking-[0.15em] uppercase" style={{ color }}>{label}</span>;
 }
 
@@ -63,7 +63,7 @@ function Avatar({ user, size = 64 }) {
       {user.picture ? (
         <img src={user.picture} alt={user.name} className="w-full h-full object-cover" />
       ) : (
-        <div className="w-full h-full flex items-center justify-center font-serif-display" style={{ color: "#C9A96E", fontSize: size * 0.4 }}>
+        <div className="w-full h-full flex items-center justify-center font-serif-display" style={{ color: "#B8C0C8", fontSize: size * 0.4 }}>
           {user.name.charAt(0).toUpperCase()}
         </div>
       )}
@@ -97,7 +97,7 @@ function AvatarUpload({ user }) {
     <div className="flex items-center gap-4">
       <Avatar user={user} size={64} />
       <div>
-        <button onClick={() => fileRef.current?.click()} disabled={uploading} className="text-xs tracking-[0.2em] uppercase border px-4 py-2 flex items-center gap-2" style={{ borderColor: "#C9A96E", color: "#C9A96E" }}>
+        <button onClick={() => fileRef.current?.click()} disabled={uploading} className="text-xs tracking-[0.2em] uppercase border px-4 py-2 flex items-center gap-2" style={{ borderColor: "#B8C0C8", color: "#B8C0C8" }}>
           {uploading ? <Loader2 size={13} className="animate-spin" /> : null}
           {uploading ? "Uploading..." : "Change Photo"}
         </button>
@@ -138,7 +138,7 @@ function PhoneField({ user }) {
           className="flex-1 text-sm bg-transparent border px-3 py-2"
           style={{ borderColor: "var(--cl-border)", color: "var(--cl-text)" }}
         />
-        <button onClick={save} disabled={saving} className="px-4 py-2 text-xs tracking-[0.2em] uppercase border shrink-0" style={{ borderColor: "#C9A96E", color: "#C9A96E" }}>
+        <button onClick={save} disabled={saving} className="px-4 py-2 text-xs tracking-[0.2em] uppercase border shrink-0" style={{ borderColor: "#B8C0C8", color: "#B8C0C8" }}>
           {saving ? <Loader2 size={14} className="animate-spin" /> : "Save"}
         </button>
       </div>
@@ -221,7 +221,7 @@ export default function AccountPage() {
 
   return (
     <div data-testid="account-page" className="page-fade pt-28 md:pt-32 pb-24 max-w-none mx-auto px-6 md:px-12">
-      <div className="text-[11px] tracking-[0.4em] uppercase mb-3" style={{ color: "#C9A96E" }}>Your House</div>
+      <div className="text-[11px] tracking-[0.4em] uppercase mb-3" style={{ color: "#B8C0C8" }}>Your House</div>
       <h1 className="font-serif-display text-4xl md:text-5xl mb-1" style={{ color: "var(--cl-text)" }}>My Account</h1>
       <div className="text-xs mt-2" style={{ color: "var(--cl-subtext)" }}>Home / My Account</div>
 
@@ -237,7 +237,7 @@ export default function AccountPage() {
                   key={item.key}
                   onClick={() => setTab(item.key)}
                   className="flex items-center gap-3 px-4 py-3 text-sm whitespace-nowrap text-left transition-colors"
-                  style={active ? { background: "var(--cl-surface)", color: "#C9A96E", borderLeft: "2px solid #C9A96E" } : { color: "var(--cl-text)", opacity: 0.75, borderLeft: "2px solid transparent" }}
+                  style={active ? { background: "var(--cl-surface)", color: "#B8C0C8", borderLeft: "2px solid #B8C0C8" } : { color: "var(--cl-text)", opacity: 0.75, borderLeft: "2px solid transparent" }}
                 >
                   <Icon size={15} /> {item.label}
                 </button>
@@ -268,12 +268,12 @@ export default function AccountPage() {
                 <div className="border p-5" style={{ borderColor: "var(--cl-border)" }}>
                   <div className="text-[11px] tracking-[0.2em] uppercase mb-2" style={{ color: "var(--cl-subtext)" }}>Orders</div>
                   <div className="text-3xl font-serif-display mb-2" style={{ color: "var(--cl-text)" }}>{orders.length}</div>
-                  <button onClick={() => setTab("orders")} className="text-xs gold-underline flex items-center gap-1" style={{ color: "#C9A96E" }}>View all orders <ArrowRight size={12} /></button>
+                  <button onClick={() => setTab("orders")} className="text-xs gold-underline flex items-center gap-1" style={{ color: "#B8C0C8" }}>View all orders <ArrowRight size={12} /></button>
                 </div>
                 <div className="border p-5" style={{ borderColor: "var(--cl-border)" }}>
                   <div className="text-[11px] tracking-[0.2em] uppercase mb-2" style={{ color: "var(--cl-subtext)" }}>Wishlist</div>
                   <div className="text-3xl font-serif-display mb-2" style={{ color: "var(--cl-text)" }}>{wishlistItems.length}</div>
-                  <Link to="/wishlist" className="text-xs gold-underline flex items-center gap-1" style={{ color: "#C9A96E" }}>View your wishlist <ArrowRight size={12} /></Link>
+                  <Link to="/wishlist" className="text-xs gold-underline flex items-center gap-1" style={{ color: "#B8C0C8" }}>View your wishlist <ArrowRight size={12} /></Link>
                 </div>
                 <div className="border p-5" style={{ borderColor: "var(--cl-border)" }}>
                   <div className="text-[11px] tracking-[0.2em] uppercase mb-2" style={{ color: "var(--cl-subtext)" }}>Loom Credits</div>
@@ -286,7 +286,7 @@ export default function AccountPage() {
                 <div className="border p-6" style={{ borderColor: "var(--cl-border)" }}>
                   <div className="flex items-center justify-between mb-4">
                     <div className="text-sm font-medium" style={{ color: "var(--cl-text)" }}>Recent Orders</div>
-                    {orders.length > 0 && <button onClick={() => setTab("orders")} className="text-xs" style={{ color: "#C9A96E" }}>View all</button>}
+                    {orders.length > 0 && <button onClick={() => setTab("orders")} className="text-xs" style={{ color: "#B8C0C8" }}>View all</button>}
                   </div>
                   {orders.length === 0 ? (
                     <p className="text-sm" style={{ color: "var(--cl-subtext)" }}>No orders yet. The atelier is patient.</p>
@@ -349,10 +349,10 @@ export default function AccountPage() {
               ) : (
                 <div className="space-y-4">
                   {orders.map((o) => (
-                    <div key={o.id} className="border p-6" style={{ borderColor: "rgba(201,169,110,0.15)" }} data-testid={`order-${o.id}`}>
+                    <div key={o.id} className="border p-6" style={{ borderColor: "rgba(184,192,200,0.15)" }} data-testid={`order-${o.id}`}>
                       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
                         <div>
-                          <div className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "#C9A96E" }}>Order · {o.id.slice(0, 8)}</div>
+                          <div className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "#B8C0C8" }}>Order · {o.id.slice(0, 8)}</div>
                           <div className="mt-1" style={{ color: "var(--cl-text)" }}>{o.items.map((i) => i.name).join(" · ")}</div>
                           <div className="text-xs mt-1" style={{ color: "var(--cl-subtext)" }}>{new Date(o.created_at).toLocaleString()}</div>
                         </div>
@@ -361,7 +361,7 @@ export default function AccountPage() {
                           {o.delhivery_awb && (
                             <div>
                               <div className="text-[11px] tracking-[0.2em] uppercase mt-2" style={{ color: "var(--cl-subtext)" }}>AWB · {o.delhivery_awb}</div>
-                              <a href={`https://www.delhivery.com/track-v2/package/${o.delhivery_awb}`} target="_blank" rel="noopener noreferrer" className="text-[11px] tracking-[0.25em] uppercase gold-underline mt-1 inline-block" style={{ color: "#C9A96E" }}>Track Order ↗</a>
+                              <a href={`https://www.delhivery.com/track-v2/package/${o.delhivery_awb}`} target="_blank" rel="noopener noreferrer" className="text-[11px] tracking-[0.25em] uppercase gold-underline mt-1 inline-block" style={{ color: "#B8C0C8" }}>Track Order ↗</a>
                             </div>
                           )}
                         </div>
@@ -376,7 +376,7 @@ export default function AccountPage() {
 
           {tab === "addresses" && (
             <div className="border p-8 text-center" style={{ borderColor: "var(--cl-border)" }}>
-              <MapPin size={24} className="mx-auto mb-4" style={{ color: "#C9A96E" }} />
+              <MapPin size={24} className="mx-auto mb-4" style={{ color: "#B8C0C8" }} />
               <div className="font-serif-display text-xl mb-2" style={{ color: "var(--cl-text)" }}>A saved address book is coming soon</div>
               <p className="text-sm max-w-sm mx-auto" style={{ color: "var(--cl-subtext)" }}>
                 For now, you enter your delivery address fresh at checkout each time.

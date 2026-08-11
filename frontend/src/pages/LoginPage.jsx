@@ -69,9 +69,9 @@ export default function LoginPage() {
       {/* Left — form */}
       <div className="flex items-center justify-center pt-28 pb-16 px-6 md:px-16">
         <div className="max-w-md w-full">
-          <div className="text-[11px] tracking-[0.4em] uppercase mb-4" style={{ color: "#C9A96E" }}>The House</div>
+          <div className="text-[11px] tracking-[0.4em] uppercase mb-4" style={{ color: "#B8C0C8" }}>The House</div>
           <h1 className="font-serif-display text-4xl md:text-5xl leading-[1.05]" style={{ color: "var(--cl-text)" }}>
-            Welcome to <span className="italic" style={{ color: "#C9A96E" }}>Crescent Loom.</span>
+            Welcome to <span className="italic" style={{ color: "#B8C0C8" }}>Crescent Loom.</span>
           </h1>
           <p className="mt-5 text-sm" style={{ color: "var(--cl-subtext)" }}>Sign in to follow pieces, save your bag, and view your orders.</p>
 
@@ -91,19 +91,19 @@ export default function LoginPage() {
           </button>
 
           <div className="flex items-center gap-3 my-8">
-            <div className="flex-1 h-px" style={{ background: "rgba(201,169,110,0.2)" }} />
+            <div className="flex-1 h-px" style={{ background: "rgba(184,192,200,0.2)" }} />
             <span className="text-[10px] tracking-[0.35em] uppercase" style={{ color: "var(--cl-subtext)" }}>or with email</span>
-            <div className="flex-1 h-px" style={{ background: "rgba(201,169,110,0.2)" }} />
+            <div className="flex-1 h-px" style={{ background: "rgba(184,192,200,0.2)" }} />
           </div>
 
-          <div className="grid grid-cols-2 mb-6 border" style={{ borderColor: "rgba(201,169,110,0.2)" }}>
+          <div className="grid grid-cols-2 mb-6 border" style={{ borderColor: "rgba(184,192,200,0.2)" }}>
             {["login", "register"].map((m) => (
               <button
                 key={m}
                 onClick={() => { setMode(m); setErr(null); }}
                 data-testid={`login-tab-${m}`}
                 className="text-[11px] tracking-[0.3em] uppercase py-3 transition-all"
-                style={mode === m ? { background: "#C9A96E", color: "#0B0E1A" } : { color: "var(--cl-text)", opacity: 0.8 }}
+                style={mode === m ? { background: "#B8C0C8", color: "#0B0E1A" } : { color: "var(--cl-text)", opacity: 0.8 }}
               >{m === "login" ? "Sign In" : "Create Account"}</button>
             ))}
           </div>

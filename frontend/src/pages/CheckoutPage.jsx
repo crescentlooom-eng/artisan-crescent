@@ -105,7 +105,7 @@ export default function CheckoutPage() {
         name: "Crescent Loom",
         description: "Crafted in Silence. Worn with Intention.",
         prefill: { name: shipping.full_name, contact: shipping.phone, email: user?.email || "" },
-        theme: { color: "#C9A96E" },
+        theme: { color: "#B8C0C8" },
         handler: async (resp) => {
           try {
             await api.post("/payments/verify", {
@@ -133,9 +133,9 @@ export default function CheckoutPage() {
 
   return (
     <div data-testid="checkout-page" className="page-fade pt-32 pb-24 max-w-none mx-auto px-6 md:px-12">
-      <div className="text-[11px] tracking-[0.4em] uppercase mb-4" style={{ color: "#C9A96E" }}>Checkout</div>
+      <div className="text-[11px] tracking-[0.4em] uppercase mb-4" style={{ color: "#B8C0C8" }}>Checkout</div>
       <h1 className="font-serif-display text-5xl md:text-6xl leading-[0.95]" style={{ color: "var(--cl-text)" }}>
-        Your <span className="italic" style={{ color: "#C9A96E" }}>Bag</span>
+        Your <span className="italic" style={{ color: "#B8C0C8" }}>Bag</span>
       </h1>
 
       <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 mt-12">
@@ -155,18 +155,18 @@ export default function CheckoutPage() {
           <section>
             <h2 className="font-serif-display text-2xl md:text-3xl mb-6" style={{ color: "var(--cl-text)" }}>Loom Credits</h2>
             {!user ? (
-              <div className="border p-6 text-sm" style={{ borderColor: "rgba(201,169,110,0.2)", color: "var(--cl-text)", opacity: 0.85 }}>
-                <a href="/login" className="gold-underline" style={{ color: "#C9A96E" }}>Sign in</a> to redeem Loom Credit Cards collected from past orders.
+              <div className="border p-6 text-sm" style={{ borderColor: "rgba(184,192,200,0.2)", color: "var(--cl-text)", opacity: 0.85 }}>
+                <a href="/login" className="gold-underline" style={{ color: "#B8C0C8" }}>Sign in</a> to redeem Loom Credit Cards collected from past orders.
               </div>
             ) : balance === 0 ? (
-              <div className="border p-6 text-sm" style={{ borderColor: "rgba(201,169,110,0.2)", color: "var(--cl-text)", opacity: 0.85 }}>
+              <div className="border p-6 text-sm" style={{ borderColor: "rgba(184,192,200,0.2)", color: "var(--cl-text)", opacity: 0.85 }}>
                 You have no Loom Credit Cards yet. Each order ships with one — collect {minRedeem} to redeem ₹{minRedeem * perCard} off.
               </div>
             ) : (
-              <div className="border p-6" style={{ borderColor: "rgba(201,169,110,0.2)" }} data-testid="checkout-loom-section">
+              <div className="border p-6" style={{ borderColor: "rgba(184,192,200,0.2)" }} data-testid="checkout-loom-section">
                 <div className="flex items-baseline justify-between mb-4">
                   <div>
-                    <div className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "#C9A96E" }}>Your Balance</div>
+                    <div className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "#B8C0C8" }}>Your Balance</div>
                     <div className="font-serif-display text-3xl mt-1" style={{ color: "var(--cl-text)" }}>{balance} {balance === 1 ? "card" : "cards"} <span className="text-lg" style={{ color: "var(--cl-subtext)" }}>· ₹{balance * perCard}</span></div>
                   </div>
                   <button
@@ -192,7 +192,7 @@ export default function CheckoutPage() {
                   </p>
                 )}
                 {redeemCards >= minRedeem && (
-                  <p className="text-xs mt-3 tracking-[0.2em] uppercase" style={{ color: "#C9A96E" }} data-testid="checkout-loom-discount-msg">
+                  <p className="text-xs mt-3 tracking-[0.2em] uppercase" style={{ color: "#B8C0C8" }} data-testid="checkout-loom-discount-msg">
                     ₹{redeemCards * perCard} discount will be applied.
                   </p>
                 )}
@@ -214,11 +214,11 @@ export default function CheckoutPage() {
                   onClick={() => setPaymentMode(opt.key)}
                   data-testid={`payment-mode-${opt.key.replace("_", "-")}`}
                   className="w-full text-left border p-5 transition"
-                  style={{ borderColor: paymentMode === opt.key ? "#C9A96E" : "rgba(201,169,110,0.2)" }}
+                  style={{ borderColor: paymentMode === opt.key ? "#B8C0C8" : "rgba(184,192,200,0.2)" }}
                 >
                   <div className="flex items-center justify-between">
                     <div className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-text)" }}>{opt.label}</div>
-                    {opt.badge && <span className="text-[10px] tracking-[0.2em] uppercase" style={{ color: "#C9A96E" }}>{opt.badge}</span>}
+                    {opt.badge && <span className="text-[10px] tracking-[0.2em] uppercase" style={{ color: "#B8C0C8" }}>{opt.badge}</span>}
                   </div>
                   <p className="text-sm mt-2" style={{ color: "var(--cl-subtext)" }}>{opt.desc}</p>
                 </button>
@@ -228,7 +228,7 @@ export default function CheckoutPage() {
         </div>
 
         <div className="lg:col-span-5">
-          <div className="border p-6 lg:sticky lg:top-32" style={{ borderColor: "rgba(201,169,110,0.2)", background: "var(--cl-surface)" }}>
+          <div className="border p-6 lg:sticky lg:top-32" style={{ borderColor: "rgba(184,192,200,0.2)", background: "var(--cl-surface)" }}>
             <h3 className="font-serif-display text-2xl mb-6" style={{ color: "var(--cl-text)" }}>Order Summary</h3>
             <div className="space-y-5 max-h-[40vh] overflow-y-auto pr-1">
               {items.map((it) => (
@@ -258,13 +258,13 @@ export default function CheckoutPage() {
             <div className="flex items-center justify-between text-sm" style={{ color: "var(--cl-text)", opacity: 0.85 }}><span>Subtotal</span><span>{formatINR(subtotal)}</span></div>
             <div className="flex items-center justify-between text-sm mt-2" style={{ color: "var(--cl-text)", opacity: 0.85 }}><span>Shipping</span><span>Complimentary</span></div>
             {discount > 0 && (
-              <div className="flex items-center justify-between text-sm mt-2" style={{ color: "#C9A96E" }} data-testid="checkout-loom-discount-row">
+              <div className="flex items-center justify-between text-sm mt-2" style={{ color: "#B8C0C8" }} data-testid="checkout-loom-discount-row">
                 <span>Loom Credits ({redeemCards} × ₹{perCard})</span>
                 <span>−{formatINR(discount)}</span>
               </div>
             )}
             <div className="divider-thin my-6" />
-            <div className="flex items-center justify-between"><span className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "#C9A96E" }}>Total</span><span className="text-2xl" style={{ color: "var(--cl-text)" }} data-testid="checkout-total">{formatINR(total)}</span></div>
+            <div className="flex items-center justify-between"><span className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "#B8C0C8" }}>Total</span><span className="text-2xl" style={{ color: "var(--cl-text)" }} data-testid="checkout-total">{formatINR(total)}</span></div>
             <button data-testid="checkout-place-order" onClick={placeOrder} disabled={processing} className="btn-gold w-full mt-8 disabled:opacity-50">
               {processing
                 ? "Processing..."
