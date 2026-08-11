@@ -55,7 +55,7 @@ export default function Navbar() {
               key={l.to}
               to={l.to}
               data-testid={`nav-${l.label.toLowerCase()}-link`}
-              className={({ isActive }) => `gold-underline ${isActive ? "active text-[#C9A96E]" : ""}`}
+              className={({ isActive }) => `gold-underline ${isActive ? "active text-[#B8C0C8]" : ""}`}
             >
               {l.label}
             </NavLink>
@@ -76,27 +76,27 @@ export default function Navbar() {
             data-testid="nav-theme-toggle"
             onClick={toggleTheme}
             aria-label="Toggle theme"
-            className="hover:text-[#C9A96E] transition-colors"
+            className="hover:text-[#B8C0C8] transition-colors"
           >
             {theme === "dark" ? <Sun size={21} /> : <Moon size={21} />}
           </button>
-          <button data-testid="nav-search-button" onClick={() => setSearchOpen((v) => !v)} aria-label="Search" className="hover:text-[#C9A96E] transition-colors">
+          <button data-testid="nav-search-button" onClick={() => setSearchOpen((v) => !v)} aria-label="Search" className="hover:text-[#B8C0C8] transition-colors">
             <Search size={21} />
           </button>
-          <Link to="/wishlist" data-testid="nav-wishlist-link" className="hover:text-[#C9A96E] transition-colors hidden md:inline">
+          <Link to="/wishlist" data-testid="nav-wishlist-link" className="hover:text-[#B8C0C8] transition-colors hidden md:inline">
             <Heart size={21} />
           </Link>
-          <Link to={user ? "/account" : "/login"} data-testid="nav-account-link" className="hover:text-[#C9A96E] transition-colors">
+          <Link to={user ? "/account" : "/login"} data-testid="nav-account-link" className="hover:text-[#B8C0C8] transition-colors">
             {user?.picture ? (
-              <img src={user.picture} alt={user.name} className="w-6 h-6 rounded-full object-cover" style={{ border: "1px solid rgba(201,169,110,0.4)" }} />
+              <img src={user.picture} alt={user.name} className="w-6 h-6 rounded-full object-cover" style={{ border: "1px solid rgba(184,192,200,0.4)" }} />
             ) : (
               <User size={21} />
             )}
           </Link>
-          <button data-testid="nav-cart-button" onClick={() => setCartOpen(true)} aria-label="Cart" className="relative hover:text-[#C9A96E] transition-colors">
+          <button data-testid="nav-cart-button" onClick={() => setCartOpen(true)} aria-label="Cart" className="relative hover:text-[#B8C0C8] transition-colors">
             <ShoppingBag size={21} />
             {count > 0 && (
-              <span data-testid="nav-cart-count" className="absolute -top-1.5 -right-2 text-[10px] bg-[#C9A96E] text-[#0B0E1A] rounded-full h-4 min-w-[16px] px-1 flex items-center justify-center font-medium">
+              <span data-testid="nav-cart-count" className="absolute -top-1.5 -right-2 text-[10px] bg-[#B8C0C8] text-[#0B0E1A] rounded-full h-4 min-w-[16px] px-1 flex items-center justify-center font-medium">
                 {count}
               </span>
             )}
@@ -108,7 +108,7 @@ export default function Navbar() {
       {searchOpen && (
         <div className="border-t border-[var(--cl-border)]" style={{ backgroundColor: "var(--cl-header-bg)" }}>
           <form onSubmit={submitSearch} className="max-w-3xl mx-auto px-6 py-5 flex items-center gap-4">
-            <Search size={21} className="text-[#C9A96E]" />
+            <Search size={21} className="text-[#B8C0C8]" />
             <input
               data-testid="nav-search-input"
               autoFocus
@@ -126,7 +126,7 @@ export default function Navbar() {
       {open && (
         <div className="md:hidden fixed inset-0 z-50 page-fade" style={{ backgroundColor: "var(--cl-bg)" }}>
           <div className="flex items-center justify-between px-6 py-6">
-            <span className="text-[11px] tracking-[0.3em] text-[#C9A96E] uppercase">Menu</span>
+            <span className="text-[11px] tracking-[0.3em] text-[#B8C0C8] uppercase">Menu</span>
             <button onClick={() => setOpen(false)} data-testid="nav-mobile-close" className="text-[var(--cl-text)]"><X size={22} /></button>
           </div>
           <nav className="flex flex-col items-start gap-6 px-8 mt-6">
