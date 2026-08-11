@@ -58,7 +58,7 @@ export default function ChapterCard({ to, imgSrc, imgAlt, chapter, title, subtit
       opacity: Math.random() * 0.8 + 0.2,
       speed: Math.random() * 0.025 + 0.01,
       color: Math.random() > 0.5
-        ? `rgba(201,169,110,${Math.random() * 0.7 + 0.3})`
+        ? `rgba(184,192,200,${Math.random() * 0.7 + 0.3})`
         : `rgba(245,240,232,${Math.random() * 0.5 + 0.2})`,
     }));
 
@@ -153,7 +153,7 @@ export default function ChapterCard({ to, imgSrc, imgAlt, chapter, title, subtit
         </div>
         <div className="flex items-end justify-between">
           <div>
-            <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">{chapter}</div>
+            <div className="text-[11px] tracking-[0.3em] uppercase text-[#B8C0C8]">{chapter}</div>
             <div className="font-serif-display text-3xl md:text-4xl text-[#F5F0E8] mt-2">{title}</div>
             <div className="text-[11px] tracking-[0.2em] uppercase text-[#8A8FA8] mt-1">{subtitle}</div>
           </div>
@@ -170,7 +170,7 @@ export default function ChapterCard({ to, imgSrc, imgAlt, chapter, title, subtit
         {/* Static image — hidden until animation starts */}
         {!triggered && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-[10px] tracking-[0.3em] uppercase text-[#C9A96E]/40">
+            <div className="text-[10px] tracking-[0.3em] uppercase text-[#B8C0C8]/40">
               {chapter}
             </div>
           </div>
@@ -195,7 +195,7 @@ export default function ChapterCard({ to, imgSrc, imgAlt, chapter, title, subtit
           transition: "opacity 0.8s ease 0.4s, transform 0.8s ease 0.4s",
         }}>
         <div>
-          <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">{chapter}</div>
+          <div className="text-[11px] tracking-[0.3em] uppercase text-[#B8C0C8]">{chapter}</div>
           <div className="font-serif-display text-3xl text-[#F5F0E8] mt-2">{title}</div>
           <div className="text-[11px] tracking-[0.2em] uppercase text-[#8A8FA8] mt-1">{subtitle}</div>
         </div>
