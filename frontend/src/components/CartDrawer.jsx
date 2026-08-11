@@ -18,10 +18,10 @@ export default function CartDrawer() {
   return (
     <div className="fixed inset-0 z-50" data-testid="cart-drawer">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setOpen(false)} />
-      <aside className="absolute right-0 top-0 bottom-0 w-full max-w-md bg-[#0B0E1A] border-l border-[#C9A96E]/15 flex flex-col">
-        <div className="flex items-center justify-between px-6 py-5 border-b border-[#C9A96E]/10">
-          <div className="text-[11px] tracking-[0.3em] uppercase text-[#C9A96E]">Your Atelier Bag</div>
-          <button data-testid="cart-drawer-close" onClick={() => setOpen(false)} className="text-[#F5F0E8]/80 hover:text-[#C9A96E]">
+      <aside className="absolute right-0 top-0 bottom-0 w-full max-w-md bg-[#0B0E1A] border-l border-[#B8C0C8]/15 flex flex-col">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-[#B8C0C8]/10">
+          <div className="text-[11px] tracking-[0.3em] uppercase text-[#B8C0C8]">Your Atelier Bag</div>
+          <button data-testid="cart-drawer-close" onClick={() => setOpen(false)} className="text-[#F5F0E8]/80 hover:text-[#B8C0C8]">
             <X size={20} />
           </button>
         </div>
@@ -43,19 +43,19 @@ export default function CartDrawer() {
                 </div>
                 <div className="flex-1 flex flex-col">
                   <div className="flex items-start justify-between">
-                    <Link to={`/product/${it.slug}`} onClick={() => setOpen(false)} className="font-serif-display text-lg text-[#F5F0E8] leading-tight hover:text-[#C9A96E]">
+                    <Link to={`/product/${it.slug}`} onClick={() => setOpen(false)} className="font-serif-display text-lg text-[#F5F0E8] leading-tight hover:text-[#B8C0C8]">
                       {it.name}
                     </Link>
-                    <button onClick={() => removeItem(it.key)} data-testid={`cart-item-remove-${it.slug}`} className="text-[#8A8FA8] hover:text-[#C9A96E]">
+                    <button onClick={() => removeItem(it.key)} data-testid={`cart-item-remove-${it.slug}`} className="text-[#8A8FA8] hover:text-[#B8C0C8]">
                       <X size={14} />
                     </button>
                   </div>
                   {it.size && <div className="text-[11px] tracking-[0.2em] uppercase text-[#8A8FA8] mt-1">Size · {it.size}</div>}
                   <div className="flex items-center justify-between mt-auto pt-3">
-                    <div className="flex items-center border border-[#C9A96E]/30">
-                      <button onClick={() => updateQty(it.key, it.quantity - 1)} className="px-2 py-1 text-[#F5F0E8]/80 hover:text-[#C9A96E]"><Minus size={12} /></button>
+                    <div className="flex items-center border border-[#B8C0C8]/30">
+                      <button onClick={() => updateQty(it.key, it.quantity - 1)} className="px-2 py-1 text-[#F5F0E8]/80 hover:text-[#B8C0C8]"><Minus size={12} /></button>
                       <span className="px-3 text-sm text-[#F5F0E8]">{it.quantity}</span>
-                      <button onClick={() => updateQty(it.key, it.quantity + 1)} className="px-2 py-1 text-[#F5F0E8]/80 hover:text-[#C9A96E]"><Plus size={12} /></button>
+                      <button onClick={() => updateQty(it.key, it.quantity + 1)} className="px-2 py-1 text-[#F5F0E8]/80 hover:text-[#B8C0C8]"><Plus size={12} /></button>
                     </div>
                     <div className="text-sm text-[#F5F0E8]">{formatINR(it.price * it.quantity)}</div>
                   </div>
@@ -66,7 +66,7 @@ export default function CartDrawer() {
         </div>
 
         {items.length > 0 && (
-          <div className="border-t border-[#C9A96E]/10 px-6 py-6 space-y-4">
+          <div className="border-t border-[#B8C0C8]/10 px-6 py-6 space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Subtotal</span>
               <span className="text-lg text-[#F5F0E8]" data-testid="cart-drawer-subtotal">{formatINR(subtotal)}</span>
