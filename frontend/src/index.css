@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Manrope:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap');
 
 :root {
     /* Brand accent — stays constant across both themes */
@@ -77,6 +77,24 @@ html, body {
 
 .font-serif-display { font-family: 'Cormorant Garamond', serif; font-weight: 300; }
 .font-body { font-family: 'DM Sans', sans-serif; }
+
+/* Cool platinum elements use Manrope, wherever the color appears */
+[class*="B8C0C8"],
+[style*="B8C0C8"],
+[fill*="B8C0C8"],
+[stroke*="B8C0C8"],
+[stop-color*="B8C0C8"] {
+    font-family: 'Manrope', sans-serif;
+}
+
+/* Bright chrome elements use Instrument Serif, wherever the color appears */
+[class*="E4E6E8"],
+[style*="E4E6E8"],
+[fill*="E4E6E8"],
+[stroke*="E4E6E8"],
+[stop-color*="E4E6E8"] {
+    font-family: 'Instrument Serif', serif;
+}
 
 /* Noise overlay */
 .noise-overlay {
@@ -203,7 +221,7 @@ html, body {
     letter-spacing: 0.25em;
     text-transform: uppercase;
     transition: all 0.4s cubic-bezier(0.25,1,0.5,1);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Manrope', sans-serif;
     font-weight: 400;
 }
 .btn-gold:hover {
