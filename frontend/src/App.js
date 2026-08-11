@@ -133,7 +133,7 @@ function App() {
               <WishlistProvider>
                 <ScrollToTop />
               <AppRouter />
-                <Toaster theme="dark" position="top-center" toastOptions={{ style: { background: "#0B0E1A", color: "#F5F0E8", border: "1px solid rgba(201,169,110,0.2)" } }} />
+                <Toaster theme="dark" position="top-center" toastOptions={{ style: { background: "#0B0E1A", color: "#F5F0E8", border: "1px solid rgba(184,192,200,0.2)" } }} />
               </WishlistProvider>
             </CartProvider>
           </AdminAuthProvider>
