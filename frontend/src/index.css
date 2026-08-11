@@ -6,7 +6,7 @@
 
 :root {
     /* Brand accent — stays constant across both themes */
-    --cl-gold: #C9A96E;
+    --cl-gold: #B8C0C8;
 
     /* Theme-aware tokens */
     --cl-bg: #000000;
@@ -169,7 +169,7 @@ html, body {
     transition: box-shadow 0.6s ease;
 }
 .product-card-halo:hover {
-    box-shadow: 0 0 60px rgba(201,169,110,0.18);
+    box-shadow: 0 0 60px rgba(184,192,200,0.18);
 }
 
 /* Hide scrollbar but allow scroll */
@@ -196,7 +196,7 @@ html, body {
 /* Buttons */
 .btn-gold {
     background: var(--cl-navy);
-    border: 1px solid rgba(201,169,110,0.6);
+    border: 1px solid rgba(184,192,200,0.6);
     color: var(--cl-gold);
     padding: 14px 28px;
     font-size: 12px;
@@ -209,7 +209,7 @@ html, body {
 .btn-gold:hover {
     background: var(--cl-gold);
     color: var(--cl-navy);
-    box-shadow: 0 0 30px rgba(201,169,110,0.25);
+    box-shadow: 0 0 30px rgba(184,192,200,0.25);
 }
 .btn-ivory {
     background: var(--cl-ivory);
@@ -228,7 +228,7 @@ html, body {
 
 .divider-thin {
     height: 1px;
-    background: linear-gradient(to right, transparent, rgba(201,169,110,0.4), transparent);
+    background: linear-gradient(to right, transparent, rgba(184,192,200,0.4), transparent);
 }
 
 input, textarea, select {
