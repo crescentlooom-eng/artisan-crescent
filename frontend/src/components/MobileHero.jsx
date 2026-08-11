@@ -173,16 +173,16 @@ export default function MobileHero() {
       {/* Tap hint — hidden after first tap */}
       {!revealed && (
         <div className="absolute inset-0 flex flex-col items-center justify-center z-10 pointer-events-none">
-          <div className="text-[10px] tracking-[0.5em] uppercase text-[#C9A96E] mb-5 animate-pulse">
+          <div className="text-[10px] tracking-[0.5em] uppercase text-[#B8C0C8] mb-5 animate-pulse">
             Crescent Loom
           </div>
           <div className="font-serif-display text-4xl text-[#F5F0E8] text-center leading-tight px-8">
-            Tap to <span className="italic text-[#C9A96E]/90">reveal</span>
+            Tap to <span className="italic text-[#B8C0C8]/90">reveal</span>
           </div>
           <div className="mt-4 text-[10px] tracking-[0.3em] uppercase text-[#8A8FA8]">
             Touch anywhere
           </div>
-          <div className="mt-4 w-px h-10 bg-gradient-to-b from-[#C9A96E]/60 to-transparent animate-pulse" />
+          <div className="mt-4 w-px h-10 bg-gradient-to-b from-[#B8C0C8]/60 to-transparent animate-pulse" />
         </div>
       )}
 
@@ -193,7 +193,7 @@ export default function MobileHero() {
           <div className="font-serif-display text-5xl text-[#F5F0E8] leading-tight mb-2">
             Beyond
           </div>
-          <div className="font-serif-display text-5xl italic text-[#C9A96E] leading-tight mb-5">
+          <div className="font-serif-display text-5xl italic text-[#B8C0C8] leading-tight mb-5">
             Comparison.
           </div>
           <p className="text-[#F5F0E8]/65 text-sm leading-relaxed mb-8 max-w-xs">
@@ -202,7 +202,7 @@ export default function MobileHero() {
           <div className="pointer-events-auto">
             <Link
               to="/shop"
-              className="inline-block text-[11px] tracking-[0.35em] uppercase text-[#0B0E1A] bg-[#C9A96E] px-10 py-4 hover:bg-[#B8914A] active:bg-[#A07840] transition-colors"
+              className="inline-block text-[11px] tracking-[0.35em] uppercase text-[#0B0E1A] bg-[#B8C0C8] px-10 py-4 hover:bg-[#B8914A] active:bg-[#838E99] transition-colors"
               onClick={e => e.stopPropagation()}
             >
               Shop Now
