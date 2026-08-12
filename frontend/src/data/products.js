@@ -94,9 +94,10 @@ export const PRODUCTS = [
         name: "Glacier Grey",
         color_hex: "#B7BCC4",
         images: [
-          `${ASSET}/7jdbs4k3_grey%202.png`,
-          "/polo-c6-2.png",
-          "/polo-c6-3.png",
+          "/glacier-grey-1.png",
+          "/glacier-grey-2.png",
+          "/glacier-grey-3.png",
+          "/glacier-grey-4.png",
         ],
         in_stock: true,
       },
