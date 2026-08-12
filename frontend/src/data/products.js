@@ -56,9 +56,10 @@ export const PRODUCTS = [
         color_hex: "#2A2A2D",
         out_of_stock_sizes: ["L"],
         images: [
-          `${ASSET}/u53soazb_dark%20grey%201.png`,
+          "/polo-c3-1.png",
           "/polo-c3-2.png",
           "/polo-c3-3.png",
+          "/polo-c3-4.png",
         ],
         in_stock: true,
       },
