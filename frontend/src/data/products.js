@@ -81,9 +81,10 @@ export const PRODUCTS = [
         name: "Pale Purple",
         color_hex: "#B07F88",
         images: [
-          `${ASSET}/y2nkbyds_rust%201.png`,
-          "/polo-c5-2.png",
-          "/polo-c5-3.png",
+          "/pale-purple-1.png",
+          "/pale-purple-2.png",
+          "/pale-purple-3.png",
+          "/pale-purple-4.png",
         ],
         in_stock: true,
       },
