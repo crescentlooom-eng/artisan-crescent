@@ -33,9 +33,10 @@ export const PRODUCTS = [
         name: "Dune Beige",
         color_hex: "#C9B493",
         images: [
-          `${ASSET}/n405oqrl_beige%201.png`,
-          "/dune-beige-side.png",
-          "/dune-beige-back.png",
+          "/dune-beige-1.png",
+          "/dune-beige-2.png",
+          "/dune-beige-3.png",
+          "/dune-beige-4.png",
         ],
         in_stock: true,
       },
