@@ -70,9 +70,10 @@ export const PRODUCTS = [
         name: "Coastal Blue",
         color_hex: "#3A4B6B",
         images: [
-          `${ASSET}/5j7gdl06_royal%20blue%201.png`,
-          "/polo-c4-2.png",
-          "/polo-c4-3.png",
+          "/coastal-blue-1.png",
+          "/coastal-blue-2.png",
+          "/coastal-blue-3.png",
+          "/coastal-blue-4.png",
         ],
         in_stock: true,
       },
