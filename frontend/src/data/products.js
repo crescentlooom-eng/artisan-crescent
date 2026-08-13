@@ -266,9 +266,10 @@ export const PRODUCTS = [
         name: "Urban Black",
         color_hex: "#0B0E1A",
         images: [
-          `${ASSET}/ey3vcjrh_plain%20black%201%20.png`,
+          "/ess-c1-1.png",
           "/ess-c1-2.png",
           "/ess-c1-3.png",
+          "/ess-c1-4.png",
         ],
         in_stock: true,
       },
