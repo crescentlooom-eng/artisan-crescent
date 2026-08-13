@@ -32,24 +32,14 @@ export const PRODUCTS = [
         id: "polo-c1",
         name: "Dune Beige",
         color_hex: "#C9B493",
-        images: [
-          "/dune-beige-1.png",
-          "/dune-beige-2.png",
-          "/dune-beige-3.png",
-          "/dune-beige-4.png",
-        ],
+        images: ["/dune-beige-1.png", "/dune-beige-2.png", "/dune-beige-3.png", "/dune-beige-4.png"],
         in_stock: true,
       },
       {
         id: "polo-c2",
         name: "Sand Taupe",
         color_hex: "#6D5949",
-        images: [
-          "/sand-taupe-1.png",
-          "/sand-taupe-2.png",
-          "/sand-taupe-3.png",
-          "/sand-taupe-4.png",
-        ],
+        images: ["/sand-taupe-1.png", "/sand-taupe-2.png", "/sand-taupe-3.png", "/sand-taupe-4.png"],
         in_stock: true,
       },
       {
@@ -57,48 +47,28 @@ export const PRODUCTS = [
         name: "Graphite Black",
         color_hex: "#2A2A2D",
         out_of_stock_sizes: ["L"],
-        images: [
-          "/polo-c3-1.png",
-          "/polo-c3-2.png",
-          "/polo-c3-3.png",
-          "/polo-c3-4.png",
-        ],
+        images: ["/polo-c3-1.png", "/polo-c3-2.png", "/polo-c3-3.png", "/polo-c3-4.png"],
         in_stock: true,
       },
       {
         id: "polo-c4",
         name: "Coastal Blue",
         color_hex: "#3A4B6B",
-        images: [
-          "/coastal-blue-1.png",
-          "/coastal-blue-2.png",
-          "/coastal-blue-3.png",
-          "/coastal-blue-4.png",
-        ],
+        images: ["/coastal-blue-1.png", "/coastal-blue-2.png", "/coastal-blue-3.png", "/coastal-blue-4.png"],
         in_stock: true,
       },
       {
         id: "polo-c5",
         name: "Pale Purple",
         color_hex: "#B07F88",
-        images: [
-          "/pale-purple-1.png",
-          "/pale-purple-2.png",
-          "/pale-purple-3.png",
-          "/pale-purple-4.png",
-        ],
+        images: ["/pale-purple-1.png", "/pale-purple-2.png", "/pale-purple-3.png", "/pale-purple-4.png"],
         in_stock: true,
       },
       {
         id: "polo-c6",
         name: "Glacier Grey",
         color_hex: "#B7BCC4",
-        images: [
-          "/glacier-grey-1.png",
-          "/glacier-grey-2.png",
-          "/glacier-grey-3.png",
-          "/glacier-grey-4.png",
-        ],
+        images: ["/glacier-grey-1.png", "/glacier-grey-2.png", "/glacier-grey-3.png", "/glacier-grey-4.png"],
         in_stock: true,
       },
     ],
@@ -109,8 +79,7 @@ export const PRODUCTS = [
     slug: "prism-wear-tee",
     category: "designer",
     price: 349,
-    description:
-      "Each piece carries its own story — a unique print, never quite repeated. For those who want their wardrobe to say something, without saying too much.",
+    description: "Each piece carries its own story — a unique print, never quite repeated. For those who want their wardrobe to say something, without saying too much.",
     sizes: ["Free Size"],
     colors: [],
     material: "100% Cotton, soft-handle jersey",
@@ -126,118 +95,28 @@ export const PRODUCTS = [
     new_arrival: true,
     images: [],
     variants: [
-      {
-        id: "prism-d1",
-        name: "Design 01",
-        color_hex: null,
-        images: [
-          `${ASSET}/q8uaai9p_desigenr%20beige%201%20.png`,
-          "/prism-d1-2.png",
-          "/prism-d1-3.png",
-        ],
-        in_stock: false,
-      },
-      {
-        id: "prism-d2",
-        name: "Design 02",
-        color_hex: null,
-        images: [
-          `${ASSET}/pkr2srcb_black%20designer%201.png`,
-          "/prism-d2-2.png",
-          "/prism-d2-3.png",
-        ],
-        in_stock: false,
-      },
-      {
-        id: "prism-d3",
-        name: "Design 03",
-        color_hex: null,
-        images: [
-          `${ASSET}/r8hotwwk_designer%20green%201.png`,
-          "/prism-d3-2.png",
-          "/prism-d3-3.png",
-        ],
-        in_stock: true,
-      },
-      {
-        id: "prism-d4",
-        name: "Design 04",
-        color_hex: null,
-        images: [
-          `${ASSET}/cmovrhje_23.png`,
-          "/prism-d4-2.png",
-          "/prism-d4-3.png",
-        ],
-        in_stock: true,
-      },
+      { id: "prism-d1", name: "Design 01", color_hex: null, images: [`${ASSET}/q8uaai9p_desigenr%20beige%201%20.png`, "/prism-d1-2.png", "/prism-d1-3.png"], in_stock: false },
+      { id: "prism-d2", name: "Design 02", color_hex: null, images: [`${ASSET}/pkr2srcb_black%20designer%201.png`, "/prism-d2-2.png", "/prism-d2-3.png"], in_stock: false },
+      { id: "prism-d3", name: "Design 03", color_hex: null, images: [`${ASSET}/r8hotwwk_designer%20green%201.png`, "/prism-d3-2.png", "/prism-d3-3.png"], in_stock: true },
+      { id: "prism-d4", name: "Design 04", color_hex: null, images: [`${ASSET}/cmovrhje_23.png`, "/prism-d4-2.png", "/prism-d4-3.png"], in_stock: true },
       {
         id: "prism-d5",
         name: "Design 05",
         color_hex: null,
         images: [
-          "/prism-d5-1.png",
-          "/prism-d5-2.png",
-          "/prism-d5-3.png",
-          "/prism-d5-4.png",
-          "/prism-d5-5.png",
+          "/prism-locked-male-front.png",
+          "/prism-locked-male-side.png",
+          "/prism-locked-male-back.png",
+          "/prism-locked-female-1.png",
+          "/prism-locked-female-2.png",
         ],
         in_stock: true,
       },
-      {
-        id: "prism-d6",
-        name: "Design 06",
-        color_hex: null,
-        images: [
-          `${ASSET}/uwlyo46l_designer%20pink%201%20.png`,
-          "/prism-d6-2.png",
-          "/prism-d6-3.png",
-        ],
-        in_stock: false,
-      },
-      {
-        id: "prism-d7",
-        name: "Design 07",
-        color_hex: null,
-        images: [
-          `${ASSET}/jqs8nqld_pink%20designer%202nd.png`,
-          "/prism-d7-2.png",
-          "/prism-d7-3.png",
-        ],
-        in_stock: false,
-      },
-      {
-        id: "prism-d8",
-        name: "Design 08",
-        color_hex: null,
-        images: [
-          `${ASSET}/0b4hx354_ChatGPT%20Image%20Jun%204%2C%202026%2C%2008_43_55%20PM.png`,
-          "/prism-d8-2.png",
-          "/prism-d8-3.png",
-        ],
-        in_stock: true,
-      },
-      {
-        id: "prism-d9",
-        name: "Design 09",
-        color_hex: null,
-        images: [
-          `${ASSET}/7azinc4k_ChatGPT%20Image%20Jun%204%2C%202026%2C%2008_43_46%20PM.png`,
-          "/prism-d9-2.png",
-          "/prism-d9-3.png",
-        ],
-        in_stock: true,
-      },
-      {
-        id: "prism-d10",
-        name: "Design 10",
-        color_hex: null,
-        images: [
-          `${ASSET}/sel429md_ChatGPT%20Image%20Jun%204%2C%202026%2C%2008_43_36%20PM.png`,
-          "/prism-d10-2.png",
-          "/prism-d10-3.png",
-        ],
-        in_stock: false,
-      },
+      { id: "prism-d6", name: "Design 06", color_hex: null, images: [`${ASSET}/uwlyo46l_designer%20pink%201%20.png`, "/prism-d6-2.png", "/prism-d6-3.png"], in_stock: false },
+      { id: "prism-d7", name: "Design 07", color_hex: null, images: [`${ASSET}/jqs8nqld_pink%20designer%202nd.png`, "/prism-d7-2.png", "/prism-d7-3.png"], in_stock: false },
+      { id: "prism-d8", name: "Design 08", color_hex: null, images: [`${ASSET}/0b4hx354_ChatGPT%20Image%20Jun%204%2C%202026%2C%2008_43_55%20PM.png`, "/prism-d8-2.png", "/prism-d8-3.png"], in_stock: true },
+      { id: "prism-d9", name: "Design 09", color_hex: null, images: [`${ASSET}/7azinc4k_ChatGPT%20Image%20Jun%204%2C%202026%2C%2008_43_46%20PM.png`, "/prism-d9-2.png", "/prism-d9-3.png"], in_stock: true },
+      { id: "prism-d10", name: "Design 10", color_hex: null, images: [`${ASSET}/sel429md_ChatGPT%20Image%20Jun%204%2C%202026%2C%2008_43_36%20PM.png`, "/prism-d10-2.png", "/prism-d10-3.png"], in_stock: false },
     ],
   },
   {
@@ -246,53 +125,24 @@ export const PRODUCTS = [
     slug: "essential-tee",
     category: "basics",
     price: 299,
-    description:
-       "The foundation of a considered wardrobe. Pure cotton, clean lines, no excess — made to be worn often and loved longer.",
+    description: "The foundation of a considered wardrobe. Pure cotton, clean lines, no excess — made to be worn often and loved longer.",
     sizes: ["M", "XL"],
     colors: [],
     material: "100% Heavyweight Cotton",
     keywords: ["basic", "plain", "minimal", "everyday", "heavyweight cotton", "solid"],
-    highlights: {
-      sleeve: "Half Sleeve",
-      fabric: "100% Cotton",
-      neck_type: "Round Neck",
-      pattern: "Solid",
-    },
+    highlights: { sleeve: "Half Sleeve", fabric: "100% Cotton", neck_type: "Round Neck", pattern: "Solid" },
     in_stock: true,
     featured: true,
     new_arrival: true,
     images: [],
     variants: [
-      {
-        id: "ess-c1",
-        name: "Urban Black",
-        color_hex: "#0B0E1A",
-        images: [
-          "/ess-c1-1.png",
-          "/ess-c1-2.png",
-          "/ess-c1-3.png",
-          "/ess-c1-4.png",
-        ],
-        in_stock: true,
-      },
-      {
-        id: "ess-c2",
-        name: "Pure White",
-        color_hex: "#F5F0E8",
-        images: [
-          "/ess-c2-1.png",
-          "/ess-c2-2.png",
-          "/ess-c2-3.png",
-          "/ess-c2-4.png",
-        ],
-        in_stock: true,
-      },
+      { id: "ess-c1", name: "Urban Black", color_hex: "#0B0E1A", images: ["/ess-c1-1.png", "/ess-c1-2.png", "/ess-c1-3.png", "/ess-c1-4.png"], in_stock: true },
+      { id: "ess-c2", name: "Pure White", color_hex: "#F5F0E8", images: ["/ess-c2-1.png", "/ess-c2-2.png", "/ess-c2-3.png", "/ess-c2-4.png"], in_stock: true },
     ],
   },
 ];
 
-export const getProductBySlug = (slug) =>
-  PRODUCTS.find((p) => p.slug === slug) || null;
+export const getProductBySlug = (slug) => PRODUCTS.find((p) => p.slug === slug) || null;
 
 export const listProducts = ({ category, featured, new_arrival, q } = {}) => {
   let out = [...PRODUCTS];
@@ -301,12 +151,7 @@ export const listProducts = ({ category, featured, new_arrival, q } = {}) => {
   if (new_arrival !== undefined) out = out.filter((p) => p.new_arrival === new_arrival);
   if (q) {
     const s = q.toLowerCase();
-    out = out.filter((p) =>
-      p.name.toLowerCase().includes(s) ||
-      p.category.toLowerCase().includes(s) ||
-      p.description?.toLowerCase().includes(s) ||
-      (p.keywords || []).some((k) => k.toLowerCase().includes(s))
-    );
+    out = out.filter((p) => p.name.toLowerCase().includes(s) || p.category.toLowerCase().includes(s) || p.description?.toLowerCase().includes(s) || (p.keywords || []).some((k) => k.toLowerCase().includes(s)));
   }
   return out;
 };
