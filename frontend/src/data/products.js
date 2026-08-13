@@ -175,9 +175,11 @@ export const PRODUCTS = [
         name: "Design 05",
         color_hex: null,
         images: [
-          `${ASSET}/aeyorgt4_three%201.png`,
+          "/prism-d5-1.png",
           "/prism-d5-2.png",
           "/prism-d5-3.png",
+          "/prism-d5-4.png",
+          "/prism-d5-5.png",
         ],
         in_stock: true,
       },
