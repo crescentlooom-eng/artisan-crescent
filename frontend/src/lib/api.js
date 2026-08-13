@@ -74,21 +74,3 @@ export const expandForCatalog = (products) => {
 
   return out;
 };
-        const baseName = (p.name || "").replace(/\s*Tee\s*$/i, "").trim() || p.name;
-        out.push({
-          ...p,
-          id: `${p.id}__${v.id}`,
-          slug: p.slug,
-          name: `${baseName} · ${v.name}`,
-          images: (v.images && v.images.length) ? v.images : p.images,
-          variants: [v],
-          variantId: v.id,
-          __isVariantCard: true,
-        });
-      }
-    } else {
-      out.push(p);
-    }
-  }
-  return out;
-};
