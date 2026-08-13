@@ -278,9 +278,10 @@ export const PRODUCTS = [
         name: "Pure White",
         color_hex: "#F5F0E8",
         images: [
-          `${ASSET}/c3331ol8_plain%20white%201.png`,
+          "/ess-c2-1.png",
           "/ess-c2-2.png",
           "/ess-c2-3.png",
+          "/ess-c2-4.png",
         ],
         in_stock: true,
       },
