@@ -38,9 +38,42 @@ export const allProductImages = (product) => {
  */
 export const expandForCatalog = (products) => {
   const out = [];
+  const seen = new Set();
+
   for (const p of products || []) {
     if (p.category === "designer" && (p.variants?.length || 0) > 1) {
       for (const v of p.variants) {
+        // Prevent duplicate variant cards
+        const uniqueKey = `${p.id}__${v.id}`;
+
+        if (seen.has(uniqueKey)) continue;
+        seen.add(uniqueKey);
+
+        const baseName =
+          (p.name || "").replace(/\s*Tee\s*$/i, "").trim() || p.name;
+
+        out.push({
+          ...p,
+          id: uniqueKey,
+          slug: p.slug,
+          name: `${baseName} · ${v.name}`,
+          images: v.images?.length ? v.images : p.images,
+          variants: [v],
+          variantId: v.id,
+          __isVariantCard: true,
+        });
+      }
+    } else {
+      // Prevent the same base product from being rendered twice
+      if (seen.has(p.id)) continue;
+
+      seen.add(p.id);
+      out.push(p);
+    }
+  }
+
+  return out;
+};
         const baseName = (p.name || "").replace(/\s*Tee\s*$/i, "").trim() || p.name;
         out.push({
           ...p,
