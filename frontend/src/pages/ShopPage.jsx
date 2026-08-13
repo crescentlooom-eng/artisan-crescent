@@ -4,7 +4,7 @@ import { PRODUCTS, listProducts } from "@/data/products";
 import { expandForCatalog } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
 import useScrollReveal from "@/hooks/useScrollReveal";
-import { ChevronDown, ChevronUp, X } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 const CATEGORIES = [
   { value: "polo", label: "Textured Polos" },
@@ -20,18 +20,6 @@ const SORTS = [
 
 const PER_PAGE = 9;
 
-function expandAll(products) {
-  return products.flatMap((p) =>
-    p.variants?.length > 0
-      ? p.variants.map((v) => ({
-          ...p, id: `${p.id}__${v.id}`, variantId: v.id, name: p.name,
-          images: v.images?.length ? v.images : p.images,
-          variants: [], color_hex: v.color_hex, __isVariantCard: true,
-        }))
-      : [p]
-  );
-}
-
 export default function ShopPage() {
   const [params, setParams] = useSearchParams();
   const [sort, setSort] = useState("newest");
@@ -44,8 +32,9 @@ export default function ShopPage() {
   const category = params.get("category") || "all";
   const q = params.get("q") || "";
 
-  // Full catalog metadata (unfiltered) — for sidebar counts, sizes, colors, price range
-  const allCards = useMemo(() => expandAll(PRODUCTS), []);
+  // Expand the raw catalogue exactly once. This gives one card per designer
+  // variant and avoids the previous expandAll -> expandForCatalog double pass.
+  const allCards = useMemo(() => expandForCatalog(PRODUCTS), []);
   const priceBounds = useMemo(() => {
     const prices = PRODUCTS.map((p) => p.price);
     return { min: Math.min(...prices), max: Math.max(...prices) };
@@ -57,11 +46,13 @@ export default function ShopPage() {
     const set = new Set(PRODUCTS.flatMap((p) => p.sizes || []));
     return order.filter((s) => set.has(s));
   }, []);
+
   const allColors = useMemo(() => {
     const set = new Map();
     allCards.forEach((c) => { if (c.color_hex) set.set(c.color_hex, c.color_hex); });
     return Array.from(set.values());
   }, [allCards]);
+
   const categoryCounts = useMemo(() => {
     const counts = {};
     CATEGORIES.forEach((c) => {
@@ -70,10 +61,21 @@ export default function ShopPage() {
     return counts;
   }, [allCards]);
 
-  // Filtered + sorted list
   const filtered = useMemo(() => {
     const base = listProducts({ category: category === "all" ? undefined : category, q: q || undefined });
-    let list = expandForCatalog(expandAll(base));
+    // Expand only once from the source product objects.
+    let list = expandForCatalog(base);
+
+    // Final defensive de-duplication: a designer variant can only have one
+    // catalogue card for a given product + variant ID.
+    const seen = new Set();
+    list = list.filter((p) => {
+      const key = p.__isVariantCard ? `${p.slug}__${p.variantId}` : p.id;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+
     if (sizes.length) list = list.filter((p) => sizes.some((s) => p.sizes?.includes(s)));
     if (colors.length) list = list.filter((p) => colors.includes(p.color_hex));
     if (maxPrice !== null) list = list.filter((p) => p.price <= maxPrice);
@@ -116,7 +118,6 @@ export default function ShopPage() {
         </p>
 
         <div className="flex flex-col lg:flex-row gap-10">
-          {/* SIDEBAR */}
           <aside className="lg:w-64 shrink-0">
             <div className="flex items-center justify-between mb-6">
               <span className="text-sm font-medium" style={{ color: "var(--cl-text)" }}>Filters</span>
@@ -125,7 +126,6 @@ export default function ShopPage() {
               )}
             </div>
 
-            {/* Categories */}
             <div className="border-b pb-5 mb-5" style={{ borderColor: "var(--cl-border)" }}>
               <button onClick={() => toggleGroup("cat")} className="flex items-center justify-between w-full mb-3">
                 <span className="text-xs tracking-[0.15em] uppercase font-medium" style={{ color: "var(--cl-text)" }}>Categories</span>
@@ -134,20 +134,17 @@ export default function ShopPage() {
               {filtersOpen.cat && (
                 <div className="flex flex-col gap-2.5">
                   <button onClick={() => setCategory("all")} className="flex items-center justify-between text-sm text-left" style={{ color: category === "all" ? "#B8C0C8" : "var(--cl-subtext)" }}>
-                    <span>All Collections</span>
-                    <span className="text-xs">({allCards.length})</span>
+                    <span>All Collections</span><span className="text-xs">({allCards.length})</span>
                   </button>
                   {CATEGORIES.map((c) => (
                     <button key={c.value} onClick={() => setCategory(c.value)} className="flex items-center justify-between text-sm text-left" style={{ color: category === c.value ? "#B8C0C8" : "var(--cl-subtext)" }}>
-                      <span>{c.label}</span>
-                      <span className="text-xs">({categoryCounts[c.value] || 0})</span>
+                      <span>{c.label}</span><span className="text-xs">({categoryCounts[c.value] || 0})</span>
                     </button>
                   ))}
                 </div>
               )}
             </div>
 
-            {/* Size */}
             {allSizes.length > 0 && (
               <div className="border-b pb-5 mb-5" style={{ borderColor: "var(--cl-border)" }}>
                 <button onClick={() => toggleGroup("size")} className="flex items-center justify-between w-full mb-3">
@@ -157,24 +154,8 @@ export default function ShopPage() {
                 {filtersOpen.size && (
                   <div className="flex flex-col gap-2.5">
                     {allSizes.map((s) => (
-                      <label
-                        key={s}
-                        className="cursor-pointer text-sm"
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "flex-start",
-                          gap: "10px",
-                          color: "var(--cl-subtext)",
-                        }}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={sizes.includes(s)}
-                          onChange={() => toggleSize(s)}
-                          style={{ accentColor: "#B8C0C8", margin: 0, flexShrink: 0, width: "16px", height: "16px" }}
-                        />
+                      <label key={s} className="cursor-pointer text-sm" style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", gap: "10px", color: "var(--cl-subtext)" }}>
+                        <input type="checkbox" checked={sizes.includes(s)} onChange={() => toggleSize(s)} style={{ accentColor: "#B8C0C8", margin: 0, flexShrink: 0, width: "16px", height: "16px" }} />
                         <span>{s}</span>
                       </label>
                     ))}
@@ -183,7 +164,6 @@ export default function ShopPage() {
               </div>
             )}
 
-            {/* Color */}
             {allColors.length > 0 && (
               <div className="border-b pb-5 mb-5" style={{ borderColor: "var(--cl-border)" }}>
                 <button onClick={() => toggleGroup("color")} className="flex items-center justify-between w-full mb-3">
@@ -193,24 +173,13 @@ export default function ShopPage() {
                 {filtersOpen.color && (
                   <div className="flex flex-wrap gap-3">
                     {allColors.map((hex) => (
-                      <button
-                        key={hex}
-                        onClick={() => toggleColor(hex)}
-                        aria-label={hex}
-                        className="w-7 h-7 rounded-full"
-                        style={{
-                          background: hex,
-                          border: colors.includes(hex) ? "2px solid #B8C0C8" : "1px solid var(--cl-border)",
-                          boxShadow: colors.includes(hex) ? "0 0 0 2px var(--cl-bg), 0 0 0 3px #B8C0C8" : "none",
-                        }}
-                      />
+                      <button key={hex} onClick={() => toggleColor(hex)} aria-label={hex} className="w-7 h-7 rounded-full" style={{ background: hex, border: colors.includes(hex) ? "2px solid #B8C0C8" : "1px solid var(--cl-border)", boxShadow: colors.includes(hex) ? "0 0 0 2px var(--cl-bg), 0 0 0 3px #B8C0C8" : "none" }} />
                     ))}
                   </div>
                 )}
               </div>
             )}
 
-            {/* Price */}
             <div className="pb-5">
               <button onClick={() => toggleGroup("price")} className="flex items-center justify-between w-full mb-3">
                 <span className="text-xs tracking-[0.15em] uppercase font-medium" style={{ color: "var(--cl-text)" }}>Price</span>
@@ -218,38 +187,19 @@ export default function ShopPage() {
               </button>
               {filtersOpen.price && maxPrice !== null && (
                 <div>
-                  <input
-                    type="range"
-                    min={priceBounds.min}
-                    max={priceBounds.max}
-                    value={maxPrice}
-                    onChange={(e) => setMaxPrice(Number(e.target.value))}
-                    className="w-full"
-                    style={{ accentColor: "#B8C0C8" }}
-                  />
-                  <div className="flex justify-between text-xs mt-2" style={{ color: "var(--cl-subtext)" }}>
-                    <span>₹{priceBounds.min}</span>
-                    <span>₹{maxPrice}</span>
-                  </div>
+                  <input type="range" min={priceBounds.min} max={priceBounds.max} value={maxPrice} onChange={(e) => setMaxPrice(Number(e.target.value))} className="w-full" style={{ accentColor: "#B8C0C8" }} />
+                  <div className="flex justify-between text-xs mt-2" style={{ color: "var(--cl-subtext)" }}><span>₹{priceBounds.min}</span><span>₹{maxPrice}</span></div>
                 </div>
               )}
             </div>
           </aside>
 
-          {/* MAIN */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-8 pb-4 border-b" style={{ borderColor: "var(--cl-border)" }}>
-              <span className="text-sm" style={{ color: "var(--cl-subtext)" }}>
-                Showing {filtered.length === 0 ? 0 : (page - 1) * PER_PAGE + 1}–{Math.min(page * PER_PAGE, filtered.length)} of {filtered.length} products
-              </span>
+              <span className="text-sm" style={{ color: "var(--cl-subtext)" }}>Showing {filtered.length === 0 ? 0 : (page - 1) * PER_PAGE + 1}–{Math.min(page * PER_PAGE, filtered.length)} of {filtered.length} products</span>
               <div className="flex items-center gap-3">
                 <span className="text-xs tracking-[0.2em] uppercase" style={{ color: "var(--cl-subtext)" }}>Sort</span>
-                <select
-                  value={sort}
-                  onChange={(e) => setSort(e.target.value)}
-                  className="text-sm bg-transparent border px-3 py-2"
-                  style={{ borderColor: "var(--cl-border)", color: "var(--cl-text)" }}
-                >
+                <select value={sort} onChange={(e) => setSort(e.target.value)} className="text-sm bg-transparent border px-3 py-2" style={{ borderColor: "var(--cl-border)", color: "var(--cl-text)" }}>
                   {SORTS.map((s) => <option key={s.value} value={s.value} style={{ background: "var(--cl-bg)" }}>{s.label}</option>)}
                 </select>
               </div>
@@ -269,16 +219,7 @@ export default function ShopPage() {
             {totalPages > 1 && (
               <div className="flex items-center justify-center gap-2 mt-16">
                 {Array.from({ length: totalPages }).map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setPage(i + 1)}
-                    className="w-9 h-9 rounded-full text-sm"
-                    style={page === i + 1
-                      ? { background: "#B8C0C8", color: "#0B0E1A" }
-                      : { border: "1px solid var(--cl-border)", color: "var(--cl-text)" }}
-                  >
-                    {i + 1}
-                  </button>
+                  <button key={i} onClick={() => setPage(i + 1)} className="w-9 h-9 rounded-full text-sm" style={page === i + 1 ? { background: "#B8C0C8", color: "#0B0E1A" } : { border: "1px solid var(--cl-border)", color: "var(--cl-text)" }}>{i + 1}</button>
                 ))}
               </div>
             )}
