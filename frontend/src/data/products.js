@@ -100,8 +100,13 @@ export const PRODUCTS = [
       { id: "prism-d3", name: "Design 03", color_hex: null, images: [`${ASSET}/r8hotwwk_designer%20green%201.png`, "/prism-d3-2.png", "/prism-d3-3.png"], in_stock: true },
       { id: "prism-d4", name: "Design 04", color_hex: null, images: [`${ASSET}/cmovrhje_23.png`, "/prism-d4-2.png", "/prism-d4-3.png"], in_stock: true },
       {
-        id: "prism-d5",
-        name: "Design 05",
+        images: [
+  "/prism-locked-male-front.png",
+  "/prism-locked-male-side.png",
+  "/prism-locked-male-back.png",
+  "/prism-locked-female-1.png",
+  "/prism-locked-female-2.png",
+],
         color_hex: null,
         images: [
           "/prism-locked-male-front.png",
