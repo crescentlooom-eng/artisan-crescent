@@ -48,6 +48,7 @@ export const PRODUCTS = [
         color_hex: "#2A2A2D",
         out_of_stock_sizes: ["L"],
         images: ["/polo-c3-1.png", "/polo-c3-2.png", "/polo-c3-3.png", "/polo-c3-4.png"],
+        imagesLight: ["/polo-c3-light-1.png", "/polo-c3-light-2.png", "/polo-c3-light-3.png", "/polo-c3-light-4.png"],
         in_stock: true,
       },
       {
@@ -131,6 +132,14 @@ export const PRODUCTS = [
 ];
 
 export const getProductBySlug = (slug) => PRODUCTS.find((p) => p.slug === slug) || null;
+
+// Returns the theme-appropriate image set for a variant.
+// Falls back to the default (dark) images if no light-theme set exists yet.
+export const getVariantImages = (variant, theme) => {
+  if (!variant) return [];
+  if (theme === "light" && variant.imagesLight?.length) return variant.imagesLight;
+  return variant.images || [];
+};
 
 export const listProducts = ({ category, featured, new_arrival, q } = {}) => {
   let out = [...PRODUCTS];
