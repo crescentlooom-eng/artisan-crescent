@@ -2,9 +2,10 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Heart, Minus, Plus, Star, Truck, PackageCheck, ShieldCheck, MapPin, Loader2, Moon } from "lucide-react";
 import { formatINR, productImage, api } from "@/lib/api";
-import { getProductBySlug, listProducts } from "@/data/products";
+import { getProductBySlug, listProducts, getVariantImages } from "@/data/products";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
+import { useTheme } from "@/context/ThemeContext";
 import ProductCard from "@/components/ProductCard";
 import useScrollReveal from "@/hooks/useScrollReveal";
 import {
@@ -143,6 +144,7 @@ export default function ProductDetailPage() {
   const { slug } = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { theme } = useTheme();
   const [product, setProduct] = useState(null);
   const [size, setSize] = useState(null);
   const [qty, setQty] = useState(1);
@@ -226,7 +228,7 @@ export default function ProductDetailPage() {
         op.variants?.length > 0
           ? op.variants.map((v) => ({
               ...op, id: `${op.id}__${v.id}`, variantId: v.id,
-              images: v.images?.length ? v.images : op.images,
+              images: getVariantImages(v, theme)?.length ? getVariantImages(v, theme) : op.images,
               variants: [], color_hex: v.color_hex, __isVariantCard: true,
             }))
           : [op]
@@ -238,10 +240,11 @@ export default function ProductDetailPage() {
   const variant = product?.variants?.[variantIdx];
   const images = useMemo(() => {
     if (!product) return [];
-    if (variant?.images?.length) return variant.images;
+    const variantImages = getVariantImages(variant, theme);
+    if (variantImages.length) return variantImages;
     if (product.images?.length) return product.images;
     return [];
-  }, [product, variant]);
+  }, [product, variant, theme]);
 
   if (!product) {
     return <div className="pt-40 text-center tracking-[0.3em] uppercase text-sm" style={{ color: "var(--cl-subtext)" }}>Loading...</div>;
@@ -405,7 +408,7 @@ export default function ProductDetailPage() {
                 </div>
                 <div className="grid grid-cols-6 gap-3" data-testid="product-variant-grid">
                   {product.variants.map((v, i) => {
-                    const thumb = v.images?.[0];
+                    const thumb = getVariantImages(v, theme)[0];
                     const selected = i === variantIdx;
                     return (
                       <button
