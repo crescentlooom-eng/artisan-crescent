@@ -38,10 +38,11 @@ export const PRODUCTS = [
       },
       {
         id: "polo-c2",
-        name: "Sand Taupe",
-        color_hex: "#6D5949",
-        images: ["/sand-taupe-1.png", "/sand-taupe-2.png", "/sand-taupe-3.png", "/sand-taupe-4.png"],
-        in_stock: true,
+  name: "Sand Taupe",
+  color_hex: "#6D5949",
+  images: ["/sand-taupe-1.png", "/sand-taupe-2.png", "/sand-taupe-3.png", "/sand-taupe-4.png"],
+  imagesLight: ["/sand-taupe-light-1.png", "/sand-taupe-light-2.png", "/sand-taupe-light-3.png", "/sand-taupe-light-4.png"],
+  in_stock: true
       },
       {
         id: "polo-c3",
