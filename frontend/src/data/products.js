@@ -53,10 +53,11 @@ export const PRODUCTS = [
       },
       {
         id: "polo-c4",
-        name: "Coastal Blue",
-        color_hex: "#3A4B6B",
-        images: ["/coastal-blue-1.png", "/coastal-blue-2.png", "/coastal-blue-3.png", "/coastal-blue-4.png"],
-        in_stock: true,
+  name: "Coastal Blue",
+  color_hex: "#3A4B6B",
+  images: ["/coastal-blue-1.png", "/coastal-blue-2.png", "/coastal-blue-3.png", "/coastal-blue-4.png"],
+  imagesLight: ["/coastal-blue-light-1.png", "/coastal-blue-light-2.png", "/coastal-blue-light-3.png", "/coastal-blue-light-4.png"],
+  in_stock: true,
       },
       {
         id: "polo-c5",
