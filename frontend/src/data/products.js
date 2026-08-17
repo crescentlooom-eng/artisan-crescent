@@ -63,10 +63,11 @@ export const PRODUCTS = [
       },
       {
         id: "polo-c5",
-        name: "Pale Purple",
-        color_hex: "#B07F88",
-        images: ["/pale-purple-1.png", "/pale-purple-2.png", "/pale-purple-3.png", "/pale-purple-4.png"],
-        in_stock: true,
+  name: "Pale Purple",
+  color_hex: "#B07F88",
+  images: ["/pale-purple-1.png", "/pale-purple-2.png", "/pale-purple-3.png", "/pale-purple-4.png"],
+  imagesLight: ["/pale-purple-light-1.png", "/pale-purple-light-2.png", "/pale-purple-light-3.png", "/pale-purple-light-4.png"],
+  in_stock: true,
       },
       {
         id: "polo-c6",
