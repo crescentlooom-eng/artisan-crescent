@@ -30,10 +30,11 @@ export const PRODUCTS = [
     variants: [
       {
         id: "polo-c1",
-        name: "Dune Beige",
-        color_hex: "#C9B493",
-        images: ["/dune-beige-1.png", "/dune-beige-2.png", "/dune-beige-3.png", "/dune-beige-4.png"],
-        in_stock: true,
+  name: "Dune Beige",
+  color_hex: "#C9B493",
+  images: ["/dune-beige-1.png", "/dune-beige-2.png", "/dune-beige-3.png", "/dune-beige-4.png"],
+  imagesLight: ["/dune-beige-light-1.png", "/dune-beige-light-2.png", "/dune-beige-light-3.png", "/dune-beige-light-4.png"],
+  in_stock: true,
       },
       {
         id: "polo-c2",
