@@ -101,7 +101,14 @@ export const PRODUCTS = [
     new_arrival: true,
     images: [],
     variants: [
-      { id: "prism-d1", name: "Design 01", color_hex: null, images: [`${ASSET}/q8uaai9p_desigenr%20beige%201%20.png`, "/prism-d1-2.png", "/prism-d1-3.png"], in_stock: false },
+      {
+  id: "prism-d1",
+  name: "Dream",
+  color_hex: null,
+  images: ["/prism-d1-1.png", "/prism-d1-2.png", "/prism-d1-3.png", "/prism-d1-4.png", "/prism-d1-5.png"],
+  imagesLight: ["/prism-d1-light-1.png", "/prism-d1-light-2.png", "/prism-d1-light-3.png", "/prism-d1-light-4.png", "/prism-d1-light-5.png"],
+  in_stock: true,
+},
       { id: "prism-d2", name: "Design 02", color_hex: null, images: [`${ASSET}/pkr2srcb_black%20designer%201.png`, "/prism-d2-2.png", "/prism-d2-3.png"], in_stock: false },
       { id: "prism-d3", name: "Design 03", color_hex: null, images: [`${ASSET}/r8hotwwk_designer%20green%201.png`, "/prism-d3-2.png", "/prism-d3-3.png"], in_stock: true },
       {
