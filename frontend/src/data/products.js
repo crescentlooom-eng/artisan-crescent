@@ -123,7 +123,7 @@ export const PRODUCTS = [
   color_hex: null,
   images: ["/prism-d3-1.png", "/prism-d3-2.png", "/prism-d3-3.png", "/prism-d3-4.png", "/prism-d3-5.png"],
   imagesLight: ["/prism-d3-light-1.png", "/prism-d3-light-2.png", "/prism-d3-light-3.png", "/prism-d3-light-4.png", "/prism-d3-light-5.png"],
-  in_stock: true,
+  in_stock: false,
 },
       {
   id: "prism-d4",
