@@ -109,7 +109,14 @@ export const PRODUCTS = [
   imagesLight: ["/prism-d1-light-1.png", "/prism-d1-light-2.png", "/prism-d1-light-3.png", "/prism-d1-light-4.png", "/prism-d1-light-5.png"],
   in_stock: true,
 },
-      { id: "prism-d2", name: "Design 02", color_hex: null, images: [`${ASSET}/pkr2srcb_black%20designer%201.png`, "/prism-d2-2.png", "/prism-d2-3.png"], in_stock: false },
+      {
+  id: "prism-d2",
+  name: "Hi Chat",
+  color_hex: null,
+  images: ["/prism-d2-1.png", "/prism-d2-2.png", "/prism-d2-3.png", "/prism-d2-4.png", "/prism-d2-5.png"],
+  imagesLight: ["/prism-d2-light-1.png", "/prism-d2-light-2.png", "/prism-d2-light-3.png", "/prism-d2-light-4.png", "/prism-d2-light-5.png"],
+  in_stock: false,
+},
       { id: "prism-d3", name: "Design 03", color_hex: null, images: [`${ASSET}/r8hotwwk_designer%20green%201.png`, "/prism-d3-2.png", "/prism-d3-3.png"], in_stock: true },
       {
   id: "prism-d4",
