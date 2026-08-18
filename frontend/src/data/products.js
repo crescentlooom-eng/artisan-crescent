@@ -117,7 +117,14 @@ export const PRODUCTS = [
   imagesLight: ["/prism-d2-light-1.png", "/prism-d2-light-2.png", "/prism-d2-light-3.png", "/prism-d2-light-4.png", "/prism-d2-light-5.png"],
   in_stock: false,
 },
-      { id: "prism-d3", name: "Design 03", color_hex: null, images: [`${ASSET}/r8hotwwk_designer%20green%201.png`, "/prism-d3-2.png", "/prism-d3-3.png"], in_stock: true },
+      {
+  id: "prism-d3",
+  name: "Sage Theory Tee",
+  color_hex: null,
+  images: ["/prism-d3-1.png", "/prism-d3-2.png", "/prism-d3-3.png", "/prism-d3-4.png", "/prism-d3-5.png"],
+  imagesLight: ["/prism-d3-light-1.png", "/prism-d3-light-2.png", "/prism-d3-light-3.png", "/prism-d3-light-4.png", "/prism-d3-light-5.png"],
+  in_stock: true,
+},
       {
   id: "prism-d4",
   name: "Forge",
