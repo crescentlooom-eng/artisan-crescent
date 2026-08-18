@@ -31,17 +31,16 @@ export const allProductImages = (product) => {
 };
 
 /**
- * For the catalogue/featured grids, "explode" any product whose category
- * is `designer` into one card per variant (since each designer print is its
- * own piece). Polo & basics stay as a single card with their variant swatches
- * shown on the detail page.
+ * For the catalogue/featured grids, "explode" any product with more than
+ * one variant into one card per variant (each color/print is its own
+ * purchasable piece).
  */
 export const expandForCatalog = (products) => {
   const out = [];
   const seen = new Set();
 
   for (const p of products || []) {
-    if (p.category === "designer" && (p.variants?.length || 0) > 1) {
+    if ((p.variants?.length || 0) > 1) {
       for (const v of p.variants) {
         // Prevent duplicate variant cards
         const uniqueKey = `${p.id}__${v.id}`;
