@@ -84,7 +84,7 @@ export default function ShopPage() {
     return list;
   }, [category, q, sizes, colors, maxPrice, sort]);
 
-  useScrollReveal([filtered]);
+  useScrollReveal([filtered, page]);
   useEffect(() => { setPage(1); }, [category, q, sizes, colors, maxPrice, sort]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
