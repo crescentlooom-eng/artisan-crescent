@@ -159,7 +159,14 @@ export const PRODUCTS = [
   imagesLight: ["/prism-d9-light-1.png", "/prism-d9-light-2.png", "/prism-d9-light-3.png", "/prism-d9-light-4.png", "/prism-d9-light-5.png"],
   in_stock: true,
 },
-      { id: "prism-d10", name: "Design 10", color_hex: null, images: [`${ASSET}/sel429md_ChatGPT%20Image%20Jun%204%2C%202026%2C%2008_43_36%20PM.png`, "/prism-d10-2.png", "/prism-d10-3.png"], in_stock: false },
+      {
+  id: "prism-d10",
+  name: "Noir Geometry",
+  color_hex: null,
+  images: ["/prism-d10-1.png", "/prism-d10-2.png", "/prism-d10-3.png", "/prism-d10-4.png", "/prism-d10-5.png"],
+  imagesLight: ["/prism-d10-light-1.png", "/prism-d10-light-2.png", "/prism-d10-light-3.png", "/prism-d10-light-4.png", "/prism-d10-light-5.png"],
+  in_stock: false,
+},
     ],
   },
   {
