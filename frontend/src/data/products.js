@@ -133,7 +133,14 @@ export const PRODUCTS = [
   imagesLight: ["/prism-d4-light-1.png", "/prism-d4-light-2.png", "/prism-d4-light-3.png", "/prism-d4-light-4.png", "/prism-d4-light-5.png"],
   in_stock: true,
 },
-      { id: "prism-d5", name: "Design 05", color_hex: null, images: ["/prism-locked-male-front.png", "/prism-locked-male-side.png", "/prism-locked-male-back.png", "/prism-locked-female-1.png", "/prism-locked-female-2.png"], in_stock: true },
+      {
+  id: "prism-d5",
+  name: "Locked",
+  color_hex: null,
+  images: ["/prism-locked-male-front.png", "/prism-locked-male-side.png", "/prism-locked-male-back.png", "/prism-locked-female-1.png", "/prism-locked-female-2.png"],
+  imagesLight: ["/prism-locked-light-male-front.png", "/prism-locked-light-male-side.png", "/prism-locked-light-male-back.png", "/prism-locked-light-female-1.png", "/prism-locked-light-female-2.png"],
+  in_stock: true,
+},
       {
   id: "prism-d6",
   name: "Artist",
