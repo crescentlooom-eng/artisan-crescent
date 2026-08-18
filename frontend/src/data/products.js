@@ -150,7 +150,6 @@ export const PRODUCTS = [
   imagesLight: ["/prism-d7-light-1.png", "/prism-d7-light-2.png", "/prism-d7-light-3.png", "/prism-d7-light-4.png", "/prism-d7-light-5.png"],
   in_stock: true,
 },
-      { id: "prism-d8", name: "Design 08", color_hex: null, images: [`${ASSET}/0b4hx354_ChatGPT%20Image%20Jun%204%2C%202026%2C%2008_43_55%20PM.png`, "/prism-d8-2.png", "/prism-d8-3.png"], in_stock: true },
       {
   id: "prism-d9",
   name: "Keep Real",
