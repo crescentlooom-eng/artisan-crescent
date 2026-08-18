@@ -192,8 +192,22 @@ export const PRODUCTS = [
     new_arrival: true,
     images: [],
     variants: [
-      { id: "ess-c1", name: "Urban Black", color_hex: "#0B0E1A", images: ["/ess-c1-1.png", "/ess-c1-2.png", "/ess-c1-3.png", "/ess-c1-4.png"], in_stock: true },
-      { id: "ess-c2", name: "Pure White", color_hex: "#F5F0E8", images: ["/ess-c2-1.png", "/ess-c2-2.png", "/ess-c2-3.png", "/ess-c2-4.png"], in_stock: true },
+      {
+  id: "ess-c1",
+  name: "Urban Black",
+  color_hex: "#0B0E1A",
+  images: ["/ess-c1-1.png", "/ess-c1-2.png", "/ess-c1-3.png", "/ess-c1-4.png"],
+  imagesLight: ["/ess-c1-light-1.png", "/ess-c1-light-2.png", "/ess-c1-light-3.png", "/ess-c1-light-4.png"],
+  in_stock: true,
+},
+{
+  id: "ess-c2",
+  name: "Pure White",
+  color_hex: "#F5F0E8",
+  images: ["/ess-c2-1.png", "/ess-c2-2.png", "/ess-c2-3.png", "/ess-c2-4.png"],
+  imagesLight: ["/ess-c2-light-1.png", "/ess-c2-light-2.png", "/ess-c2-light-3.png", "/ess-c2-light-4.png"],
+  in_stock: true,
+},
     ],
   },
 ];
