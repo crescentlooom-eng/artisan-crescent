@@ -11,11 +11,16 @@ export const api = axios.create({
 export const formatINR = (n) =>
   new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(n);
 
-export const productImage = (product, index = 0) => {
+export const productImage = (product, index = 0, theme = "dark") => {
+  // A card produced by expandForCatalog carries its own imagesLight at the top level.
+  if (theme === "light" && product?.imagesLight?.length) {
+    return product.imagesLight[index] || product.imagesLight[0];
+  }
   // Prefer variant images; fall back to product.images
   if (product?.variants?.length) {
     for (const v of product.variants) {
-      if (v.images?.length) return v.images[index] || v.images[0];
+      const imgs = theme === "light" && v.imagesLight?.length ? v.imagesLight : v.images;
+      if (imgs?.length) return imgs[index] || imgs[0];
     }
   }
   return product?.images?.[index] || product?.images?.[0] || "";
@@ -51,12 +56,13 @@ export const expandForCatalog = (products) => {
         const baseName =
           (p.name || "").replace(/\s*Tee\s*$/i, "").trim() || p.name;
 
-        out.push({
+                out.push({
           ...p,
           id: uniqueKey,
           slug: p.slug,
           name: `${baseName} · ${v.name}`,
           images: v.images?.length ? v.images : p.images,
+          imagesLight: v.imagesLight?.length ? v.imagesLight : p.imagesLight,
           variants: [v],
           variantId: v.id,
           __isVariantCard: true,
