@@ -2,14 +2,16 @@ import React, { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Heart } from "lucide-react";
 import { useWishlist } from "@/context/WishlistContext";
+import { useTheme } from "@/context/ThemeContext";
 import { formatINR, productImage } from "@/lib/api";
 
 export default function ProductCard({ product, index = 0 }) {
   const { has, toggle } = useWishlist();
+  const { theme } = useTheme();
   const wishlistKey = product.__isVariantCard ? product.id.split("__")[0] : product.id;
   const wishlistProduct = product.__isVariantCard ? { ...product, id: wishlistKey } : product;
   const isWished = has(wishlistKey);
-  const img = productImage(product);
+  const img = productImage(product, 0, theme);
 
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
   const cardRef = useRef(null);
