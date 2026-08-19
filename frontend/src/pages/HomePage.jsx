@@ -5,6 +5,7 @@ import { productImage, formatINR } from "@/lib/api";
 import { listProducts } from "@/data/products";
 import { useAuth } from "@/context/AuthContext";
 import { useWishlist } from "@/context/WishlistContext";
+import { useTheme } from "@/context/ThemeContext";
 
 const CATEGORY_IMAGES = {
   polo: "https://customer-assets.emergentagent.com/job_artisan-crescent/artifacts/aimwehfu_beige%201.png",
@@ -54,7 +55,8 @@ function TrendCard({ product, index }) {
 export default function HomePage() {
   const [trending, setTrending] = useState([]);
   const [showGreeting, setShowGreeting] = useState(false);
-  const { user } = useAuth();
+    const { user } = useAuth();
+  const { theme } = useTheme();
 
   useEffect(() => {
     setTrending(listProducts({ new_arrival: true }).slice(0, 6));
@@ -97,49 +99,49 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* ================= HERO ================= */}
-      <section className="px-6 md:px-12 pb-14 max-w-none mx-auto grid md:grid-cols-2 gap-10 items-center">
-        <div>
-          <p className="text-xs tracking-[0.35em] mb-6 uppercase font-medium" style={{ color: "#B8C0C8" }}>Wear the New Standard</p>
-          <h1 className="font-serif-display text-6xl md:text-7xl lg:text-8xl leading-[1.02] mb-7" style={{ fontWeight: 400 }}>
-            Where Style Speaks,<br />Trends Resonate.
-          </h1>
-          <p className="text-base mb-10 max-w-md leading-relaxed" style={{ color: "var(--cl-subtext)" }}>
-            Premium essentials for the new generation. Minimal. Clean. Confident.
-          </p>
-          <div className="flex items-center gap-6 mb-10">
-            <Link to="/shop" className="flex items-center gap-2 text-base font-medium px-8 py-4 rounded-full tracking-wide" style={{ background: "var(--cl-text)", color: "var(--cl-bg)" }}>
-              Explore Collection <ArrowRight size={17} />
-            </Link>
-            <button className="flex items-center gap-2 text-sm font-medium">
-              <span className="w-8 h-8 rounded-full border flex items-center justify-center" style={{ borderColor: "var(--cl-border)" }}>
-                <Play size={12} fill="var(--cl-text)" stroke="none" />
-              </span>
-              Watch Lookbook
-            </button>
-          </div>
-          <div className="flex items-center gap-10 text-base">
-            {[["10K+", "Happy Customers"], ["4.8★", "Product Rating"], ["Pan India", "Free Shipping"]].map(([big, small], i) => (
-              <React.Fragment key={big}>
-                {i > 0 && <div className="w-px h-8" style={{ background: "var(--cl-border)" }} />}
-                <div>
-                  <p className="font-semibold">{big}</p>
-                  <p className="text-xs" style={{ color: "var(--cl-subtext)" }}>{small}</p>
-                </div>
-              </React.Fragment>
-            ))}
-          </div>
-        </div>
-
-        <div className="h-[420px] rounded-2xl overflow-hidden flex items-center justify-center" style={{ background: "var(--cl-surface)" }}>
-          {heroImg ? (
-            <img src={heroImg} alt="Hero product" className="w-full h-full object-cover" />
-          ) : (
-            <span className="text-xs tracking-[0.2em] uppercase" style={{ color: "var(--cl-subtext)" }}>Hero Product Shot</span>
-          )}
-        </div>
+            {/* ================= HERO ================= */}
+      <section className="px-6 md:px-12 pb-10 max-w-3xl mx-auto text-center">
+        <span
+          className="inline-block text-[11px] tracking-[0.2em] uppercase px-4 py-1.5 rounded-full border mb-6"
+          style={{ borderColor: "var(--cl-border)", color: "var(--cl-subtext)" }}
+        >
+          New Season Arrivals
+        </span>
+        <h1 className="font-serif-display text-5xl md:text-6xl lg:text-7xl leading-[1.08] mb-6" style={{ fontWeight: 400 }}>
+          Where quiet speaks,<br />detail carries the room.
+        </h1>
+        <p className="text-base mb-9 max-w-lg mx-auto leading-relaxed" style={{ color: "var(--cl-subtext)" }}>
+          Slow-made pieces cut from considered fabric — for those who'd rather be noticed for what they wear, not how loud it is.
+        </p>
+        <Link
+          to="/shop"
+          className="inline-flex items-center gap-2 text-base font-medium px-8 py-4 rounded-full tracking-wide"
+          style={{ background: "var(--cl-text)", color: "var(--cl-bg)" }}
+        >
+          Explore Collection <ArrowRight size={17} />
+        </Link>
       </section>
 
+      {/* ================= ARCH CAROUSEL ================= */}
+      <section className="px-6 md:px-12 max-w-none mx-auto pb-14">
+        <div className="flex items-end justify-center gap-3 md:gap-4 overflow-x-auto">
+          {[
+            { img: theme === "light" ? "/dune-beige-light-1.png" : "/dune-beige-1.png", h: "h-64 md:h-72" },
+            { img: theme === "light" ? "/polo-c3-light-1.png" : "/polo-c3-1.png", h: "h-72 md:h-80" },
+            { img: theme === "light" ? "/coastal-blue-light-1.png" : "/coastal-blue-1.png", h: "h-80 md:h-96" },
+            { img: theme === "light" ? "/sand-taupe-light-1.png" : "/sand-taupe-1.png", h: "h-72 md:h-80" },
+            { img: theme === "light" ? "/glacier-grey-light-1.png" : "/glacier-grey-1.png", h: "h-64 md:h-72" },
+          ].map((arch, i) => (
+            <div
+              key={i}
+              className={`shrink-0 w-32 md:w-44 ${arch.h} overflow-hidden`}
+              style={{ borderRadius: "9999px 9999px 0 0", background: "var(--cl-surface)" }}
+            >
+              <img src={arch.img} alt="" className="w-full h-full object-cover" />
+            </div>
+          ))}
+        </div>
+      </section>
       {/* ================= FEATURE BAR ================= */}
       <section className="px-6 md:px-12 max-w-none mx-auto pb-14">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-4 rounded-2xl border px-8 py-6" style={{ borderColor: "var(--cl-border)" }}>
