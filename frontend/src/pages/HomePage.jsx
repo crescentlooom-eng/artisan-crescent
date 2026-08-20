@@ -13,10 +13,10 @@ const CATEGORY_IMAGES = {
   basics: "https://customer-assets.emergentagent.com/job_artisan-crescent/artifacts/dp4xzzoz_plain%20black%201%20.png",
 };
 
-function TrendCard({ product, index }) {
+function TrendCard({ product, index, theme }) {
   const { has, toggle } = useWishlist();
   const isWished = has(product.id);
-  const img = productImage(product);
+  const img = productImage(product, 0, theme);
 
   const onWish = async (e) => {
     e.preventDefault();
@@ -202,7 +202,7 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-            {trending.map((p, i) => <TrendCard key={p.id} product={p} index={i} />)}
+                        {trending.map((p, i) => <TrendCard key={p.id} product={p} index={i} theme={theme} />)}
           </div>
         </section>
       )}
@@ -267,9 +267,9 @@ export default function HomePage() {
           </a>
         </div>
         <div className="grid grid-cols-3 gap-3 max-w-3xl">
-          {trending.slice(0, 6).map((p) => (
+                    {trending.slice(0, 6).map((p) => (
             <a href="https://www.instagram.com/crescent_looom" target="_blank" rel="noopener noreferrer" key={p.id} className="aspect-square rounded-lg overflow-hidden block" style={{ background: "var(--cl-surface)" }}>
-              {productImage(p) && <img src={productImage(p)} alt="" className="w-full h-full object-cover" />}
+              {productImage(p, 0, theme) && <img src={productImage(p, 0, theme)} alt="" className="w-full h-full object-cover" />}
             </a>
           ))}
         </div>
