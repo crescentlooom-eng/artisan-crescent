@@ -69,9 +69,9 @@ export default function LoginPage() {
       {/* Left — form */}
       <div className="flex items-center justify-center pt-28 pb-16 px-6 md:px-16">
         <div className="max-w-md w-full">
-          <div className="text-[11px] tracking-[0.4em] uppercase mb-4" style={{ color: "#B8C0C8" }}>The House</div>
+                    <div className="text-[11px] tracking-[0.4em] uppercase mb-4" style={{ color: "var(--cl-accent-text)" }}>The House</div>
           <h1 className="font-serif-display text-4xl md:text-5xl leading-[1.05]" style={{ color: "var(--cl-text)" }}>
-            Welcome to <span className="italic" style={{ color: "#B8C0C8" }}>Crescent Loom.</span>
+            Welcome to <span className="italic" style={{ color: "var(--cl-accent-text)" }}>Crescent Loom.</span>
           </h1>
           <p className="mt-5 text-sm" style={{ color: "var(--cl-subtext)" }}>Sign in to follow pieces, save your bag, and view your orders.</p>
 
