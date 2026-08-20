@@ -5,58 +5,91 @@ export default function Footer() {
   return (
     <>
       <footer className="relative mt-8 border-t border-[var(--cl-border)] text-[var(--cl-text)]" style={{ backgroundColor: "var(--cl-bg)" }}>
-        <div className="max-w-none mx-auto px-6 md:px-12 py-20 grid md:grid-cols-4 gap-12">
-          <div className="md:col-span-2">
-            <div className="font-serif-display text-3xl md:text-4xl leading-tight">
-              Crafted in Silence.<br/>
-              <span className="text-[#B8C0C8]">Worn with Intention.</span>
+        <div className="max-w-none mx-auto px-6 md:px-12 py-16 grid md:grid-cols-4 gap-12">
+          {/* Brand column */}
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--cl-text)" strokeWidth="1.5">
+                <path d="M15.5 3.5a9 9 0 1 0 5 16.1A9.5 9.5 0 0 1 15.5 3.5z" fill="var(--cl-text)" stroke="none" />
+              </svg>
+              <span className="font-serif-display text-lg tracking-wide">CRESCENT LOOM</span>
             </div>
-            <p className="text-[var(--cl-subtext)] text-sm mt-6 max-w-md leading-relaxed">
+            <p className="text-[var(--cl-subtext)] text-sm leading-relaxed max-w-xs">
               Slow-made garments from natural fibers, woven in small batches across India and Europe.
             </p>
+            <div className="flex items-center gap-4 mt-6">
+              <a href="https://www.instagram.com/crescent_looom" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-9 h-9 rounded-full border border-[var(--cl-border)] flex items-center justify-center hover:border-[#B8C0C8] hover:text-[#B8C0C8] transition-colors">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
+              </a>
+              <a href="https://www.facebook.com/profile.php?id=61575452014109" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-9 h-9 rounded-full border border-[var(--cl-border)] flex items-center justify-center hover:border-[#B8C0C8] hover:text-[#B8C0C8] transition-colors">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+              </a>
+            </div>
           </div>
+
+          {/* Shop */}
           <div>
             <div className="text-[11px] tracking-[0.3em] uppercase text-[#B8C0C8] mb-4">Shop</div>
-            <ul className="space-y-2 text-sm text-[var(--cl-text)]/75">
+            <ul className="space-y-2.5 text-sm text-[var(--cl-text)]/75">
               <li><Link to="/shop?category=polo" className="hover:text-[#B8C0C8]">Polo</Link></li>
               <li><Link to="/shop?category=designer" className="hover:text-[#B8C0C8]">Designer</Link></li>
               <li><Link to="/shop?category=basics" className="hover:text-[#B8C0C8]">Basics</Link></li>
               <li><Link to="/shop" className="hover:text-[#B8C0C8]">All Pieces</Link></li>
             </ul>
           </div>
+
+          {/* Company */}
           <div>
-            <div className="text-[11px] tracking-[0.3em] uppercase text-[#B8C0C8] mb-4">House</div>
-            <ul className="space-y-2 text-sm text-[var(--cl-text)]/75">
+            <div className="text-[11px] tracking-[0.3em] uppercase text-[#B8C0C8] mb-4">Company</div>
+            <ul className="space-y-2.5 text-sm text-[var(--cl-text)]/75">
               <li><Link to="/about" className="hover:text-[#B8C0C8]">About</Link></li>
-              <li><Link to="/wishlist" className="hover:text-[#B8C0C8]">Wishlist</Link></li>
               <li><Link to="/account" className="hover:text-[#B8C0C8]">Account</Link></li>
+              <li><Link to="/wishlist" className="hover:text-[#B8C0C8]">Wishlist</Link></li>
+            </ul>
+          </div>
+
+          {/* Help + Newsletter */}
+          <div>
+            <div className="text-[11px] tracking-[0.3em] uppercase text-[#B8C0C8] mb-4">Help</div>
+            <ul className="space-y-2.5 text-sm text-[var(--cl-text)]/75 mb-8">
               <li><Link to="/returns" className="hover:text-[#B8C0C8]">Returns & Exchanges</Link></li>
               <li><Link to="/shipping" className="hover:text-[#B8C0C8]">Shipping Info</Link></li>
             </ul>
+            <div className="flex items-center border border-[var(--cl-border)] rounded-full pl-4 pr-1.5 py-1.5 max-w-xs">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="flex-1 bg-transparent text-sm outline-none text-[var(--cl-text)] placeholder:text-[var(--cl-subtext)]"
+              />
+              <button
+                aria-label="Submit email"
+                className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
+                style={{ background: "var(--cl-text)", color: "var(--cl-bg)" }}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
+
         <div className="border-t border-[var(--cl-border)]">
           <div className="max-w-none mx-auto px-6 md:px-12 py-6 flex flex-col md:flex-row items-center justify-between gap-2 text-[11px] tracking-[0.25em] uppercase text-[var(--cl-subtext)]">
-            <div>© {new Date().getFullYear()} Crescent Loom</div>
-            <div className="flex items-center gap-4">
-              <a href="https://www.instagram.com/crescent_looom" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-[#B8C0C8] transition-colors">
-                <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                </svg>
-              </a>
-              <a href="https://www.facebook.com/profile.php?id=61575452014109" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="hover:text-[#B8C0C8] transition-colors">
-                <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
-                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                </svg>
-              </a>
-              <div>Made slowly. Worn endlessly.</div>
+            <div>© {new Date().getFullYear()} Crescent Loom. All rights reserved.</div>
+            <div className="flex items-center gap-6">
+              <Link to="/privacy-policy" className="hover:text-[#B8C0C8] transition-colors">Privacy Policy</Link>
+              <Link to="/terms" className="hover:text-[#B8C0C8] transition-colors">Terms & Conditions</Link>
             </div>
           </div>
         </div>
       </footer>
 
-      
-        <a href="https://wa.me/919810924300"
+      <a href="https://wa.me/919810924300"
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
