@@ -122,23 +122,31 @@ export default function HomePage() {
         </Link>
       </section>
 
-      {/* ================= ARCH CAROUSEL ================= */}
+            {/* ================= ARCH CAROUSEL ================= */}
       <section className="px-6 md:px-12 max-w-none mx-auto pb-14">
         <div className="flex items-end justify-center gap-3 md:gap-4 overflow-x-auto">
           {[
-            { img: theme === "light" ? "/dune-beige-light-1.png" : "/dune-beige-1.png", h: "h-64 md:h-72" },
-            { img: theme === "light" ? "/polo-c3-light-1.png" : "/polo-c3-1.png", h: "h-72 md:h-80" },
-            { img: theme === "light" ? "/coastal-blue-light-1.png" : "/coastal-blue-1.png", h: "h-80 md:h-96" },
-            { img: theme === "light" ? "/sand-taupe-light-1.png" : "/sand-taupe-1.png", h: "h-72 md:h-80" },
-            { img: theme === "light" ? "/glacier-grey-light-1.png" : "/glacier-grey-1.png", h: "h-64 md:h-72" },
+            { img: theme === "light" ? "/ess-c1-light-1.png" : "/ess-c1-1.png", h: "h-64 md:h-72", to: "/shop?category=basics" },
+            { img: theme === "light" ? "/prism-d3-light-1.png" : "/prism-d3-1.png", h: "h-72 md:h-80", to: "/shop?category=designer" },
+            { img: theme === "light" ? "/coastal-blue-light-1.png" : "/coastal-blue-1.png", h: "h-80 md:h-96", to: "/shop?category=polo" },
+            { img: theme === "light" ? "/prism-d4-light-1.png" : "/prism-d4-1.png", h: "h-72 md:h-80", to: "/shop?category=designer" },
+            { img: theme === "light" ? "/ess-c2-light-1.png" : "/ess-c2-1.png", h: "h-64 md:h-72", to: "/shop?category=basics" },
           ].map((arch, i) => (
-            <div
+            <Link
+              to={arch.to}
               key={i}
-              className={`shrink-0 w-32 md:w-44 ${arch.h} overflow-hidden`}
-              style={{ borderRadius: "9999px 9999px 0 0", background: "var(--cl-surface)" }}
+              className={`shrink-0 w-32 md:w-44 ${arch.h} overflow-hidden block transition-all duration-300 ease-out hover:-translate-y-3 hover:scale-105`}
+              style={{
+                borderRadius: "9999px 9999px 0 0",
+                background: "var(--cl-surface)",
+                boxShadow: "0 0 0 rgba(0,0,0,0)",
+                transitionProperty: "transform, box-shadow",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "0 20px 30px -10px rgba(0,0,0,0.35)")}
+              onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "0 0 0 rgba(0,0,0,0)")}
             >
               <img src={arch.img} alt="" className="w-full h-full object-cover" />
-            </div>
+            </Link>
           ))}
         </div>
       </section>
