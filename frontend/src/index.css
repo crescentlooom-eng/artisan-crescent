@@ -7,6 +7,8 @@
 :root {
     /* Brand accent — stays constant across both themes */
     --cl-gold: #B8C0C8;
+    /* Accent when used as TEXT — needs to darken in light theme for contrast */
+    --cl-accent-text: #B8C0C8;
 
     /* Theme-aware tokens */
     --cl-bg: #000000;
@@ -29,6 +31,7 @@ html.light {
     --cl-subtext: #5B5F72;
     --cl-border: rgba(0,0,0,0.08);
     --cl-header-bg: rgba(255,255,255,0.75);
+    --cl-accent-text: #5B6472;
 }
 html {
     transition: background-color 0.3s ease, color 0.3s ease;
