@@ -70,8 +70,13 @@ export default function Navbar() {
           <img src={WORDMARK} alt="Crescent Loom" className={`transition-all duration-500 ${scrolled ? "h-7" : "h-10"} w-auto`} />
         </Link>
 
-        {/* Right icons */}
-        <div className="flex items-center gap-6 justify-self-end text-[var(--cl-text)]/90">
+                {/* Right icons */}
+        <div
+          className={`flex items-center gap-6 justify-self-end transition-all duration-300 ${
+            scrolled ? "text-[var(--cl-text)]/90" : "text-white px-4 py-2 rounded-full backdrop-blur-md"
+          }`}
+          style={!scrolled ? { background: "rgba(0,0,0,0.35)" } : undefined}
+        >
           <button
             data-testid="nav-theme-toggle"
             onClick={toggleTheme}
