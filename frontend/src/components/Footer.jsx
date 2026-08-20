@@ -5,7 +5,7 @@ export default function Footer() {
   return (
     <>
       <footer className="relative mt-8 border-t border-[var(--cl-border)] text-[var(--cl-text)]" style={{ backgroundColor: "var(--cl-bg)" }}>
-        <div className="max-w-none mx-auto px-6 md:px-12 py-16 grid md:grid-cols-4 gap-12">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 grid md:grid-cols-[1.6fr_1fr_1fr_1fr] gap-8 md:gap-12">
           {/* Brand column */}
           <div>
             <div className="flex items-center gap-2 mb-4">
@@ -79,7 +79,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-[var(--cl-border)]">
-          <div className="max-w-none mx-auto px-6 md:px-12 py-6 flex flex-col md:flex-row items-center justify-between gap-2 text-[11px] tracking-[0.25em] uppercase text-[var(--cl-subtext)]">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 py-6 flex flex-col md:flex-row items-center justify-between gap-2 text-[11px] tracking-[0.25em] uppercase text-[var(--cl-subtext)]">
             <div>© {new Date().getFullYear()} Crescent Loom. All rights reserved.</div>
             <div className="flex items-center gap-6">
               <Link to="/privacy-policy" className="hover:text-[#B8C0C8] transition-colors">Privacy Policy</Link>
