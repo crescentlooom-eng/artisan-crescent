@@ -212,10 +212,22 @@ html, body {
 }
 
 /* Buttons */
-.btn-gold {
-    background: var(--cl-navy);
-    border: 1px solid rgba(184,192,200,0.6);
-    color: var(--cl-gold);
+.btn-gold:hover {
+    background: var(--cl-gold);
+    color: var(--cl-navy);
+    box-shadow: 0 0 30px rgba(184,192,200,0.25);
+}
+
+html.light .btn-gold {
+    background: transparent;
+    border: 1.5px solid rgba(11,14,26,0.35);
+    color: var(--cl-text);
+}
+html.light .btn-gold:hover {
+    background: var(--cl-gold);
+    color: #0B0E1A;
+    box-shadow: 0 0 20px rgba(184,192,200,0.3);
+}
     padding: 14px 28px;
     font-size: 12px;
     letter-spacing: 0.25em;
