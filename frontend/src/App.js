@@ -30,6 +30,8 @@ import AdminPage from "@/pages/AdminPage";
 import AuthCallback from "@/pages/AuthCallback";
 import ReturnPolicyPage from "@/pages/ReturnPolicyPage";
 import ShippingPage from "@/pages/ShippingPage";
+import TermsPage from "@/pages/TermsPage";
+import PrivacyPage from "@/pages/PrivacyPage";
 import ComingSoon from "@/pages/ComingSoon";
 
 import AdminShell from "@/pages/admin/AdminShell";
@@ -111,8 +113,10 @@ function AppRouter() {
       <Route path="/wishlist" element={<StorefrontLayout><WishlistPage /></StorefrontLayout>} />
       <Route path="/checkout" element={<StorefrontLayout><CheckoutPage /></StorefrontLayout>} />
       <Route path="/thank-you" element={<StorefrontLayout><ThankYouPage /></StorefrontLayout>} />
-        <Route path="/returns" element={<StorefrontLayout><ReturnPolicyPage /></StorefrontLayout>} />
-        <Route path="/returns" element={<StorefrontLayout><ReturnPolicyPage /></StorefrontLayout>} />
+                <Route path="/returns" element={<StorefrontLayout><ReturnPolicyPage /></StorefrontLayout>} />
+        <Route path="/shipping" element={<StorefrontLayout><ShippingPage /></StorefrontLayout>} />
+        <Route path="/terms" element={<StorefrontLayout><TermsPage /></StorefrontLayout>} />
+        <Route path="/privacy-policy" element={<StorefrontLayout><PrivacyPage /></StorefrontLayout>} />
         <Route path="/shipping" element={<StorefrontLayout><ShippingPage /></StorefrontLayout>} />
       <Route path="*" element={<StorefrontLayout><HomePage /></StorefrontLayout>} />
     </Routes>
