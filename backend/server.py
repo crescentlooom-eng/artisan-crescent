@@ -288,6 +288,7 @@ class CreatePaymentOrderReq(BaseModel):
     shipping: ShippingAddress
     loom_credits_redeemed: int = 0
     payment_mode: str = "prepaid"  # prepaid | cod_partial | cod_full
+    email: Optional[str] = None
 
 class VerifyPaymentReq(BaseModel):
     razorpay_order_id: str
@@ -764,6 +765,12 @@ async def create_payment_order(body: CreatePaymentOrderReq, request: Request):
     user = await get_current_user(request)
     subtotal = sum(it.price * it.quantity for it in body.items)
 
+    guest_email = None
+    if not user:
+        guest_email = (body.email or "").strip().lower()
+        if not EMAIL_RE.match(guest_email):
+            raise HTTPException(status_code=400, detail="Please enter a valid email address")
+
     # Loom Credits redemption (logged-in users only)
     cards = max(0, int(body.loom_credits_redeemed or 0))
     discount = 0.0
@@ -799,7 +806,7 @@ async def create_payment_order(body: CreatePaymentOrderReq, request: Request):
 
     order = Order(
         user_id=user['user_id'] if user else None,
-        email=user['email'] if user else "guest@crescentloom.com",
+        email=user['email'] if user else guest_email,
         items=body.items,
         shipping=body.shipping,
         subtotal=subtotal,
