@@ -133,9 +133,9 @@ export default function CheckoutPage() {
 
   return (
     <div data-testid="checkout-page" className="page-fade pt-32 pb-24 max-w-none mx-auto px-6 md:px-12">
-      <div className="text-[11px] tracking-[0.4em] uppercase mb-4" style={{ color: "#B8C0C8" }}>Checkout</div>
+      <div className="text-[11px] tracking-[0.4em] uppercase mb-4" style={{ color: "var(--cl-text)" }}>Checkout</div>
       <h1 className="font-serif-display text-5xl md:text-6xl leading-[0.95]" style={{ color: "var(--cl-text)" }}>
-        Your <span className="italic" style={{ color: "#B8C0C8" }}>Bag</span>
+        Your <span className="italic" style={{ color: "var(--cl-text)" }}>Bag</span>
       </h1>
 
       <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 mt-12">
