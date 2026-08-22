@@ -103,7 +103,7 @@ export default function LoginPage() {
                 onClick={() => { setMode(m); setErr(null); }}
                 data-testid={`login-tab-${m}`}
                 className="text-[11px] tracking-[0.3em] uppercase py-3 transition-all"
-                style={mode === m ? { background: "#B8C0C8", color: "#0B0E1A" } : { color: "var(--cl-text)", opacity: 0.8 }}
+                style={mode === m ? { background: "var(--cl-text)", color: "var(--cl-bg)" } : { color: "var(--cl-text)", opacity: 0.8 }}
               >{m === "login" ? "Sign In" : "Create Account"}</button>
             ))}
           </div>
