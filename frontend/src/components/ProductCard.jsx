@@ -153,13 +153,13 @@ export default function ProductCard({ product, index = 0 }) {
         } : {}}
       >
         <div className="min-w-0 flex-1">
-          <div className="font-serif-display text-lg md:text-xl text-[#F5F0E8] leading-tight truncate">{product.name}</div>
-          <div className="text-[11px] tracking-[0.2em] uppercase text-[#8A8FA8] mt-1">{product.category}</div>
+          <div className="font-serif-display text-lg md:text-xl leading-tight truncate" style={{ color: "var(--cl-text)" }}>{product.name}</div>
+          <div className="text-[11px] tracking-[0.2em] uppercase mt-1" style={{ color: "var(--cl-subtext)" }}>{product.category}</div>
           {product.description && (
             <div className="text-[12px] text-[#8A8FA8]/80 mt-2 leading-relaxed line-clamp-2">{product.description}</div>
           )}
         </div>
-        <div className="text-sm text-[#F5F0E8]/85 whitespace-nowrap pt-1">{formatINR(product.price)}</div>
+        <div className="text-sm whitespace-nowrap pt-1" style={{ color: "var(--cl-text)" }}>{formatINR(product.price)}</div>
       </div>
 
       {/* Keyframe injection */}
