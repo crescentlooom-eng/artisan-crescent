@@ -4,6 +4,7 @@ import { LayoutGrid, Package, Heart, MapPin, User as UserIcon, Lock, LogOut, Arr
 import { useAuth } from "@/context/AuthContext";
 import { useWishlist } from "@/context/WishlistContext";
 import LoomCreditsCard from "@/components/LoomCreditsCard";
+import { api, formatINR } from "@/lib/api";
 
 const TIMELINE_STEPS = ["Confirmed", "Packed", "Dispatched", "Out for Delivery", "Delivered"];
 
