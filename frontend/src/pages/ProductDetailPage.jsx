@@ -403,7 +403,7 @@ export default function ProductDetailPage() {
 
             {product.variants?.length > 0 && (
               <div className="mt-10">
-                <<div className="text-[11px] tracking-[0.3em] uppercase mb-3" style={{ color: "var(--cl-text)" }}>
+                <div className="text-[11px] tracking-[0.3em] uppercase mb-3" style={{ color: "var(--cl-text)" }}>
   Variant · <span style={{ color: "var(--cl-text)", opacity: 0.85 }}>{variant?.name}</span>
 </div>
                 <div className="grid grid-cols-6 gap-3" data-testid="product-variant-grid">
