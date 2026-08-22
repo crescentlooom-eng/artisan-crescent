@@ -63,11 +63,11 @@ function ReviewsSection({ slug, average, total, reviews, onSubmitted }) {
     <div className="mt-32 border-t pt-16" style={{ borderColor: "var(--cl-border)" }}>
       <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
         <div>
-          <div className="text-[11px] tracking-[0.3em] uppercase mb-2" style={{ color: "#B8C0C8" }}>Customer Reviews</div>
+          <div className="text-[11px] tracking-[0.3em] uppercase mb-2" style={{ color: "var(--cl-text)" }}>Customer Reviews</div>
           <div className="flex items-center gap-4">
             <h3 className="font-serif-display text-3xl md:text-4xl" style={{ color: "var(--cl-text)" }}>
               {total > 0 ? (
-                <><span className="italic" style={{ color: "#B8C0C8" }}>{average}</span> out of 5</>
+                <><span className="italic" style={{ color: "var(--cl-text)" }}>{average}</span> out of 5</>
               ) : "No reviews yet"}
             </h3>
             {total > 0 && (
@@ -121,7 +121,7 @@ function ReviewsSection({ slug, average, total, reviews, onSubmitted }) {
                   <div className="flex items-center gap-3 mb-1">
                     <StarRating value={r.rating} size={14} />
                     {r.verified && (
-                      <span className="text-[10px] tracking-[0.2em] uppercase border px-2 py-0.5" style={{ color: "#B8C0C8", borderColor: "rgba(184,192,200,0.3)" }}>Verified</span>
+                      <span className="text-[10px] tracking-[0.2em] uppercase border px-2 py-0.5" style={{ color: "var(--cl-text)", borderColor: "rgba(184,192,200,0.3)" }}>Verified</span>
                     )}
                   </div>
                   {r.title && <div className="font-serif-display text-lg" style={{ color: "var(--cl-text)" }}>{r.title}</div>}
@@ -403,9 +403,9 @@ export default function ProductDetailPage() {
 
             {product.variants?.length > 0 && (
               <div className="mt-10">
-                <div className="text-[11px] tracking-[0.3em] uppercase mb-3" style={{ color: "#B8C0C8" }}>
-                  Variant · <span style={{ color: "var(--cl-text)", opacity: 0.85 }}>{variant?.name}</span>
-                </div>
+                <<div className="text-[11px] tracking-[0.3em] uppercase mb-3" style={{ color: "var(--cl-text)" }}>
+  Variant · <span style={{ color: "var(--cl-text)", opacity: 0.85 }}>{variant?.name}</span>
+</div>
                 <div className="grid grid-cols-6 gap-3" data-testid="product-variant-grid">
                   {product.variants.map((v, i) => {
                     const thumb = getVariantImages(v, theme)[0];
@@ -461,7 +461,7 @@ export default function ProductDetailPage() {
             {product.sizes?.length > 0 && !variantOutOfStock && (
               <div className="mt-10">
                 <div className="flex items-center justify-between mb-3">
-                  <div className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "#B8C0C8" }}>Size · {size || "Out of stock"}</div>
+                  <div className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-text)" }}>Size · {size || "Out of stock"}</div>
                   <Dialog>
                     <DialogTrigger asChild>
                       <button data-testid="product-size-guide-trigger" className="text-[11px] tracking-[0.25em] uppercase gold-underline" style={{ color: "var(--cl-text)", opacity: 0.8 }}>Size Guide</button>
@@ -472,7 +472,7 @@ export default function ProductDetailPage() {
                       </DialogHeader>
                       <div className="mt-4 text-sm">
                         <table className="w-full text-left">
-                          <thead className="text-[11px] tracking-[0.2em] uppercase" style={{ color: "#B8C0C8" }}>
+                          <thead className="text-[11px] tracking-[0.2em] uppercase" style={{ color: "var(--cl-text)" }}>
                             <tr><th className="py-2">Size</th><th>Chest (in)</th><th>Length (in)</th><th>Shoulder (in)</th></tr>
                           </thead>
                           <tbody style={{ color: "var(--cl-text)", opacity: 0.8 }}>
@@ -508,7 +508,7 @@ export default function ProductDetailPage() {
                         style={outOfStock
                           ? { borderColor: "var(--cl-border)", color: "var(--cl-subtext)", opacity: 0.4, textDecoration: "line-through", cursor: "not-allowed" }
                           : size === s
-                          ? { borderColor: "#B8C0C8", color: "#B8C0C8" }
+                          ? { borderColor: "var(--cl-text)", color: "var(--cl-text)" }
                           : { borderColor: "var(--cl-border)", color: "var(--cl-text)", opacity: 0.8 }}
                       >{s}</button>
                     );
@@ -541,16 +541,16 @@ export default function ProductDetailPage() {
                 onClick={onBuyNow}
                 disabled={!size || variantOutOfStock}
                 className="flex-1 py-3 text-sm font-medium tracking-wide border disabled:opacity-40 disabled:cursor-not-allowed"
-                style={{ borderColor: "#B8C0C8", color: "#B8C0C8" }}
-              >
+                style={{ borderColor: "var(--cl-text)", color: "var(--cl-text)" }}
+                >
                 Buy Now
-              </button>
+                </button>
             </div>
 
             <div className="mt-5 flex items-center gap-3 border px-4 py-3" style={{ borderColor: "rgba(184,192,200,0.25)", background: "var(--cl-surface)" }}>
               <Moon size={16} style={{ color: "#B8C0C8" }} />
               <div className="text-xs" style={{ color: "var(--cl-text)", opacity: 0.85 }}>
-                Earn <span style={{ color: "#B8C0C8" }}>1 Loom Credit Card</span> (worth ₹5) with this order — collect 3 to redeem.
+              Earn <span style={{ color: "var(--cl-text)", fontWeight: 500 }}>1 Loom Credit Card</span> (worth ₹5) with this order — collect 3 to redeem.
               </div>
             </div>
 
@@ -575,8 +575,8 @@ export default function ProductDetailPage() {
                   onClick={checkPincode}
                   disabled={pincodeLoading}
                   className="px-4 py-2 text-xs tracking-[0.2em] uppercase border shrink-0"
-                  style={{ borderColor: "#B8C0C8", color: "#B8C0C8" }}
-                >
+                  style={{ borderColor: "var(--cl-text)", color: "var(--cl-text)" }}
+                  >
                   {pincodeLoading ? <Loader2 size={14} className="animate-spin" /> : "Check"}
                 </button>
               </div>
@@ -602,7 +602,7 @@ export default function ProductDetailPage() {
           <div className="mt-32">
             <div className="flex items-end justify-between mb-10">
               <div>
-                <div className="text-[11px] tracking-[0.3em] uppercase mb-2" style={{ color: "#B8C0C8" }}>Continued Reading</div>
+                <div className="text-[11px] tracking-[0.3em] uppercase mb-2" style={{ color: "var(--cl-text)" }}>Continued Reading</div>
                 <h3 className="font-serif-display text-3xl md:text-4xl" style={{ color: "var(--cl-text)" }}>You may also like</h3>
               </div>
             </div>
