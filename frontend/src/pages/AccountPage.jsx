@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link, Navigate } from "react-router-dom";
-import { LayoutGrid, Package, Heart, MapPin, User as UserIcon, Lock, LogOut, ArrowRight, Loader2 } from "lucide-react";
-import { api, formatINR } from "@/lib/api";
+import { LayoutGrid, Package, Heart, MapPin, User as UserIcon, Lock, LogOut, ArrowRight, Loader2, Plus, Trash2, Check } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useWishlist } from "@/context/WishlistContext";
 import LoomCreditsCard from "@/components/LoomCreditsCard";
@@ -196,6 +195,150 @@ function PasswordTab() {
     </div>
   );
 }
+function AddressesTab() {
+  const [addresses, setAddresses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState(null);
+  const [form, setForm] = useState({
+    label: "", full_name: "", phone: "", address_line: "", city: "", state: "", pincode: "", is_default: false,
+  });
+
+  const load = async () => {
+    setLoading(true);
+    try {
+      const r = await api.get("/addresses");
+      setAddresses(r.data);
+    } catch (e) {}
+    setLoading(false);
+  };
+
+  useEffect(() => { load(); }, []);
+
+  const resetForm = () => setForm({ label: "", full_name: "", phone: "", address_line: "", city: "", state: "", pincode: "", is_default: false });
+
+  const submit = async (e) => {
+    e.preventDefault();
+    setMsg(null);
+    setSaving(true);
+    try {
+      await api.post("/addresses", form);
+      resetForm();
+      setShowForm(false);
+      await load();
+    } catch (err) {
+      setMsg(err?.response?.data?.detail || "Could not save address");
+    }
+    setSaving(false);
+  };
+
+  const remove = async (id) => {
+    await api.delete(`/addresses/${id}`);
+    await load();
+  };
+
+  const makeDefault = async (id) => {
+    await api.patch(`/addresses/${id}/default`);
+    await load();
+  };
+
+  if (loading) {
+    return <div className="text-sm" style={{ color: "var(--cl-subtext)" }}>Loading addresses...</div>;
+  }
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="font-serif-display text-2xl" style={{ color: "var(--cl-text)" }}>Saved Addresses</h2>
+        <button onClick={() => setShowForm(!showForm)} className="btn-gold flex items-center gap-2 text-xs">
+          <Plus size={14} /> {showForm ? "Cancel" : "Add Address"}
+        </button>
+      </div>
+
+      {showForm && (
+        <form onSubmit={submit} className="border p-6 mb-8 space-y-4" style={{ borderColor: "var(--cl-border)", background: "var(--cl-surface)" }}>
+          <div>
+            <label className="text-[10px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Label (e.g. Home, Office)</label>
+            <input value={form.label} onChange={(e) => setForm(f => ({ ...f, label: e.target.value }))} required placeholder="Home" />
+          </div>
+          <div>
+            <label className="text-[10px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Full Name</label>
+            <input value={form.full_name} onChange={(e) => setForm(f => ({ ...f, full_name: e.target.value }))} required placeholder="Recipient's name" />
+          </div>
+          <div>
+            <label className="text-[10px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Phone</label>
+            <input value={form.phone} onChange={(e) => setForm(f => ({ ...f, phone: e.target.value }))} required placeholder="10-digit mobile number" />
+          </div>
+          <div>
+            <label className="text-[10px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Address</label>
+            <input value={form.address_line} onChange={(e) => setForm(f => ({ ...f, address_line: e.target.value }))} required placeholder="House no, street, area" />
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            <div>
+              <label className="text-[10px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>City</label>
+              <input value={form.city} onChange={(e) => setForm(f => ({ ...f, city: e.target.value }))} required />
+            </div>
+            <div>
+              <label className="text-[10px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>State</label>
+              <input value={form.state} onChange={(e) => setForm(f => ({ ...f, state: e.target.value }))} required />
+            </div>
+            <div>
+              <label className="text-[10px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Pincode</label>
+              <input value={form.pincode} onChange={(e) => setForm(f => ({ ...f, pincode: e.target.value }))} required maxLength={6} />
+            </div>
+          </div>
+          <label className="flex items-center gap-2 text-sm cursor-pointer" style={{ color: "var(--cl-text)" }}>
+            <input type="checkbox" checked={form.is_default} onChange={(e) => setForm(f => ({ ...f, is_default: e.target.checked }))} style={{ accentColor: "var(--cl-text)" }} />
+            Set as default address
+          </label>
+          {msg && <div className="text-sm px-4 py-3 border" style={{ color: "#E57373", borderColor: "rgba(229,115,115,0.4)" }}>{msg}</div>}
+          <button type="submit" disabled={saving} className="btn-gold disabled:opacity-50">
+            {saving ? "Saving..." : "Save Address"}
+          </button>
+        </form>
+      )}
+
+      {addresses.length === 0 ? (
+        <div className="border p-8 text-center" style={{ borderColor: "var(--cl-border)" }}>
+          <MapPin size={24} className="mx-auto mb-4" style={{ color: "var(--cl-text)" }} />
+          <div className="font-serif-display text-xl mb-2" style={{ color: "var(--cl-text)" }}>No saved addresses yet</div>
+          <p className="text-sm max-w-sm mx-auto" style={{ color: "var(--cl-subtext)" }}>
+            Add an address above to save it for faster checkout next time.
+          </p>
+        </div>
+      ) : (
+        <div className="grid md:grid-cols-2 gap-4">
+          {addresses.map((a) => (
+            <div key={a.id} className="border p-5" style={{ borderColor: a.is_default ? "var(--cl-text)" : "var(--cl-border)" }}>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium" style={{ color: "var(--cl-text)" }}>{a.label}</span>
+                  {a.is_default && (
+                    <span className="text-[9px] tracking-[0.2em] uppercase px-2 py-0.5 border" style={{ color: "var(--cl-text)", borderColor: "var(--cl-border)" }}>Default</span>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  {!a.is_default && (
+                    <button onClick={() => makeDefault(a.id)} aria-label="Set as default" className="p-1" style={{ color: "var(--cl-subtext)" }}>
+                      <Check size={14} />
+                    </button>
+                  )}
+                  <button onClick={() => remove(a.id)} aria-label="Delete" className="p-1" style={{ color: "#E57373" }}>
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+              </div>
+              <div className="text-sm" style={{ color: "var(--cl-text)" }}>{a.full_name}</div>
+              <div className="text-xs mt-1" style={{ color: "var(--cl-subtext)" }}>{a.address_line}, {a.city}, {a.state} {a.pincode}</div>
+              <div className="text-xs mt-1" style={{ color: "var(--cl-subtext)" }}>{a.phone}</div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function AccountPage() {
   const { user, loading, logout } = useAuth();
@@ -374,16 +517,7 @@ export default function AccountPage() {
             </div>
           )}
 
-          {tab === "addresses" && (
-            <div className="border p-8 text-center" style={{ borderColor: "var(--cl-border)" }}>
-              <MapPin size={24} className="mx-auto mb-4" style={{ color: "var(--cl-text)" }} />
-              <div className="font-serif-display text-xl mb-2" style={{ color: "var(--cl-text)" }}>A saved address book is coming soon</div>
-              <p className="text-sm max-w-sm mx-auto" style={{ color: "var(--cl-subtext)" }}>
-                For now, you enter your delivery address fresh at checkout each time.
-              </p>
-            </div>
-          )}
-
+                    {tab === "addresses" && <AddressesTab />}
           {tab === "details" && (
             <div className="border p-8" style={{ borderColor: "var(--cl-border)" }}>
               <h2 className="font-serif-display text-2xl mb-6" style={{ color: "var(--cl-text)" }}>Account Details</h2>
