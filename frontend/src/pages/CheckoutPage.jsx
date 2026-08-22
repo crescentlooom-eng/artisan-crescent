@@ -24,6 +24,7 @@ export default function CheckoutPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [processing, setProcessing] = useState(false);
+  const [email, setEmail] = useState("");
   const [config, setConfig] = useState({ enabled: false, key_id: "" });
   const [loom, setLoom] = useState(null);
   const [redeemCards, setRedeemCards] = useState(0);
@@ -66,12 +67,12 @@ export default function CheckoutPage() {
     );
   }
 
-  const update = (k, v) => setShipping((s) => ({ ...s, [k]: v }));
-  const allFilled = ["full_name","phone","address_line","city","state","pincode"].every((k) => shipping[k].trim().length > 0);
-
-  const placeOrder = async () => {
+    const update = (k, v) => setShipping((s) => ({ ...s, [k]: v }));
+  const emailValid = user ? true : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const allFilled = ["full_name","phone","address_line","city","state","pincode"].every((k) => shipping[k].trim().length > 0) && emailValid;
+    const placeOrder = async () => {
     if (!allFilled) {
-      toast.error("Please complete your shipping details");
+      toast.error(!emailValid && !user ? "Please enter a valid email address" : "Please complete your shipping details");
       return;
     }
     setProcessing(true);
@@ -84,7 +85,7 @@ export default function CheckoutPage() {
         size: it.size,
         image: it.image,
       }));
-      const res = await api.post("/payments/create-order", { items: orderItems, shipping, loom_credits_redeemed: redeemCards, payment_mode: paymentMode });
+            const res = await api.post("/payments/create-order", { items: orderItems, shipping, loom_credits_redeemed: redeemCards, payment_mode: paymentMode, email: user ? undefined : email });
       const { order, razorpay_order, razorpay_key_id, demo_mode, cod_full_no_charge } = res.data;
 
       if (cod_full_no_charge) {
@@ -141,8 +142,16 @@ export default function CheckoutPage() {
       <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 mt-12">
         <div className="lg:col-span-7 space-y-12">
           <section>
+                      <section>
             <h2 className="font-serif-display text-2xl md:text-3xl mb-6" style={{ color: "var(--cl-text)" }}>Shipping</h2>
             <div className="grid sm:grid-cols-2 gap-x-6 gap-y-2">
+              {!user && (
+                <div className="sm:col-span-2">
+                  <label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Email</label>
+                  <input type="email" data-testid="checkout-email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" />
+                  <p className="text-xs mt-1" style={{ color: "var(--cl-subtext)" }}>We'll send your order confirmation and tracking link here.</p>
+                </div>
+              )}
               <div className="sm:col-span-2"><label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Full Name</label><input data-testid="checkout-name" value={shipping.full_name} onChange={(e) => update("full_name", e.target.value)} /></div>
               <div><label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Phone</label><input data-testid="checkout-phone" value={shipping.phone} onChange={(e) => update("phone", e.target.value)} /></div>
               <div><label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Pincode</label><input data-testid="checkout-pincode" value={shipping.pincode} onChange={(e) => update("pincode", e.target.value)} /></div>
