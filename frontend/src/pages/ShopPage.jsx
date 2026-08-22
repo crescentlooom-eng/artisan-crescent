@@ -122,7 +122,7 @@ export default function ShopPage() {
             <div className="flex items-center justify-between mb-6">
               <span className="text-sm font-medium" style={{ color: "var(--cl-text)" }}>Filters</span>
               {hasActiveFilters && (
-                <div classNam<button onClick={clearAll} className="text-xs" style={{ color: "var(--cl-text)" }}>Clear all</button>e="text-[11px] tracking-[0.4em] uppercase mb-3" style={{ color: "var(--cl-text)" }}>The Collection</div>
+                <button onClick={clearAll} className="text-xs" style={{ color: "var(--cl-text)" }}>Clear all</button>
               )}
             </div>
 
