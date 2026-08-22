@@ -14,7 +14,7 @@ const STEPS = [
 
 const FAQS = [
   { q: "How many days do I have to return a product?", a: "You have 7 days from the date of delivery to raise a return or exchange request." },
-  { q: "Do I get a cash refund?", a: "No — we issue store credit as Loom Credits to your account, or a size exchange. Cash refunds aren't available at this time." },
+  { q: "Do I get a cash refund?", a: "We primarily issue store credit as Loom Credits or a size exchange. In select cases, a refund to your original payment method or UPI/bank account may be issued at our discretion — just raise it with us on WhatsApp and we'll let you know what applies to your order." },
   { q: "Is return shipping free?", a: "No, return shipping is currently borne by the customer. We recommend using a trackable courier service." },
   { q: "Can I return for a different size instead?", a: "Yes, size exchanges are available for eligible items — just mention this when you message us." },
   { q: "What if I receive a wrong or defective product?", a: "We accept these cases without question — message us with photos and we'll make it right." },
