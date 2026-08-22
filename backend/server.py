@@ -697,6 +697,62 @@ async def add_wishlist(product_id: str, user=Depends(require_user)):
 async def remove_wishlist(product_id: str, user=Depends(require_user)):
     await db.wishlist.delete_one({"user_id": user['user_id'], "product_id": product_id})
     return {"ok": True}
+    # ====================== Addresses ======================
+class AddressCreate(BaseModel):
+    label: str  # e.g. "Home", "Office"
+    full_name: str
+    phone: str
+    address_line: str
+    city: str
+    state: str
+    pincode: str
+    country: str = "India"
+    is_default: bool = False
+
+class Address(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    label: str
+    full_name: str
+    phone: str
+    address_line: str
+    city: str
+    state: str
+    pincode: str
+    country: str = "India"
+    is_default: bool = False
+    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+@api_router.get("/addresses")
+async def list_addresses(user=Depends(require_user)):
+    items = await db.addresses.find({"user_id": user["user_id"]}, {"_id": 0}).sort("created_at", -1).to_list(50)
+    return items
+
+@api_router.post("/addresses")
+async def create_address(body: AddressCreate, user=Depends(require_user)):
+    if not body.label.strip():
+        raise HTTPException(status_code=400, detail="Please give this address a name, e.g. Home or Office")
+    addr = Address(user_id=user["user_id"], **body.model_dump()).model_dump()
+    existing_count = await db.addresses.count_documents({"user_id": user["user_id"]})
+    if addr["is_default"] or existing_count == 0:
+        await db.addresses.update_many({"user_id": user["user_id"]}, {"$set": {"is_default": False}})
+        addr["is_default"] = True
+    await db.addresses.insert_one(addr)
+    return {k: v for k, v in addr.items() if k != "_id"}
+
+@api_router.delete("/addresses/{address_id}")
+async def delete_address(address_id: str, user=Depends(require_user)):
+    await db.addresses.delete_one({"id": address_id, "user_id": user["user_id"]})
+    return {"ok": True}
+
+@api_router.patch("/addresses/{address_id}/default")
+async def set_default_address(address_id: str, user=Depends(require_user)):
+    addr = await db.addresses.find_one({"id": address_id, "user_id": user["user_id"]})
+    if not addr:
+        raise HTTPException(status_code=404, detail="Address not found")
+    await db.addresses.update_many({"user_id": user["user_id"]}, {"$set": {"is_default": False}})
+    await db.addresses.update_one({"id": address_id}, {"$set": {"is_default": True}})
+    return {"ok": True}
 
 # ====================== Payments / Orders ======================
 @api_router.get("/payments/config")
