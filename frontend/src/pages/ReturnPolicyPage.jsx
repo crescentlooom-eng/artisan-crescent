@@ -48,7 +48,7 @@ export default function ReturnPolicyPage() {
         <div className="grid md:grid-cols-2 gap-10 items-center mb-16">
           <div>
             <h1 className="font-serif-display text-5xl md:text-6xl leading-[0.95]" style={{ color: "var(--cl-text)" }}>
-              Returns &amp; <span className="italic" style={{ color: "#B8C0C8" }}>Exchange Policy</span>
+              Returns &amp; <span className="italic" style={{ color: "var(--cl-text)" }}>Exchange Policy</span>
             </h1>
             <p className="mt-5 text-sm" style={{ color: "var(--cl-subtext)" }}>
               We make few things, but we make them carefully. Simple · Transparent · Hassle-Free.
@@ -100,8 +100,8 @@ export default function ReturnPolicyPage() {
           <div className="grid md:grid-cols-5 gap-4">
             {STEPS.map((s, i) => (
               <div key={s.title} className="border p-5" style={{ borderColor: "var(--cl-border)" }}>
-                <div className="w-8 h-8 rounded-full flex items-center justify-center mb-4 text-xs" style={{ background: "var(--cl-surface)", color: "#B8C0C8" }}>
-                  {String(i + 1).padStart(2, "0")}
+                <div className="w-8 h-8 rounded-full flex items-center justify-center mb-4 text-xs" style={{ background: "var(--cl-surface)", color: "var(--cl-text)" }}>
+                 {String(i + 1).padStart(2, "0")}
                 </div>
                 <s.Icon size={18} style={{ color: "#B8C0C8" }} className="mb-3" />
                 <div className="text-sm font-medium mb-1.5" style={{ color: "var(--cl-text)" }}>{s.title}</div>
