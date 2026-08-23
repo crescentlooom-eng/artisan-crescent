@@ -276,8 +276,8 @@ export default function HomePage() {
       {/* ================= BRAND STORY TEASER ================= */}
       <section className="px-6 md:px-12 max-w-none mx-auto pb-14">
         <Link to="/about" className="group rounded-2xl overflow-hidden relative block h-72 md:h-96">
-                              <img
-            src="/brand-story-craft.png"
+                                        <img
+            src={theme === "light" ? "/brand-story-craft.png" : "/brand-story-craft-dark.png"}
             alt="Crafted in Silence"
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             style={{ objectPosition: "center 20%" }}
