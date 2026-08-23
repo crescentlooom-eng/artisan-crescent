@@ -86,10 +86,9 @@ export default function Navbar() {
           <button data-testid="nav-search-button" onClick={() => setSearchOpen((v) => !v)} aria-label="Search" className="hover:text-[#B8C0C8] transition-colors">
             <Search size={21} />
           </button>
-          <Link to="/wishlist" data-testid="nav-wishlist-link" className="hover:text-[#B8C0C8] transition-colors hidden md:inline">
+                    <Link to="/wishlist" data-testid="nav-wishlist-link" className="hover:text-[#B8C0C8] transition-colors hidden md:inline">
             <Heart size={21} />
           </Link>
-          V
           <button data-testid="nav-cart-button" onClick={() => setCartOpen(true)} aria-label="Cart" className="relative hover:text-[#B8C0C8] transition-colors">
             <ShoppingBag size={21} />
             {count > 0 && (
