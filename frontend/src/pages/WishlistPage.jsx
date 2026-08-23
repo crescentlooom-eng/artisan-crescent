@@ -60,7 +60,7 @@ export default function WishlistPage() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-14 mt-16">
           {items.map((p) => (
             <div key={p.id} className="group" data-testid={`wishlist-item-${p.slug}`}>
-              <Link to={`/product/${p.slug}`}>
+                            <Link to={`/product/${p.slug}${p.variantId ? `?variant=${p.variantId}` : ""}`}>
                 <div className="product-card-img-wrap product-card-halo aspect-[3/4] mb-4">
                   <img src={productImage(p)} alt={p.name} className="w-full h-full object-cover" />
                 </div>
@@ -70,7 +70,7 @@ export default function WishlistPage() {
                   <div className="font-serif-display text-xl" style={{ color: "var(--cl-text)" }}>{p.name}</div>
                   <div className="text-sm mt-1" style={{ color: "var(--cl-text)", opacity: 0.7 }}>{formatINR(p.price)}</div>
                 </div>
-                <button onClick={() => toggle(p)} data-testid={`wishlist-remove-${p.slug}`} style={{ color: "#B8C0C8" }}>
+                                <button onClick={() => toggle(p)} data-testid={`wishlist-remove-${p.slug}`} style={{ color: "#E5484D" }}>
                   <Heart size={18} fill="currentColor" />
                 </button>
               </div>
