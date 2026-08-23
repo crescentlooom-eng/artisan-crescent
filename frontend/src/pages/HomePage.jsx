@@ -237,9 +237,9 @@ export default function HomePage() {
             alt="Rakshabandhan Special — Shop the Rakhi Sale"
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
-          <Link
+                    <Link
             to="/shop"
-            className="absolute bottom-5 left-5 sm:bottom-8 sm:left-10 inline-flex items-center gap-2 text-xs sm:text-sm font-medium px-5 py-2.5 sm:px-6 sm:py-3 rounded-full shadow-lg"
+            className="absolute bottom-[12%] sm:bottom-[15%] left-1/2 -translate-x-1/2 inline-flex items-center gap-2 text-xs sm:text-sm font-medium px-5 py-2.5 sm:px-6 sm:py-3 rounded-full shadow-lg whitespace-nowrap"
             style={{ background: theme === "light" ? "#7A1F2B" : "#B8860B", color: "#fff" }}
           >
             Shop the Rakhi Sale <ArrowRight size={14} />
