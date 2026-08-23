@@ -10,7 +10,7 @@ export default function SplashScreen({ onComplete }) {
   }, [onComplete]);
   return (
     <div style={{
-      position: "fixed", inset: 0, zIndex: 99999, background: "#0B0E1A",
+      position: "fixed", inset: 0, zIndex: 99999, background: "#000000",
       display: "flex", flexDirection: "column", alignItems: "center",
       justifyContent: "center", transition: "opacity 0.7s ease",
       opacity: phase === "exit" ? 0 : 1,
@@ -38,7 +38,7 @@ export default function SplashScreen({ onComplete }) {
         transform: phase === "enter" ? "translateY(16px)" : "translateY(0)",
       }}>
        <img
-          src="/crescent-loom-name.png"
+          src="/crescent-loom-name-silver.png"
           alt="Crescent Loom"
           style={{
             width: "clamp(200px, 70vw, 380px)",
