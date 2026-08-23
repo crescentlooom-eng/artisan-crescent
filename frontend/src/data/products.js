@@ -29,9 +29,11 @@ export const PRODUCTS = [
     images: [],
     variants: [
       {
+             {
         id: "polo-c1",
   name: "Dune Beige",
   color_hex: "#C9B493",
+  out_of_stock_sizes: ["L", "XL"],
   images: ["/dune-beige-1.png", "/dune-beige-2.png", "/dune-beige-3.png", "/dune-beige-4.png"],
   imagesLight: ["/dune-beige-light-1.png", "/dune-beige-light-2.png", "/dune-beige-light-3.png", "/dune-beige-light-4.png"],
   in_stock: true,
@@ -182,7 +184,7 @@ export const PRODUCTS = [
     category: "basics",
     price: 299,
     description: "The foundation of a considered wardrobe. Pure cotton, clean lines, no excess — made to be worn often and loved longer.",
-    sizes: ["M", "XL"],
+        sizes: ["S", "M"],
     colors: [],
     material: "100% Heavyweight Cotton",
     keywords: ["basic", "plain", "minimal", "everyday", "heavyweight cotton", "solid"],
