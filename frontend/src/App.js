@@ -124,10 +124,16 @@ function AppRouter() {
 }
 
 function App() {
-  const [splash, setSplash] = React.useState(true);
+  const [splash, setSplash] = React.useState(
+    () => !localStorage.getItem("cl_splash_seen")
+  );
+  const dismissSplash = () => {
+    localStorage.setItem("cl_splash_seen", "1");
+    setSplash(false);
+  };
   return (
     <div className="App">
-    {splash && <SplashScreen onComplete={() => setSplash(false)} />}
+    {splash && <SplashScreen onComplete={dismissSplash} />}
       <BrowserRouter>
         <ThemeProvider>
         <div className="fabric-bg" />
