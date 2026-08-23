@@ -684,6 +684,7 @@ class WishlistAddReq(BaseModel):
     price: float
     image: Optional[str] = None
     category: Optional[str] = None
+    variant_id: Optional[str] = None
 
 @api_router.get("/wishlist")
 async def get_wishlist(user=Depends(require_user)):
@@ -696,6 +697,7 @@ async def get_wishlist(user=Depends(require_user)):
             "price": it.get("price", 0),
             "images": [it["image"]] if it.get("image") else [],
             "category": it.get("category", ""),
+            "variantId": it.get("variant_id"),
         }
         for it in items
     ]
@@ -712,11 +714,11 @@ async def add_wishlist(product_id: str, body: WishlistAddReq, user=Depends(requi
             "price": body.price,
             "image": body.image,
             "category": body.category,
+            "variant_id": body.variant_id,
             "added_at": datetime.now(timezone.utc).isoformat(),
         }
         await db.wishlist.insert_one(doc)
     return {"ok": True}
-
 @api_router.delete("/wishlist/{product_id}")
 async def remove_wishlist(product_id: str, user=Depends(require_user)):
     await db.wishlist.delete_one({"user_id": user['user_id'], "product_id": product_id})
