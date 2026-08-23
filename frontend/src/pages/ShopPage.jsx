@@ -257,27 +257,28 @@ export default function ShopPage() {
       </div>
 
       {mobileFiltersOpen && (
+              {mobileFiltersOpen && (
         <div className="lg:hidden fixed inset-0 z-50">
           <div className="absolute inset-0 bg-black/60" onClick={() => setMobileFiltersOpen(false)} />
           <div
-            className="absolute left-0 right-0 bottom-0 rounded-t-2xl max-h-[85vh] flex flex-col"
-            style={{ background: "var(--cl-bg)" }}
+            className="absolute left-4 right-4 top-24 rounded-2xl max-h-[65vh] flex flex-col border"
+            style={{ background: "var(--cl-bg)", borderColor: "var(--cl-border)" }}
           >
-            <div className="flex items-center justify-between px-6 py-5 border-b shrink-0" style={{ borderColor: "var(--cl-border)" }}>
+            <div className="flex items-center justify-between px-5 py-4 border-b shrink-0" style={{ borderColor: "var(--cl-border)" }}>
               <span className="text-sm font-medium" style={{ color: "var(--cl-text)" }}>Filters</span>
               <div className="flex items-center gap-4">
                 {hasActiveFilters && (
                   <button onClick={clearAll} className="text-xs" style={{ color: "var(--cl-text)" }}>Clear all</button>
                 )}
                 <button onClick={() => setMobileFiltersOpen(false)} aria-label="Close" style={{ color: "var(--cl-text)" }}>
-                  <X size={20} />
+                  <X size={18} />
                 </button>
               </div>
             </div>
-            <div className="overflow-y-auto px-6 py-5 flex-1">
+            <div className="overflow-y-auto px-5 py-4 flex-1">
               <FilterGroups />
             </div>
-            <div className="px-6 py-5 border-t shrink-0" style={{ borderColor: "var(--cl-border)" }}>
+            <div className="px-5 py-4 border-t shrink-0" style={{ borderColor: "var(--cl-border)" }}>
               <button
                 onClick={() => setMobileFiltersOpen(false)}
                 className="btn-gold w-full"
