@@ -276,10 +276,11 @@ export default function HomePage() {
       {/* ================= BRAND STORY TEASER ================= */}
       <section className="px-6 md:px-12 max-w-none mx-auto pb-14">
         <Link to="/about" className="group rounded-2xl overflow-hidden relative block h-72 md:h-96">
-                    <img
+                              <img
             src="/brand-story-craft.png"
             alt="Crafted in Silence"
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            style={{ objectPosition: "center 20%" }}
           />
           <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.75), rgba(0,0,0,0.15) 60%, transparent)" }} />
           <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10">
