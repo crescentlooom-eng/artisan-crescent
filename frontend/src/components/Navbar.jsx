@@ -86,8 +86,20 @@ export default function Navbar() {
           <button data-testid="nav-search-button" onClick={() => setSearchOpen((v) => !v)} aria-label="Search" className="hover:text-[#B8C0C8] transition-colors">
             <Search size={21} />
           </button>
-                    <Link to="/wishlist" data-testid="nav-wishlist-link" className="hover:text-[#B8C0C8] transition-colors hidden md:inline">
+                              <Link to="/wishlist" data-testid="nav-wishlist-link" className="hover:text-[#B8C0C8] transition-colors hidden md:inline">
             <Heart size={21} />
+          </Link>
+          <Link to={user ? "/account" : "/login"} data-testid="nav-account-link" className="hover:text-[#B8C0C8] transition-colors shrink-0">
+            {user?.picture ? (
+              <img
+                src={user.picture}
+                alt={user.name}
+                className="w-6 h-6 rounded-full object-cover"
+                style={{ border: "1px solid rgba(184,192,200,0.4)" }}
+                onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.nextSibling.style.display = "block"; }}
+              />
+            ) : null}
+            <User size={21} style={{ display: user?.picture ? "none" : "block" }} />
           </Link>
           <button data-testid="nav-cart-button" onClick={() => setCartOpen(true)} aria-label="Cart" className="relative hover:text-[#B8C0C8] transition-colors">
             <ShoppingBag size={21} />
