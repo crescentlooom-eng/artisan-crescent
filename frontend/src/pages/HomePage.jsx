@@ -232,9 +232,7 @@ export default function HomePage() {
       {/* ================= PROMO BANNER ================= */}
       <section className="px-6 md:px-12 max-w-none mx-auto pb-14">
         <div className="rounded-2xl overflow-hidden relative min-h-[220px] md:h-64 flex items-center" style={{ background: "var(--cl-surface)" }}>
-                    {CATEGORY_IMAGES_DARK.designer && (
-            <img src={theme === "light" ? CATEGORY_IMAGES_LIGHT.designer : CATEGORY_IMAGES_DARK.designer} alt="" className="absolute inset-0 w-full h-full object-cover opacity-60" />
-          )}
+                              <img src={theme === "light" ? "/promo-banner-light.png" : "/promo-banner.png"} alt="" className="absolute inset-0 w-full h-full object-cover opacity-60" />
           <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, var(--cl-bg) 30%, transparent)" }} />
           <div className="relative z-10 px-6 md:px-10 py-8 md:py-0 flex items-center justify-between w-full">
             <div>
