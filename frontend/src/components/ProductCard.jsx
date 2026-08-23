@@ -69,22 +69,6 @@ export default function ProductCard({ product, index = 0 }) {
           transition: "box-shadow 0.6s ease",
         } : {}}
       >
-        {/* Large faded number — mobile only */}
-        {isMobile && (
-          <div
-            className="absolute top-2 left-3 font-serif-display select-none pointer-events-none z-10"
-            style={{
-              fontSize: "5rem",
-              lineHeight: 1,
-              color: "rgba(184,192,200,0.12)",
-              opacity: animated ? 1 : 0,
-              transition: "opacity 0.8s ease 0.2s",
-              fontStyle: "italic",
-            }}
-          >
-            {cardNumber}
-          </div>
-        )}
 
         {/* Product image */}
         {img ? (
