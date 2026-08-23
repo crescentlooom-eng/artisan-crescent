@@ -42,7 +42,7 @@ import AdminCustomersPage from "@/pages/admin/AdminCustomersPage";
 import AdminLoomCreditsPage from "@/pages/admin/AdminLoomCreditsPage";
 
 // ---- Coming Soon Gate Config ----
-const SITE_LOCKED = true; // flip to false to fully reopen the site to everyone
+const SITE_LOCKED = false; // flip to false to fully reopen the site to everyone
 const BYPASS_KEY = "cl_preview_access";
 const BYPASS_SECRET = "crescentloom2026"; // change this to whatever secret you want
 
