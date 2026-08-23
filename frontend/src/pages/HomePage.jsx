@@ -231,11 +231,11 @@ export default function HomePage() {
 
       {/* ================= PROMO BANNER ================= */}
                   <section className="px-6 md:px-12 max-w-none mx-auto pb-14">
-                <div className="group rounded-2xl overflow-hidden relative block aspect-[4/5] sm:aspect-[16/6]">
+                        <div className="group rounded-2xl overflow-hidden relative block" style={{ background: theme === "light" ? "#F5EDE3" : "#0B0E1A" }}>
           <img
             src={theme === "light" ? "/promo-banner-light.png" : "/promo-banner.png"}
             alt="Rakshabandhan Special — Shop the Rakhi Sale"
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-105"
           />
                     <Link
             to="/shop"
