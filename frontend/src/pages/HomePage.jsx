@@ -124,7 +124,7 @@ export default function HomePage() {
 
             {/* ================= ARCH CAROUSEL ================= */}
 <section className="px-6 md:px-12 max-w-none mx-auto pb-14 relative">
-        <div className="flex items-end justify-center gap-3 md:gap-4 overflow-x-auto" style={{ scrollSnapType: "x proximity", WebkitOverflowScrolling: "touch" }}>
+        <div className="flex items-end justify-start md:justify-center gap-3 md:gap-4 overflow-x-auto" style={{ scrollSnapType: "x proximity", WebkitOverflowScrolling: "touch" }}>
           {[
             { img: theme === "light" ? "/ess-c1-light-1.png" : "/ess-c1-1.png", h: "h-64 md:h-72", to: "/shop?category=basics" },
             { img: theme === "light" ? "/prism-d3-light-1.png" : "/prism-d3-1.png", h: "h-72 md:h-80", to: "/shop?category=designer" },
