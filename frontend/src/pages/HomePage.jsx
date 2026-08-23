@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Play, Truck, PackageCheck, ShieldCheck, Headphones, Heart, Star } from "lucide-react";
-import { productImage, formatINR } from "@/lib/api";
-import { listProducts } from "@/data/products";
+import { productImage, formatINR, expandForCatalog } from "@/lib/api";
+import { listProducts, PRODUCTS } from "@/data/products";
 import { useAuth } from "@/context/AuthContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { useTheme } from "@/context/ThemeContext";
@@ -60,8 +60,9 @@ export default function HomePage() {
   const archScrollRef = React.useRef(null);
   const archCenterItemRef = React.useRef(null);
 
-    useEffect(() => {
-    setTrending(listProducts({ new_arrival: true }).slice(0, 6));
+      useEffect(() => {
+    const expanded = expandForCatalog(listProducts({ new_arrival: true }));
+    setTrending(expanded.slice(0, 8));
   }, []);
 
   useEffect(() => {
