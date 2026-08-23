@@ -238,17 +238,17 @@ export default function HomePage() {
           <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, var(--cl-bg) 30%, transparent)" }} />
           <div className="relative z-10 px-6 md:px-10 py-8 md:py-0 flex items-center justify-between w-full">
             <div>
-              <p className="text-[10px] md:text-[11px] tracking-[0.2em] mb-2 uppercase" style={{ color: "var(--cl-subtext)" }}>Limited Time Offer</p>
-              <h3 className="font-serif-display text-2xl md:text-3xl mb-2 leading-tight">Spring / Summer<br />Collection 2026</h3>
-              <p className="text-xs md:text-sm mb-4" style={{ color: "var(--cl-subtext)" }}>Upgrade your wardrobe with timeless essentials.</p>
+                            <p className="text-[11px] tracking-[0.2em] mb-2 uppercase" style={{ color: "var(--cl-subtext)" }}>Rakshabandhan Special</p>
+              <h3 className="font-serif-display text-2xl md:text-3xl mb-2 leading-tight">Tie a Rakhi,<br />Untie a Deal</h3>
+              <p className="text-xs md:text-sm mb-4" style={{ color: "var(--cl-subtext)" }}>Festive prices on every piece — because good style deserves celebrating too.</p>
               <Link to="/shop" className="inline-flex items-center gap-2 text-sm font-medium px-5 py-2.5 rounded-full" style={{ background: "var(--cl-text)", color: "var(--cl-bg)" }}>
-                Shop Now <ArrowRight size={14} />
+                Shop the Rakhi Sale <ArrowRight size={14} />
               </Link>
             </div>
             <div className="hidden md:flex flex-col items-center justify-center w-28 h-28 rounded-full border-2 shrink-0" style={{ borderColor: "#B8C0C8" }}>
-              <span className="text-xs" style={{ color: "var(--cl-subtext)" }}>Up to</span>
-              <span className="text-3xl font-serif-display">30%</span>
-              <span className="text-xs" style={{ color: "var(--cl-subtext)" }}>OFF</span>
+              <span className="text-xs" style={{ color: "var(--cl-subtext)" }}>Rakhi</span>
+              <span className="text-2xl font-serif-display">Sale</span>
+              <span className="text-xs" style={{ color: "var(--cl-subtext)" }}>Is Here</span>
             </div>
           </div>
         </div>
