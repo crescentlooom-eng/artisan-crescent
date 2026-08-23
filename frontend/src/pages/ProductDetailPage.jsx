@@ -480,9 +480,9 @@ export default function ProductDetailPage() {
                               <tr className="border-t" style={{ borderColor: "var(--cl-border)" }}><td className="py-3">L</td><td>37</td><td>26.5</td><td>17</td></tr>
                               <tr className="border-t" style={{ borderColor: "var(--cl-border)" }}><td className="py-3">XL</td><td>40</td><td>28.5</td><td>17</td></tr>
                             </>}
-                            {product.slug === "essential-tee" && <>
-                              <tr className="border-t" style={{ borderColor: "var(--cl-border)" }}><td className="py-3">M</td><td>35</td><td>25.2</td><td>15</td></tr>
-                              <tr className="border-t" style={{ borderColor: "var(--cl-border)" }}><td className="py-3">XL</td><td>37</td><td>25.5</td><td>16.5</td></tr>
+                                                        {product.slug === "essential-tee" && <>
+                              <tr className="border-t" style={{ borderColor: "var(--cl-border)" }}><td className="py-3">S</td><td>35</td><td>25.2</td><td>15</td></tr>
+                              <tr className="border-t" style={{ borderColor: "var(--cl-border)" }}><td className="py-3">M</td><td>37</td><td>25.5</td><td>16.5</td></tr>
                             </>}
                             {product.slug === "prism-wear-tee" && <>
                               <tr className="border-t" style={{ borderColor: "var(--cl-border)" }}><td className="py-3">Free Size</td><td>41</td><td>28.5</td><td>18</td></tr>
