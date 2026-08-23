@@ -249,26 +249,20 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ================= TESTIMONIALS (placeholder copy — swap for real reviews) ================= */}
+            {/* ================= TESTIMONIALS (placeholder copy — swap for real reviews) ================= */}
       <section className="px-6 md:px-12 max-w-none mx-auto pb-14">
         <h2 className="font-serif-display text-2xl mb-5">What our customers say</h2>
         <div className="grid md:grid-cols-3 gap-5">
           {[
-            { quote: "The quality is unbelievable for the price. Fit is perfect and the fabric feels so premium.", name: "Rohan Malhotra" },
-            { quote: "Crescent Loom has become my go-to brand for everyday style. Minimal, clean and classy.", name: "Aman Verma" },
-            { quote: "Fast delivery, great packaging and the t-shirts are even better in person.", name: "Jay Mehta" },
-          ].map((t) => (
-            <div key={t.name} className="rounded-2xl border p-6" style={{ borderColor: "var(--cl-border)", background: "var(--cl-surface)" }}>
+            "The quality is unbelievable for the price. Fit is perfect and the fabric feels so premium.",
+            "Crescent Loom has become my go-to brand for everyday style. Minimal, clean and classy.",
+            "Fast delivery, great packaging and the t-shirts are even better in person.",
+          ].map((quote, i) => (
+            <div key={i} className="rounded-2xl border p-6" style={{ borderColor: "var(--cl-border)", background: "var(--cl-surface)" }}>
               <p className="text-2xl mb-3 font-serif-display" style={{ color: "var(--cl-text)" }}>&ldquo;</p>
-              <p className="text-sm mb-5" style={{ color: "var(--cl-subtext)" }}>{t.quote}</p>
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full" style={{ background: "var(--cl-border)" }} />
-                <div>
-                  <p className="text-sm font-medium">{t.name}</p>
-                  <div className="flex gap-0.5">
-                    {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={12} fill="var(--cl-text)" stroke="var(--cl-text)" />)}
-                  </div>
-                </div>
+              <p className="text-sm mb-5" style={{ color: "var(--cl-subtext)" }}>{quote}</p>
+              <div className="flex gap-0.5">
+                {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={12} fill="var(--cl-text)" stroke="var(--cl-text)" />)}
               </div>
             </div>
           ))}
