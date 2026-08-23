@@ -268,7 +268,26 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-
+      {/* ================= BRAND STORY TEASER ================= */}
+      <section className="px-6 md:px-12 max-w-none mx-auto pb-14">
+        <Link to="/about" className="group rounded-2xl overflow-hidden relative block h-72 md:h-96">
+          <img
+            src="https://customer-assets.emergentagent.com/job_artisan-crescent/artifacts/t9hvhdc6_designer%20green%201.png"
+            alt="Crafted in Silence"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.75), rgba(0,0,0,0.15) 60%, transparent)" }} />
+          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10">
+            <p className="text-[11px] tracking-[0.3em] uppercase text-white/70 mb-2">Our Craft</p>
+            <h3 className="font-serif-display text-2xl md:text-4xl text-white leading-tight mb-3 max-w-xl">
+              Fabric chosen. Form considered. <span className="italic">Nothing wasted.</span>
+            </h3>
+            <span className="inline-flex items-center gap-2 text-xs md:text-sm font-medium text-white">
+              Discover our story <ArrowRight size={14} />
+            </span>
+          </div>
+        </Link>
+      </section>
     </div>
   );
 }
