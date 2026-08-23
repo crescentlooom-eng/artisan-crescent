@@ -229,7 +229,14 @@ export const listProducts = ({ category, featured, new_arrival, q } = {}) => {
   if (new_arrival !== undefined) out = out.filter((p) => p.new_arrival === new_arrival);
   if (q) {
     const s = q.toLowerCase();
-    out = out.filter((p) => p.name.toLowerCase().includes(s) || p.category.toLowerCase().includes(s) || p.description?.toLowerCase().includes(s) || (p.keywords || []).some((k) => k.toLowerCase().includes(s)));
+    out = out.filter((p) =>
+      p.name.toLowerCase().includes(s) ||
+      p.category.toLowerCase().includes(s) ||
+      p.description?.toLowerCase().includes(s) ||
+      p.material?.toLowerCase().includes(s) ||
+      (p.keywords || []).some((k) => k.toLowerCase().includes(s)) ||
+      (p.variants || []).some((v) => v.name?.toLowerCase().includes(s))
+    );
   }
   return out;
 };
