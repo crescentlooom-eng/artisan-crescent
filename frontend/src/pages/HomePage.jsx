@@ -164,17 +164,17 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-      {/* ================= FEATURE BAR ================= */}
+            {/* ================= FEATURE BAR ================= */}
       <section className="px-6 md:px-12 max-w-none mx-auto pb-14">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-4 rounded-2xl border px-8 py-6" style={{ borderColor: "var(--cl-border)" }}>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-y-8 gap-x-4 rounded-2xl border px-6 py-10 md:px-8 md:py-8" style={{ borderColor: "var(--cl-border)" }}>
           {[[Truck, "Free Shipping", "On all orders over ₹499"], [PackageCheck, "Easy Returns", "30-day return policy"], [ShieldCheck, "Secure Payment", "100% safe & encrypted"], [Headphones, "24/7 Support", "We're here for you"]].map(([Icon, title, sub]) => (
-            <div className="flex items-center gap-3" key={title}>
-              <span className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ background: "var(--cl-surface)" }}>
-                <Icon size={16} />
+            <div className="flex flex-col items-center text-center gap-2.5" key={title}>
+              <span className="w-11 h-11 rounded-full flex items-center justify-center shrink-0" style={{ background: "var(--cl-surface)" }}>
+                <Icon size={17} />
               </span>
               <div>
-                <p className="text-sm font-medium">{title}</p>
-                <p className="text-xs" style={{ color: "var(--cl-subtext)" }}>{sub}</p>
+                <p className="text-sm font-medium leading-snug">{title}</p>
+                <p className="text-xs mt-0.5 leading-snug" style={{ color: "var(--cl-subtext)" }}>{sub}</p>
               </div>
             </div>
           ))}
