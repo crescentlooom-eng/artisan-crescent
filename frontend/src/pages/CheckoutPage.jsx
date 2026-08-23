@@ -142,7 +142,6 @@ export default function CheckoutPage() {
       <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 mt-12">
         <div className="lg:col-span-7 space-y-12">
           <section>
-                      <section>
             <h2 className="font-serif-display text-2xl md:text-3xl mb-6" style={{ color: "var(--cl-text)" }}>Shipping</h2>
             <div className="grid sm:grid-cols-2 gap-x-6 gap-y-2">
               {!user && (
