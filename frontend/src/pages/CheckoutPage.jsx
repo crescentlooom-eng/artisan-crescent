@@ -141,7 +141,7 @@ export default function CheckoutPage() {
 
   return (
     <div data-testid="checkout-page" className="page-fade pt-32 pb-24 max-w-none mx-auto px-6 md:px-12">
-      <div className="text-[11px] tracking-[0.4em] uppercase mb-4" style={{ color: "var(--cl-text)" }}>Checkout</div>
+            <div className="text-[11px] tracking-[0.4em] uppercase mb-4 pt-2" style={{ color: "var(--cl-text)" }}>Checkout</div>
       <h1 className="font-serif-display text-5xl md:text-6xl leading-[0.95]" style={{ color: "var(--cl-text)" }}>
         Your <span className="italic" style={{ color: "var(--cl-text)" }}>Bag</span>
       </h1>
@@ -223,19 +223,19 @@ export default function CheckoutPage() {
                 { key: "cod_partial", label: "Partial COD", badge: "⚡ Priority packing — ships faster", desc: `Pay ${formatINR(Math.min(COD_TOKEN_AMOUNT, total))} now, ${formatINR(Math.max(0, total - COD_TOKEN_AMOUNT))} cash on delivery.` },
                 { key: "cod_full", label: "Cash on Delivery", badge: null, desc: `Pay ${formatINR(total)} in cash when your order arrives.` },
               ].map((opt) => (
-                <button
+                                <button
                   key={opt.key}
                   type="button"
                   onClick={() => setPaymentMode(opt.key)}
                   data-testid={`payment-mode-${opt.key.replace("_", "-")}`}
-                  className="w-full text-left border p-5 transition"
+                  className="w-full text-left border p-4 sm:p-5 transition"
                   style={{ borderColor: paymentMode === opt.key ? "#B8C0C8" : "rgba(184,192,200,0.2)" }}
                 >
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0">
                     <div className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-text)" }}>{opt.label}</div>
-                    {opt.badge && <span className="text-[10px] tracking-[0.2em] uppercase" style={{ color: "#B8C0C8" }}>{opt.badge}</span>}
+                    {opt.badge && <span className="text-[9px] sm:text-[10px] tracking-[0.15em] sm:tracking-[0.2em] uppercase" style={{ color: "#B8C0C8" }}>{opt.badge}</span>}
                   </div>
-                  <p className="text-sm mt-2" style={{ color: "var(--cl-subtext)" }}>{opt.desc}</p>
+                  <p className="text-xs sm:text-sm mt-2" style={{ color: "var(--cl-subtext)" }}>{opt.desc}</p>
                 </button>
               ))}
             </div>
