@@ -269,22 +269,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ================= INSTAGRAM ================= */}
-      <section className="px-6 md:px-12 max-w-none mx-auto pb-10">
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="font-serif-display text-2xl">Follow us on Instagram</h2>
-          <a href="https://www.instagram.com/crescent_looom" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-xs font-medium px-4 py-2 rounded-full border" style={{ borderColor: "var(--cl-border)" }}>
-            Follow us <ArrowRight size={12} />
-          </a>
-        </div>
-        <div className="grid grid-cols-3 gap-3 max-w-3xl">
-                    {trending.slice(0, 6).map((p) => (
-            <a href="https://www.instagram.com/crescent_looom" target="_blank" rel="noopener noreferrer" key={p.id} className="aspect-square rounded-lg overflow-hidden block" style={{ background: "var(--cl-surface)" }}>
-              {productImage(p, 0, theme) && <img src={productImage(p, 0, theme)} alt="" className="w-full h-full object-cover" />}
-            </a>
-          ))}
-        </div>
-      </section>
     </div>
   );
 }
