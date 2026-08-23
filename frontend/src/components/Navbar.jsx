@@ -52,12 +52,13 @@ export default function Navbar() {
         <nav className="hidden md:flex items-center gap-8 text-[11px] tracking-[0.25em] uppercase text-[var(--cl-text)]/85">
           {navLinks.map((l) => (
             <NavLink
-              key={l.to}
-              to={l.to}
-              data-testid={`nav-${l.label.toLowerCase()}-link`}
-              className={({ isActive }) => `gold-underline ${isActive ? "active text-[#B8C0C8]" : ""}`}
+            key={l.to}
+            to={l.to}
+            data-testid={`nav-${l.label.toLowerCase()}-link`}
+            className={({ isActive }) => `gold-underline ${isActive ? "active" : ""}`}
+            style={({ isActive }) => (isActive ? { color: "var(--cl-text)" } : undefined)}
             >
-              {l.label}
+            {l.label}
             </NavLink>
           ))}
         </nav>
@@ -131,7 +132,7 @@ export default function Navbar() {
       {open && (
         <div className="md:hidden fixed inset-0 z-50 page-fade" style={{ backgroundColor: "var(--cl-bg)" }}>
           <div className="flex items-center justify-between px-6 py-6">
-            <span className="text-[11px] tracking-[0.3em] text-[#B8C0C8] uppercase">Menu</span>
+            <span className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-text)" }}>Menu</span>
             <button onClick={() => setOpen(false)} data-testid="nav-mobile-close" className="text-[var(--cl-text)]"><X size={22} /></button>
           </div>
           <nav className="flex flex-col items-start gap-6 px-8 mt-6">
