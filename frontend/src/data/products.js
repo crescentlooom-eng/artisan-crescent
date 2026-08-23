@@ -17,9 +17,9 @@ export const PRODUCTS = [
     colors: [],
       material: "Jacquard Cotton, textured weave",
     keywords: ["polo", "collared", "buttoned", "textured weave", "regular fit"],
-    highlights: {
+        highlights: {
       sleeve: "Half Sleeve",
-            fabric: "Jacquard Cotton",
+            fabric: "100% Cotton Jacquard",
       neck_type: "Polo Neck",
       pattern: "Textured Weave",
     },
