@@ -60,9 +60,11 @@ export default function HomePage() {
   const archScrollRef = React.useRef(null);
   const archCenterItemRef = React.useRef(null);
 
-      useEffect(() => {
-    const expanded = expandForCatalog(listProducts({ new_arrival: true }));
-    setTrending(expanded.slice(0, 8));
+        useEffect(() => {
+    const poloCards = expandForCatalog(PRODUCTS.filter((p) => p.category === "polo")).slice(0, 3);
+    const prismCards = expandForCatalog(PRODUCTS.filter((p) => p.category === "designer")).slice(0, 2);
+    const essentialCards = expandForCatalog(PRODUCTS.filter((p) => p.category === "basics")).slice(0, 1);
+    setTrending([...poloCards, ...prismCards, ...essentialCards]);
   }, []);
 
   useEffect(() => {
