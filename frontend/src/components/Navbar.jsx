@@ -40,14 +40,14 @@ export default function Navbar() {
   };
 
   return (
-    <header
+            <header
       data-testid="navbar"
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] ${
         scrolled ? "py-3 backdrop-blur-xl border-b border-[var(--cl-border)]" : "py-6 bg-transparent"
       }`}
       style={scrolled ? { backgroundColor: "var(--cl-header-bg)" } : undefined}
     >
-      <div className="max-w-none mx-auto px-6 md:px-10 grid grid-cols-3 items-center">
+            <div className="max-w-none mx-auto px-4 sm:px-6 md:px-10 flex items-center justify-between">
         {/* Left nav */}
         <nav className="hidden md:flex items-center gap-8 text-[11px] tracking-[0.25em] uppercase text-[var(--cl-text)]/85">
           {navLinks.map((l) => (
@@ -62,19 +62,19 @@ export default function Navbar() {
             </NavLink>
           ))}
         </nav>
-        <button data-testid="nav-mobile-toggle" className="md:hidden justify-self-start text-[var(--cl-text)]" onClick={() => setOpen(true)} aria-label="Menu">
+                <button data-testid="nav-mobile-toggle" className="md:hidden text-[var(--cl-text)] shrink-0" onClick={() => setOpen(true)} aria-label="Menu">
           <Menu size={22} />
         </button>
 
-        {/* Center logo */}
-        <Link to="/" data-testid="nav-logo" className="justify-self-center">
+                {/* Center logo */}
+        <Link to="/" data-testid="nav-logo" className="absolute left-1/2 -translate-x-1/2">
           <img src={WORDMARK} alt="Crescent Loom" className={`transition-all duration-500 ${scrolled ? "h-7" : "h-10"} w-auto`} />
         </Link>
 
                 {/* Right icons */}
-        <div
-          className={`flex items-center gap-6 justify-self-end transition-all duration-300 ${
-            scrolled ? "text-[var(--cl-text)]/90" : "text-white px-4 py-2 rounded-full backdrop-blur-md"
+                <div
+          className={`flex items-center gap-3 sm:gap-5 md:gap-6 shrink-0 transition-all duration-300 ${
+            scrolled ? "text-[var(--cl-text)]/90" : "text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-full backdrop-blur-md"
           }`}
           style={!scrolled ? { background: "rgba(0,0,0,0.35)" } : undefined}
         >
@@ -92,13 +92,7 @@ export default function Navbar() {
           <Link to="/wishlist" data-testid="nav-wishlist-link" className="hover:text-[#B8C0C8] transition-colors hidden md:inline">
             <Heart size={21} />
           </Link>
-          <Link to={user ? "/account" : "/login"} data-testid="nav-account-link" className="hover:text-[#B8C0C8] transition-colors">
-            {user?.picture ? (
-              <img src={user.picture} alt={user.name} className="w-6 h-6 rounded-full object-cover" style={{ border: "1px solid rgba(184,192,200,0.4)" }} />
-            ) : (
-              <User size={21} />
-            )}
-          </Link>
+          V
           <button data-testid="nav-cart-button" onClick={() => setCartOpen(true)} aria-label="Cart" className="relative hover:text-[#B8C0C8] transition-colors">
             <ShoppingBag size={21} />
             {count > 0 && (
