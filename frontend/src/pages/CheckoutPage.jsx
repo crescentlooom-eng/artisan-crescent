@@ -123,7 +123,14 @@ export default function CheckoutPage() {
         },
         modal: { ondismiss: () => setProcessing(false) },
       };
-      const rzp = new window.Razorpay(options);
+            const rzp = new window.Razorpay(options);
+      rzp.on("payment.failed", async (resp) => {
+        try {
+          await api.post("/payments/notify-failure", { order_id: order.id });
+        } catch (e) {}
+        toast.error(resp?.error?.description || "Payment failed. Please try again.");
+        setProcessing(false);
+      });
       rzp.open();
     } catch (e) {
       toast.error("Could not create order");
