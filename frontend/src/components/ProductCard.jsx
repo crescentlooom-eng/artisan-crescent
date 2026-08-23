@@ -8,9 +8,7 @@ import { formatINR, productImage } from "@/lib/api";
 export default function ProductCard({ product, index = 0 }) {
   const { has, toggle } = useWishlist();
   const { theme } = useTheme();
-  const wishlistKey = product.__isVariantCard ? product.id.split("__")[0] : product.id;
-  const wishlistProduct = product.__isVariantCard ? { ...product, id: wishlistKey } : product;
-  const isWished = has(wishlistKey);
+  const isWished = has(product.id);
   const img = productImage(product, 0, theme);
 
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
@@ -22,7 +20,7 @@ export default function ProductCard({ product, index = 0 }) {
   const onWish = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    const r = await toggle(wishlistProduct);
+    const r = await toggle(product);
     if (r?.needsAuth) window.location.href = "/login";
   };
 
@@ -100,18 +98,15 @@ export default function ProductCard({ product, index = 0 }) {
           />
         )}
 
-        {/* Wishlist button */}
+                {/* Wishlist button */}
         <button
           onClick={onWish}
           data-testid={`product-card-wishlist-${product.slug}${product.variantId ? `-${product.variantId}` : ""}`}
           aria-label="Wishlist"
-          className={`absolute top-4 right-4 p-2 rounded-full backdrop-blur-md transition-all duration-300 z-30 ${
-            isWished ? "bg-[#B8C0C8] text-[#0B0E1A]" : "bg-[#0B0E1A]/40 text-[#F5F0E8] hover:bg-[#0B0E1A]/70"
-          }`}
+          className="absolute top-4 right-4 p-2 rounded-full backdrop-blur-md transition-all duration-300 z-30 bg-[#0B0E1A]/40 hover:bg-[#0B0E1A]/70"
         >
-          <Heart size={15} fill={isWished ? "currentColor" : "none"} />
+          <Heart size={15} color={isWished ? "#E5484D" : "#F5F0E8"} fill={isWished ? "#E5484D" : "none"} />
         </button>
-
         {/* New badge */}
         {product.new_arrival && (
           <div className="absolute top-4 left-4 text-[10px] tracking-[0.25em] uppercase text-[#B8C0C8] bg-[#0B0E1A]/60 backdrop-blur-md px-3 py-1 z-30">
