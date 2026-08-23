@@ -678,20 +678,43 @@ async def delete_product(product_id: str, admin=Depends(require_admin)):
     return {"ok": True}
 
 # ====================== Wishlist ======================
+class WishlistAddReq(BaseModel):
+    name: str
+    slug: str
+    price: float
+    image: Optional[str] = None
+    category: Optional[str] = None
+
 @api_router.get("/wishlist")
 async def get_wishlist(user=Depends(require_user)):
-    items = await db.wishlist.find({"user_id": user['user_id']}, {"_id": 0}).to_list(500)
-    product_ids = [it['product_id'] for it in items]
-    if not product_ids:
-        return []
-    products = await db.products.find({"id": {"$in": product_ids}}, {"_id": 0}).to_list(500)
-    return products
+    items = await db.wishlist.find({"user_id": user['user_id']}, {"_id": 0}).sort("added_at", -1).to_list(500)
+    return [
+        {
+            "id": it["product_id"],
+            "name": it.get("name", ""),
+            "slug": it.get("slug", ""),
+            "price": it.get("price", 0),
+            "images": [it["image"]] if it.get("image") else [],
+            "category": it.get("category", ""),
+        }
+        for it in items
+    ]
 
 @api_router.post("/wishlist/{product_id}")
-async def add_wishlist(product_id: str, user=Depends(require_user)):
+async def add_wishlist(product_id: str, body: WishlistAddReq, user=Depends(require_user)):
     existing = await db.wishlist.find_one({"user_id": user['user_id'], "product_id": product_id})
     if not existing:
-        await db.wishlist.insert_one(WishlistItem(user_id=user['user_id'], product_id=product_id).model_dump())
+        doc = {
+            "user_id": user['user_id'],
+            "product_id": product_id,
+            "name": body.name,
+            "slug": body.slug,
+            "price": body.price,
+            "image": body.image,
+            "category": body.category,
+            "added_at": datetime.now(timezone.utc).isoformat(),
+        }
+        await db.wishlist.insert_one(doc)
     return {"ok": True}
 
 @api_router.delete("/wishlist/{product_id}")
