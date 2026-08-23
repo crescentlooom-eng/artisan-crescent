@@ -7,12 +7,17 @@ import { useAuth } from "@/context/AuthContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { useTheme } from "@/context/ThemeContext";
 
-const CATEGORY_IMAGES = {
-  polo: "https://customer-assets.emergentagent.com/job_artisan-crescent/artifacts/aimwehfu_beige%201.png",
-  designer: "https://customer-assets.emergentagent.com/job_artisan-crescent/artifacts/t9hvhdc6_designer%20green%201.png",
-  basics: "https://customer-assets.emergentagent.com/job_artisan-crescent/artifacts/dp4xzzoz_plain%20black%201%20.png",
+const CATEGORY_IMAGES_DARK = {
+  polo: "/category-polo.png",
+  designer: "/category-prism.png",
+  basics: "/category-essentials.png",
 };
 
+const CATEGORY_IMAGES_LIGHT = {
+  polo: "/category-polo-light.png",
+  designer: "/category-prism-light.png",
+  basics: "/category-essentials-light.png",
+};
 function TrendCard({ product, index, theme }) {
   const { has, toggle } = useWishlist();
   const isWished = has(product.id);
@@ -184,7 +189,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ================= SHOP BY CATEGORY ================= */}
+            {/* ================= SHOP BY CATEGORY ================= */}
       <section className="px-6 md:px-12 max-w-none mx-auto pb-14">
         <div className="flex items-center justify-between mb-5">
           <h2 className="font-serif-display text-2xl">Shop by category</h2>
@@ -194,9 +199,9 @@ export default function HomePage() {
         </div>
         <div className="grid md:grid-cols-3 gap-5">
           {[
-            { title: "Textured Polos", sub: "The New Smart Casual", to: "/shop?category=polo", img: CATEGORY_IMAGES.polo },
-            { title: "Prism Wear", sub: "Everyday Designer Tees", to: "/shop?category=designer", img: CATEGORY_IMAGES.designer },
-            { title: "Essentials", sub: "Wear Your Vibe", to: "/shop?category=basics", img: CATEGORY_IMAGES.basics },
+            { title: "Textured Polos", sub: "The New Smart Casual", to: "/shop?category=polo", img: theme === "light" ? CATEGORY_IMAGES_LIGHT.polo : CATEGORY_IMAGES_DARK.polo },
+            { title: "Prism Wear", sub: "Everyday Designer Tees", to: "/shop?category=designer", img: theme === "light" ? CATEGORY_IMAGES_LIGHT.designer : CATEGORY_IMAGES_DARK.designer },
+            { title: "Essentials", sub: "Wear Your Vibe", to: "/shop?category=basics", img: theme === "light" ? CATEGORY_IMAGES_LIGHT.basics : CATEGORY_IMAGES_DARK.basics },
           ].map((c) => (
             <Link to={c.to} key={c.title} className="rounded-2xl overflow-hidden relative block h-72">
               <img src={c.img} alt={c.title} className="w-full h-full object-cover" />
@@ -227,8 +232,8 @@ export default function HomePage() {
       {/* ================= PROMO BANNER ================= */}
       <section className="px-6 md:px-12 max-w-none mx-auto pb-14">
         <div className="rounded-2xl overflow-hidden relative min-h-[220px] md:h-64 flex items-center" style={{ background: "var(--cl-surface)" }}>
-          {CATEGORY_IMAGES.designer && (
-            <img src={CATEGORY_IMAGES.designer} alt="" className="absolute inset-0 w-full h-full object-cover opacity-60" />
+                    {CATEGORY_IMAGES_DARK.designer && (
+            <img src={theme === "light" ? CATEGORY_IMAGES_LIGHT.designer : CATEGORY_IMAGES_DARK.designer} alt="" className="absolute inset-0 w-full h-full object-cover opacity-60" />
           )}
           <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, var(--cl-bg) 30%, transparent)" }} />
           <div className="relative z-10 px-6 md:px-10 py-8 md:py-0 flex items-center justify-between w-full">
