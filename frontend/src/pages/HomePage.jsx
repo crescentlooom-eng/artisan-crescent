@@ -230,14 +230,21 @@ export default function HomePage() {
       )}
 
       {/* ================= PROMO BANNER ================= */}
-                  <section className="px-6 md:px-12 max-w-none mx-auto pb-14">
-                        <div className="group rounded-2xl overflow-hidden relative block" style={{ background: theme === "light" ? "#F5EDE3" : "#0B0E1A" }}>
+                        <section className="px-6 md:px-12 max-w-none mx-auto pb-14">
+        <Link to="/shop" className="group rounded-2xl overflow-hidden relative block" style={{ background: theme === "light" ? "#F5EDE3" : "#0B0E1A" }}>
           <img
             src={theme === "light" ? "/promo-banner-light.png" : "/promo-banner.png"}
             alt="Rakshabandhan Special — Shop the Rakhi Sale"
             className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-105"
           />
-                    <Link
+          <span
+            className="hidden sm:inline-flex absolute bottom-8 left-1/2 -translate-x-1/2 items-center gap-2 text-sm font-medium px-6 py-3 rounded-full shadow-lg whitespace-nowrap"
+            style={{ background: theme === "light" ? "#7A1F2B" : "#B8860B", color: "#fff" }}
+          >
+            Shop the Rakhi Sale <ArrowRight size={14} />
+          </span>
+        </Link>
+      </section>
             to="/shop"
             className="absolute bottom-[12%] sm:bottom-[15%] left-1/2 -translate-x-1/2 inline-flex items-center gap-2 text-xs sm:text-sm font-medium px-5 py-2.5 sm:px-6 sm:py-3 rounded-full shadow-lg whitespace-nowrap"
             style={{ background: theme === "light" ? "#7A1F2B" : "#B8860B", color: "#fff" }}
