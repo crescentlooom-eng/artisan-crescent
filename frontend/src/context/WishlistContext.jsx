@@ -27,7 +27,7 @@ export const WishlistProvider = ({ children }) => {
 
   const has = (productId) => items.some((p) => p.id === productId);
 
-    const toggle = async (product) => {
+      const toggle = async (product) => {
     if (!user) return { needsAuth: true };
     if (has(product.id)) {
       await api.delete(`/wishlist/${product.id}`);
@@ -38,6 +38,7 @@ export const WishlistProvider = ({ children }) => {
         price: product.price,
         image: product.images?.[0] || null,
         category: product.category,
+        variant_id: product.variantId || null,
       });
     }
     await refresh();
