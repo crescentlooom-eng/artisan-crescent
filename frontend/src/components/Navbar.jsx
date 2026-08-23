@@ -78,9 +78,9 @@ export default function Navbar() {
           }`}
           style={!scrolled ? { background: "rgba(0,0,0,0.35)" } : undefined}
         >
-          <button
+                    <button
             data-testid="nav-theme-toggle"
-            onClick={toggleTheme}
+            onClick={(e) => toggleTheme(e)}
             aria-label="Toggle theme"
             className="hover:text-[#B8C0C8] transition-colors"
           >
