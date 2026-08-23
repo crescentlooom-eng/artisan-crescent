@@ -91,7 +91,7 @@ export default function HomePage() {
           background: "var(--cl-header-bg)",
           border: "1px solid rgba(184,192,200,0.35)",
           backdropFilter: "blur(12px)",
-          padding: "12px 28px", whiteSpace: "nowrap",
+          padding: "12px 20px", maxWidth: "90vw", textAlign: "center",
         }}>
           <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontSize: "14px", letterSpacing: "0.08em", color: "var(--cl-text)" }}>
             Welcome back, {firstName} 🌙
@@ -107,7 +107,7 @@ export default function HomePage() {
         >
           New Season Arrivals
         </span>
-        <h1 className="font-serif-display text-5xl md:text-6xl lg:text-7xl leading-[1.08] mb-6" style={{ fontWeight: 400 }}>
+        <h1 className="font-serif-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.08] mb-6" style={{ fontWeight: 400 }}>
           Where quiet speaks,<br />detail carries the room.
         </h1>
         <p className="text-base mb-9 max-w-lg mx-auto leading-relaxed" style={{ color: "var(--cl-subtext)" }}>
@@ -123,8 +123,8 @@ export default function HomePage() {
       </section>
 
             {/* ================= ARCH CAROUSEL ================= */}
-      <section className="px-6 md:px-12 max-w-none mx-auto pb-14">
-        <div className="flex items-end justify-center gap-3 md:gap-4 overflow-x-auto">
+<section className="px-6 md:px-12 max-w-none mx-auto pb-14 relative">
+        <div className="flex items-end justify-center gap-3 md:gap-4 overflow-x-auto" style={{ scrollSnapType: "x proximity", WebkitOverflowScrolling: "touch" }}>
           {[
             { img: theme === "light" ? "/ess-c1-light-1.png" : "/ess-c1-1.png", h: "h-64 md:h-72", to: "/shop?category=basics" },
             { img: theme === "light" ? "/prism-d3-light-1.png" : "/prism-d3-1.png", h: "h-72 md:h-80", to: "/shop?category=designer" },
@@ -141,6 +141,7 @@ export default function HomePage() {
                 background: "var(--cl-surface)",
                 boxShadow: "0 0 0 rgba(0,0,0,0)",
                 transitionProperty: "transform, box-shadow",
+                scrollSnapAlign: "center",
               }}
               onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "0 20px 30px -10px rgba(0,0,0,0.35)")}
               onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "0 0 0 rgba(0,0,0,0)")}
@@ -209,16 +210,16 @@ export default function HomePage() {
 
       {/* ================= PROMO BANNER ================= */}
       <section className="px-6 md:px-12 max-w-none mx-auto pb-14">
-        <div className="rounded-2xl overflow-hidden relative h-64 flex items-center" style={{ background: "var(--cl-surface)" }}>
+        <div className="rounded-2xl overflow-hidden relative min-h-[220px] md:h-64 flex items-center" style={{ background: "var(--cl-surface)" }}>
           {CATEGORY_IMAGES.designer && (
             <img src={CATEGORY_IMAGES.designer} alt="" className="absolute inset-0 w-full h-full object-cover opacity-60" />
           )}
           <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, var(--cl-bg) 30%, transparent)" }} />
-          <div className="relative z-10 px-10 flex items-center justify-between w-full">
+          <div className="relative z-10 px-6 md:px-10 py-8 md:py-0 flex items-center justify-between w-full">
             <div>
-              <p className="text-[11px] tracking-[0.2em] mb-2 uppercase" style={{ color: "var(--cl-subtext)" }}>Limited Time Offer</p>
-              <h3 className="font-serif-display text-3xl mb-2">Spring / Summer<br />Collection 2026</h3>
-              <p className="text-sm mb-4" style={{ color: "var(--cl-subtext)" }}>Upgrade your wardrobe with timeless essentials.</p>
+              <p className="text-[10px] md:text-[11px] tracking-[0.2em] mb-2 uppercase" style={{ color: "var(--cl-subtext)" }}>Limited Time Offer</p>
+              <h3 className="font-serif-display text-2xl md:text-3xl mb-2 leading-tight">Spring / Summer<br />Collection 2026</h3>
+              <p className="text-xs md:text-sm mb-4" style={{ color: "var(--cl-subtext)" }}>Upgrade your wardrobe with timeless essentials.</p>
               <Link to="/shop" className="inline-flex items-center gap-2 text-sm font-medium px-5 py-2.5 rounded-full" style={{ background: "var(--cl-text)", color: "var(--cl-bg)" }}>
                 Shop Now <ArrowRight size={14} />
               </Link>
