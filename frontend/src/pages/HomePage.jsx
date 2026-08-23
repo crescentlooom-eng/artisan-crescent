@@ -230,26 +230,14 @@ export default function HomePage() {
       )}
 
       {/* ================= PROMO BANNER ================= */}
-      <section className="px-6 md:px-12 max-w-none mx-auto pb-14">
-        <div className="rounded-2xl overflow-hidden relative min-h-[220px] md:h-64 flex items-center" style={{ background: "var(--cl-surface)" }}>
-                              <img src={theme === "light" ? "/promo-banner-light.png" : "/promo-banner.png"} alt="" className="absolute inset-0 w-full h-full object-cover opacity-60" />
-          <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, var(--cl-bg) 30%, transparent)" }} />
-          <div className="relative z-10 px-6 md:px-10 py-8 md:py-0 flex items-center justify-between w-full">
-            <div>
-                            <p className="text-[11px] tracking-[0.2em] mb-2 uppercase" style={{ color: "var(--cl-subtext)" }}>Rakshabandhan Special</p>
-              <h3 className="font-serif-display text-2xl md:text-3xl mb-2 leading-tight">Tie a Rakhi,<br />Untie a Deal</h3>
-              <p className="text-xs md:text-sm mb-4" style={{ color: "var(--cl-subtext)" }}>Festive prices on every piece — because good style deserves celebrating too.</p>
-              <Link to="/shop" className="inline-flex items-center gap-2 text-sm font-medium px-5 py-2.5 rounded-full" style={{ background: "var(--cl-text)", color: "var(--cl-bg)" }}>
-                Shop the Rakhi Sale <ArrowRight size={14} />
-              </Link>
-            </div>
-            <div className="hidden md:flex flex-col items-center justify-center w-28 h-28 rounded-full border-2 shrink-0" style={{ borderColor: "#B8C0C8" }}>
-              <span className="text-xs" style={{ color: "var(--cl-subtext)" }}>Rakhi</span>
-              <span className="text-2xl font-serif-display">Sale</span>
-              <span className="text-xs" style={{ color: "var(--cl-subtext)" }}>Is Here</span>
-            </div>
-          </div>
-        </div>
+            <section className="px-6 md:px-12 max-w-none mx-auto pb-14">
+        <Link to="/shop" className="group rounded-2xl overflow-hidden relative block min-h-[220px] md:h-64">
+          <img
+            src={theme === "light" ? "/promo-banner-light.png" : "/promo-banner.png"}
+            alt="Rakshabandhan Special — Shop the Rakhi Sale"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+        </Link>
       </section>
 
             {/* ================= TESTIMONIALS (placeholder copy — swap for real reviews) ================= */}
