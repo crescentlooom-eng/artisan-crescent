@@ -29,7 +29,6 @@ export const PRODUCTS = [
     images: [],
     variants: [
       {
-             {
         id: "polo-c1",
   name: "Dune Beige",
   color_hex: "#C9B493",
