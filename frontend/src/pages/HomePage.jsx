@@ -57,9 +57,21 @@ export default function HomePage() {
   const [showGreeting, setShowGreeting] = useState(false);
     const { user } = useAuth();
   const { theme } = useTheme();
+  const archScrollRef = React.useRef(null);
+  const archCenterItemRef = React.useRef(null);
+
+    useEffect(() => {
+    setTrending(listProducts({ new_arrival: true }).slice(0, 6));
+  }, []);
 
   useEffect(() => {
-    setTrending(listProducts({ new_arrival: true }).slice(0, 6));
+    const container = archScrollRef.current;
+    const item = archCenterItemRef.current;
+    if (!container || !item) return;
+    const containerWidth = container.clientWidth;
+    const itemLeft = item.offsetLeft;
+    const itemWidth = item.offsetWidth;
+    container.scrollLeft = itemLeft - containerWidth / 2 + itemWidth / 2;
   }, []);
 
   useEffect(() => {
@@ -123,8 +135,8 @@ export default function HomePage() {
       </section>
 
             {/* ================= ARCH CAROUSEL ================= */}
-<section className="px-6 md:px-12 max-w-none mx-auto pb-14 relative">
-        <div className="flex items-end justify-start md:justify-center gap-3 md:gap-4 overflow-x-auto" style={{ scrollSnapType: "x proximity", WebkitOverflowScrolling: "touch" }}>
+      <section className="px-6 md:px-12 max-w-none mx-auto pb-14 relative">
+        <div ref={archScrollRef} className="flex items-end justify-start md:justify-center gap-3 md:gap-4 overflow-x-auto" style={{ scrollSnapType: "x proximity", WebkitOverflowScrolling: "touch" }}>
           {[
             { img: theme === "light" ? "/ess-c1-light-1.png" : "/ess-c1-1.png", h: "h-64 md:h-72", to: "/shop?category=basics" },
             { img: theme === "light" ? "/prism-d3-light-1.png" : "/prism-d3-1.png", h: "h-72 md:h-80", to: "/shop?category=designer" },
@@ -135,6 +147,7 @@ export default function HomePage() {
             <Link
               to={arch.to}
               key={i}
+              ref={i === 2 ? archCenterItemRef : undefined}
               className={`shrink-0 w-32 md:w-44 ${arch.h} overflow-hidden block transition-all duration-300 ease-out hover:-translate-y-3 hover:scale-105`}
               style={{
                 borderRadius: "9999px 9999px 0 0",
