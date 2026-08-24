@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { RotateCcw, Repeat, Wallet, ShieldCheck, MessageCircle, Camera, Clock, PackageCheck, ChevronDown, X, Check } from "lucide-react";
 
-const HERO_IMG = "https://customer-assets.emergentagent.com/job_artisan-crescent/artifacts/dp4xzzoz_plain%20black%201%20.png";
+const HERO_IMG = "/returns-policy.png";
 
 const STEPS = [
   { Icon: MessageCircle, title: "WhatsApp Us", body: "Message us with your Order ID and reason for return." },
