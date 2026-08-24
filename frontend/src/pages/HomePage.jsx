@@ -18,6 +18,31 @@ const CATEGORY_IMAGES_LIGHT = {
   designer: "/category-prism-light.png",
   basics: "/category-essentials-light.png",
 };
+function useRakhiCountdown(targetDate) {
+  const [timeLeft, setTimeLeft] = React.useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+  React.useEffect(() => {
+    const target = new Date(targetDate).getTime();
+    const tick = () => {
+      const diff = target - Date.now();
+      if (diff <= 0) {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        return;
+      }
+      setTimeLeft({
+        days: Math.floor(diff / 86400000),
+        hours: Math.floor((diff / 3600000) % 24),
+        minutes: Math.floor((diff / 60000) % 60),
+        seconds: Math.floor((diff / 1000) % 60),
+      });
+    };
+    tick();
+    const interval = setInterval(tick, 1000);
+    return () => clearInterval(interval);
+  }, [targetDate]);
+
+  return timeLeft;
+}
 function TrendCard({ product, index, theme }) {
   const { has, toggle } = useWishlist();
   const isWished = has(product.id);
@@ -62,6 +87,7 @@ export default function HomePage() {
   const [showGreeting, setShowGreeting] = useState(false);
     const { user } = useAuth();
   const { theme } = useTheme();
+    const rakhiCountdown = useRakhiCountdown("2026-08-30T23:59:00+05:30");
   const archScrollRef = React.useRef(null);
   const archCenterItemRef = React.useRef(null);
 
