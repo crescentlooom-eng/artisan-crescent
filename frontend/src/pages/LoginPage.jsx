@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import { useTheme } from "@/context/ThemeContext";
 import { api, productImage } from "@/lib/api";
 import { getProductBySlug } from "@/data/products";
 import { Loader2, Mail, Lock, User } from "lucide-react";
@@ -9,6 +10,7 @@ import { Loader2, Mail, Lock, User } from "lucide-react";
 export default function LoginPage() {
   const { user, setUser } = useAuth();
   const navigate = useNavigate();
+    const { theme } = useTheme();
   const [mode, setMode] = useState("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
