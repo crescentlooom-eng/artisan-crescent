@@ -72,7 +72,6 @@ export const CartProvider = ({ children }) => {
       }
       return next;
     });
-    setOpen(true);
   };
 
   const removeItem = (key) => setItems((prev) => prev.filter((x) => x.key !== key));
