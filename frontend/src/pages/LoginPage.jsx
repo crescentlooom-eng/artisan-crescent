@@ -142,13 +142,9 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Right — image */}
-      <div className="hidden lg:block relative" style={{ background: "var(--cl-surface)" }}>
-        {heroImg ? (
-          <img src={heroImg} alt="Crescent Loom" className="w-full h-full object-cover" />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-xs tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Crescent Loom</div>
-        )}
+            {/* Right — image */}
+      <div className="hidden lg:block relative" style={{ background: "#0B0E1A" }}>
+        <img src="/login-model.png" alt="Crescent Loom" className="w-full h-full object-contain" />
       </div>
     </div>
   );
