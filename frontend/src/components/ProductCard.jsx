@@ -138,7 +138,16 @@ export default function ProductCard({ product, index = 0 }) {
             <div className="text-[12px] text-[#8A8FA8]/80 mt-2 leading-relaxed line-clamp-2">{product.description}</div>
           )}
         </div>
-        <div className="text-sm whitespace-nowrap pt-1" style={{ color: "var(--cl-text)" }}>{formatINR(product.price)}</div>
+                <div className="text-sm whitespace-nowrap pt-1 flex items-center gap-2" style={{ color: "var(--cl-text)" }}>
+          {product.salePrice ? (
+            <>
+              <span className="line-through opacity-50 text-xs">{formatINR(product.price)}</span>
+              <span>{formatINR(product.salePrice)}</span>
+            </>
+          ) : (
+            formatINR(product.price)
+          )}
+        </div>
       </div>
 
       {/* Keyframe injection */}
