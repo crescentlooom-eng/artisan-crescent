@@ -124,11 +124,11 @@ function AppRouter() {
 }
 
 function App() {
-  const [splash, setSplash] = React.useState(
-    () => !localStorage.getItem("cl_splash_seen")
+    const [splash, setSplash] = React.useState(
+    () => !sessionStorage.getItem("cl_splash_seen")
   );
   const dismissSplash = () => {
-    localStorage.setItem("cl_splash_seen", "1");
+    sessionStorage.setItem("cl_splash_seen", "1");
     setSplash(false);
   };
   return (
