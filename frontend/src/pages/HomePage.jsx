@@ -229,8 +229,8 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* ================= PROMO BANNER ================= */}
-                        <section className="px-6 md:px-12 max-w-none mx-auto pb-14">
+            {/* ==================== PROMO BANNER ==================== */}
+      <section className="px-6 md:px-12 max-w-none mx-auto pb-14">
         <Link to="/shop" className="group rounded-2xl overflow-hidden relative block" style={{ background: theme === "light" ? "#F5EDE3" : "#0B0E1A" }}>
           <img
             src={theme === "light" ? "/promo-banner-light.png" : "/promo-banner.png"}
@@ -245,15 +245,6 @@ export default function HomePage() {
           </span>
         </Link>
       </section>
-            to="/shop"
-            className="absolute bottom-[12%] sm:bottom-[15%] left-1/2 -translate-x-1/2 inline-flex items-center gap-2 text-xs sm:text-sm font-medium px-5 py-2.5 sm:px-6 sm:py-3 rounded-full shadow-lg whitespace-nowrap"
-            style={{ background: theme === "light" ? "#7A1F2B" : "#B8860B", color: "#fff" }}
-          >
-            Shop the Rakhi Sale <ArrowRight size={14} />
-          </Link>
-        </div>
-      </section>
-
             {/* ================= TESTIMONIALS (placeholder copy — swap for real reviews) ================= */}
       <section className="px-6 md:px-12 max-w-none mx-auto pb-14">
         <h2 className="font-serif-display text-2xl mb-5">What our customers say</h2>
