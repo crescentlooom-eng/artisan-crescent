@@ -9,7 +9,7 @@ export const PRODUCTS = [
     id: "p_polo_textured",
     name: "Textured Polo Tee",
     slug: "textured-polo-tee",
-    ccategory: "polo",
+    category: "polo",
     price: 399,
     salePrice: 329,
     description:
