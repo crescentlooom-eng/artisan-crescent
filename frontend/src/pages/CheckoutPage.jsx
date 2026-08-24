@@ -73,6 +73,17 @@ export default function CheckoutPage() {
       </div>
     );
   }
+    if (!user) {
+    return (
+      <div data-testid="checkout-login-required" className="pt-40 text-center page-fade min-h-[60vh] px-6">
+        <div className="font-serif-display text-4xl" style={{ color: "var(--cl-text)" }}>Sign in to complete your order.</div>
+        <p className="mt-4 text-sm max-w-md mx-auto" style={{ color: "var(--cl-subtext)" }}>
+          Create an account or sign in to check out — your bag is saved and waiting.
+        </p>
+        <button onClick={() => navigate("/login")} className="btn-gold mt-8">Sign In / Create Account</button>
+      </div>
+    );
+  }
 
     const update = (k, v) => setShipping((s) => ({ ...s, [k]: v }));
   const emailValid = user ? true : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
