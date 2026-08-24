@@ -63,10 +63,44 @@ function useIsUnlocked() {
 
   return unlocked;
 }
+function SaleCountdownBar() {
+  const [timeLeft, setTimeLeft] = React.useState(null);
 
+  React.useEffect(() => {
+    const target = new Date("2026-08-30T23:59:00+05:30").getTime();
+    const tick = () => {
+      const diff = target - Date.now();
+      if (diff <= 0) { setTimeLeft(null); return; }
+      setTimeLeft({
+        days: Math.floor(diff / 86400000),
+        hours: Math.floor((diff / 3600000) % 24),
+        minutes: Math.floor((diff / 60000) % 60),
+        seconds: Math.floor((diff / 1000) % 60),
+      });
+    };
+    tick();
+    const interval = setInterval(tick, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (!timeLeft) return null;
+
+  return (
+    <div
+      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center gap-2 py-2 text-[11px] sm:text-xs tracking-[0.15em] uppercase font-medium"
+      style={{ background: "#B8860B", color: "#fff" }}
+    >
+      <span>Rakhi Sale Ends In</span>
+      <span className="font-semibold">
+        {timeLeft.days}d {String(timeLeft.hours).padStart(2, "0")}h {String(timeLeft.minutes).padStart(2, "0")}m {String(timeLeft.seconds).padStart(2, "0")}s
+      </span>
+    </div>
+  );
+}
 function StorefrontLayout({ children }) {
   return (
     <>
+      <SaleCountdownBar />
       <CursorDot />
       <Navbar />
       <main><PageTransition>{children}</PageTransition></main>
