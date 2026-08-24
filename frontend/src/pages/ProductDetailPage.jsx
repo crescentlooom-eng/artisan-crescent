@@ -253,9 +253,9 @@ export default function ProductDetailPage() {
   const heroImg = images[activeImg] || productImage(product);
   const variantOutOfStock = variant?.in_stock === false;
 
-  const buildCartItem = () => {
+    const buildCartItem = () => {
     const productForCart = { ...product, images: images.length ? images : [productImage(product)] };
-    const meta = { size, quantity: qty };
+    const meta = { size, quantity: qty, variantId: variant?.id || null };
     const finalProduct = variant ? { ...productForCart, name: `${product.name} · ${variant.name}` } : productForCart;
     return { finalProduct, meta };
   };
