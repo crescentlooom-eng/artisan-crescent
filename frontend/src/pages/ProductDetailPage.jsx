@@ -377,7 +377,16 @@ export default function ProductDetailPage() {
           {/* Info */}
           <div className="lg:col-span-5 lg:pt-6">
             <h1 className="font-serif-display text-4xl md:text-5xl leading-[0.95]" style={{ color: "var(--cl-text)" }}>{product.name}</h1>
-            <div className="text-2xl mt-4" style={{ color: "var(--cl-text)", opacity: 0.85 }}>{formatINR(product.price)}</div>
+                        <div className="text-2xl mt-4 flex items-center gap-3" style={{ color: "var(--cl-text)", opacity: 0.85 }}>
+              {product.salePrice ? (
+                <>
+                  <span className="line-through opacity-50 text-lg">{formatINR(product.price)}</span>
+                  <span>{formatINR(product.salePrice)}</span>
+                </>
+              ) : (
+                formatINR(product.price)
+              )}
+            </div>
 
             {total > 0 && (
               <div className="flex items-center gap-2 mt-3">
