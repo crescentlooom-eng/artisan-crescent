@@ -30,7 +30,7 @@ export default function CheckoutPage() {
   const [redeemCards, setRedeemCards] = useState(0);
   const [paymentMode, setPaymentMode] = useState("prepaid");
   const [couponInput, setCouponInput] = useState("");
-    const [fieldErrors, setFieldErrors] = useState({});
+  const [fieldErrors, setFieldErrors] = useState({});
   const [shipping, setShipping] = useState({
     full_name: user?.name || "",
     phone: "",
@@ -74,7 +74,8 @@ export default function CheckoutPage() {
       </div>
     );
   }
-    if (!user) {
+
+  if (!user) {
     return (
       <div data-testid="checkout-login-required" className="pt-40 text-center page-fade min-h-[60vh] px-6">
         <div className="font-serif-display text-4xl" style={{ color: "var(--cl-text)" }}>Sign in to complete your order.</div>
@@ -86,12 +87,12 @@ export default function CheckoutPage() {
     );
   }
 
-    const update = (k, v) => setShipping((s) => ({ ...s, [k]: v }));
-    const clearFieldError = (k) => setFieldErrors((e) => { const next = { ...e }; delete next[k]; return next; });
+  const update = (k, v) => setShipping((s) => ({ ...s, [k]: v }));
+  const clearFieldError = (k) => setFieldErrors((e) => { const next = { ...e }; delete next[k]; return next; });
   const emailValid = user ? true : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
-  const allFilled = ["full_name","phone","address_line","city","state","pincode"].every((k) => shipping[k].trim().length > 0) && emailValid;
-    const placeOrder = async () => {
-        const requiredFields = ["full_name", "phone", "address_line", "city", "state", "pincode"];
+
+  const placeOrder = async () => {
+    const requiredFields = ["full_name", "phone", "address_line", "city", "state", "pincode"];
     const errors = {};
     requiredFields.forEach((k) => {
       if (!shipping[k].trim()) errors[k] = "This field is required";
@@ -112,7 +113,7 @@ export default function CheckoutPage() {
         size: it.size,
         image: it.image,
       }));
-            const res = await api.post("/payments/create-order", { items: orderItems, shipping, loom_credits_redeemed: redeemCards, payment_mode: paymentMode, email: user ? undefined : email });
+      const res = await api.post("/payments/create-order", { items: orderItems, shipping, loom_credits_redeemed: redeemCards, payment_mode: paymentMode, email: user ? undefined : email });
       const { order, razorpay_order, razorpay_key_id, demo_mode, cod_full_no_charge } = res.data;
 
       if (cod_full_no_charge) {
@@ -150,7 +151,7 @@ export default function CheckoutPage() {
         },
         modal: { ondismiss: () => setProcessing(false) },
       };
-            const rzp = new window.Razorpay(options);
+      const rzp = new window.Razorpay(options);
       rzp.on("payment.failed", async (resp) => {
         try {
           await api.post("/payments/notify-failure", { order_id: order.id });
@@ -168,7 +169,7 @@ export default function CheckoutPage() {
 
   return (
     <div data-testid="checkout-page" className="page-fade pt-32 pb-24 max-w-none mx-auto px-6 md:px-12">
-            <div className="text-[11px] tracking-[0.4em] uppercase mb-4 pt-2" style={{ color: "var(--cl-text)" }}>Checkout</div>
+      <div className="text-[11px] tracking-[0.4em] uppercase mb-4 pt-2" style={{ color: "var(--cl-text)" }}>Checkout</div>
       <h1 className="font-serif-display text-5xl md:text-6xl leading-[0.95]" style={{ color: "var(--cl-text)" }}>
         Your <span className="italic" style={{ color: "var(--cl-text)" }}>Bag</span>
       </h1>
@@ -179,7 +180,6 @@ export default function CheckoutPage() {
             <h2 className="font-serif-display text-2xl md:text-3xl mb-6" style={{ color: "var(--cl-text)" }}>Shipping</h2>
             <div className="grid sm:grid-cols-2 gap-x-6 gap-y-2">
               {!user && (
-                              {!user && (
                 <div className="sm:col-span-2">
                   <label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Email</label>
                   <input type="email" data-testid="checkout-email" value={email} onChange={(e) => { setEmail(e.target.value); clearFieldError("email"); }} placeholder="you@example.com" />
@@ -217,6 +217,8 @@ export default function CheckoutPage() {
                 <input data-testid="checkout-state" value={shipping.state} onChange={(e) => { update("state", e.target.value); clearFieldError("state"); }} />
                 {fieldErrors.state && <p className="text-xs mt-1" style={{ color: "#E57373" }}>{fieldErrors.state}</p>}
               </div>
+            </div>
+          </section>
 
           <section>
             <h2 className="font-serif-display text-2xl md:text-3xl mb-6" style={{ color: "var(--cl-text)" }}>Loom Credits</h2>
@@ -314,7 +316,7 @@ export default function CheckoutPage() {
                 { key: "cod_partial", label: "Partial COD", badge: "⚡ Priority packing — ships faster", desc: `Pay ${formatINR(Math.min(COD_TOKEN_AMOUNT, total))} now, ${formatINR(Math.max(0, total - COD_TOKEN_AMOUNT))} cash on delivery.` },
                 { key: "cod_full", label: "Cash on Delivery", badge: null, desc: `Pay ${formatINR(total)} in cash when your order arrives.` },
               ].map((opt) => (
-                                <button
+                <button
                   key={opt.key}
                   type="button"
                   onClick={() => setPaymentMode(opt.key)}
