@@ -65,7 +65,7 @@ export default function Navbar() {
 
                 {/* Center logo */}
         <Link to="/" data-testid="nav-logo" className="absolute left-1/2 -translate-x-1/2">
-  <img src={theme === "light" ? "/logo-black.png" : "/logo-white.png"} alt="Crescent Loom" className={`transition-all duration-500 ${scrolled ? "h-7" : "h-10"} w-auto`} />
+  <img src={theme === "light" ? "/logo-black.png" : "/logo-white.png"} alt="Crescent Loom" className={`transition-all duration-500 ${scrolled ? "h-9" : "h-12"} w-auto`} />
 </Link>
 
                 {/* Right icons */}
