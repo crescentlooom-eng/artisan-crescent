@@ -5,8 +5,6 @@ import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme } from "@/context/ThemeContext";
 
-const WORDMARK = "https://customer-assets.emergentagent.com/job_24c8e302-f443-4113-9597-93d7fedd037d/artifacts/u4a3crws_ChatGPT%20Image%20Jun%202%2C%202026%2C%2009_03_25%20PM.png";
-
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -67,8 +65,8 @@ export default function Navbar() {
 
                 {/* Center logo */}
         <Link to="/" data-testid="nav-logo" className="absolute left-1/2 -translate-x-1/2">
-          <img src={WORDMARK} alt="Crescent Loom" className={`transition-all duration-500 ${scrolled ? "h-7" : "h-10"} w-auto`} />
-        </Link>
+  <img src={theme === "light" ? "/logo-black.png" : "/logo-white.png"} alt="Crescent Loom" className={`transition-all duration-500 ${scrolled ? "h-7" : "h-10"} w-auto`} />
+</Link>
 
                 {/* Right icons */}
                         <div
