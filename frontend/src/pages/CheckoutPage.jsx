@@ -364,7 +364,13 @@ export default function CheckoutPage() {
             </div>
             <div className="divider-thin my-6" />
             <div className="flex items-center justify-between text-sm" style={{ color: "var(--cl-text)", opacity: 0.85 }}><span>Subtotal</span><span>{formatINR(subtotal)}</span></div>
-            <div className="flex items-center justify-between text-sm mt-2" style={{ color: "var(--cl-text)", opacity: 0.85 }}><span>Shipping</span><span>Complimentary</span></div>
+                        <div className="flex items-center justify-between text-sm mt-2" style={{ color: "var(--cl-text)", opacity: 0.85 }}>
+              <span>Shipping</span>
+              <span className="flex items-center gap-2">
+                <span className="line-through opacity-50">₹49</span>
+                <span style={{ color: "#8FBC8F" }}>Free</span>
+              </span>
+            </div>
             {discount > 0 && (
               <div className="flex items-center justify-between text-sm mt-2" style={{ color: "#B8C0C8" }} data-testid="checkout-loom-discount-row">
                 <span>Loom Credits ({redeemCards} × ₹{perCard})</span>
