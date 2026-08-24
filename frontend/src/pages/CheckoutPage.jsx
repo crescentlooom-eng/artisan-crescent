@@ -30,6 +30,7 @@ export default function CheckoutPage() {
   const [redeemCards, setRedeemCards] = useState(0);
   const [paymentMode, setPaymentMode] = useState("prepaid");
   const [couponInput, setCouponInput] = useState("");
+    const [fieldErrors, setFieldErrors] = useState({});
   const [shipping, setShipping] = useState({
     full_name: user?.name || "",
     phone: "",
@@ -86,11 +87,19 @@ export default function CheckoutPage() {
   }
 
     const update = (k, v) => setShipping((s) => ({ ...s, [k]: v }));
+    const clearFieldError = (k) => setFieldErrors((e) => { const next = { ...e }; delete next[k]; return next; });
   const emailValid = user ? true : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
   const allFilled = ["full_name","phone","address_line","city","state","pincode"].every((k) => shipping[k].trim().length > 0) && emailValid;
     const placeOrder = async () => {
-    if (!allFilled) {
-      toast.error(!emailValid && !user ? "Please enter a valid email address" : "Please complete your shipping details");
+        const requiredFields = ["full_name", "phone", "address_line", "city", "state", "pincode"];
+    const errors = {};
+    requiredFields.forEach((k) => {
+      if (!shipping[k].trim()) errors[k] = "This field is required";
+    });
+    if (!user && !emailValid) errors.email = "Enter a valid email address";
+    setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      toast.error("Please fill in the highlighted fields");
       return;
     }
     setProcessing(true);
@@ -170,20 +179,44 @@ export default function CheckoutPage() {
             <h2 className="font-serif-display text-2xl md:text-3xl mb-6" style={{ color: "var(--cl-text)" }}>Shipping</h2>
             <div className="grid sm:grid-cols-2 gap-x-6 gap-y-2">
               {!user && (
+                              {!user && (
                 <div className="sm:col-span-2">
                   <label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Email</label>
-                  <input type="email" data-testid="checkout-email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" />
+                  <input type="email" data-testid="checkout-email" value={email} onChange={(e) => { setEmail(e.target.value); clearFieldError("email"); }} placeholder="you@example.com" />
+                  {fieldErrors.email && <p className="text-xs mt-1" style={{ color: "#E57373" }}>{fieldErrors.email}</p>}
                   <p className="text-xs mt-1" style={{ color: "var(--cl-subtext)" }}>We'll send your order confirmation and tracking link here.</p>
                 </div>
               )}
-              <div className="sm:col-span-2"><label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Full Name</label><input data-testid="checkout-name" value={shipping.full_name} onChange={(e) => update("full_name", e.target.value)} /></div>
-              <div><label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Phone</label><input data-testid="checkout-phone" value={shipping.phone} onChange={(e) => update("phone", e.target.value)} /></div>
-              <div><label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Pincode</label><input data-testid="checkout-pincode" value={shipping.pincode} onChange={(e) => update("pincode", e.target.value)} /></div>
-              <div className="sm:col-span-2"><label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Address</label><input data-testid="checkout-address" value={shipping.address_line} onChange={(e) => update("address_line", e.target.value)} /></div>
-              <div><label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>City</label><input data-testid="checkout-city" value={shipping.city} onChange={(e) => update("city", e.target.value)} /></div>
-              <div><label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>State</label><input data-testid="checkout-state" value={shipping.state} onChange={(e) => update("state", e.target.value)} /></div>
-            </div>
-          </section>
+              <div className="sm:col-span-2">
+                <label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Full Name</label>
+                <input data-testid="checkout-name" value={shipping.full_name} onChange={(e) => { update("full_name", e.target.value); clearFieldError("full_name"); }} />
+                {fieldErrors.full_name && <p className="text-xs mt-1" style={{ color: "#E57373" }}>{fieldErrors.full_name}</p>}
+              </div>
+              <div>
+                <label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Phone</label>
+                <input data-testid="checkout-phone" value={shipping.phone} onChange={(e) => { update("phone", e.target.value); clearFieldError("phone"); }} />
+                {fieldErrors.phone && <p className="text-xs mt-1" style={{ color: "#E57373" }}>{fieldErrors.phone}</p>}
+              </div>
+              <div>
+                <label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Pincode</label>
+                <input data-testid="checkout-pincode" value={shipping.pincode} onChange={(e) => { update("pincode", e.target.value); clearFieldError("pincode"); }} />
+                {fieldErrors.pincode && <p className="text-xs mt-1" style={{ color: "#E57373" }}>{fieldErrors.pincode}</p>}
+              </div>
+              <div className="sm:col-span-2">
+                <label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>Address</label>
+                <input data-testid="checkout-address" value={shipping.address_line} onChange={(e) => { update("address_line", e.target.value); clearFieldError("address_line"); }} />
+                {fieldErrors.address_line && <p className="text-xs mt-1" style={{ color: "#E57373" }}>{fieldErrors.address_line}</p>}
+              </div>
+              <div>
+                <label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>City</label>
+                <input data-testid="checkout-city" value={shipping.city} onChange={(e) => { update("city", e.target.value); clearFieldError("city"); }} />
+                {fieldErrors.city && <p className="text-xs mt-1" style={{ color: "#E57373" }}>{fieldErrors.city}</p>}
+              </div>
+              <div>
+                <label className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "var(--cl-subtext)" }}>State</label>
+                <input data-testid="checkout-state" value={shipping.state} onChange={(e) => { update("state", e.target.value); clearFieldError("state"); }} />
+                {fieldErrors.state && <p className="text-xs mt-1" style={{ color: "#E57373" }}>{fieldErrors.state}</p>}
+              </div>
 
           <section>
             <h2 className="font-serif-display text-2xl md:text-3xl mb-6" style={{ color: "var(--cl-text)" }}>Loom Credits</h2>
