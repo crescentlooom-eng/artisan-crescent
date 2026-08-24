@@ -24,9 +24,9 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const navLinks = [
-    { to: "/shop", label: "Shop" },
-    { to: "/shop?category=designer", label: "Catalogue" },
+    const navLinks = [
+    { to: "/", label: "Home" },
+    { to: "/shop", label: "Catalogue" },
     { to: "/about", label: "Journal" },
   ];
 
