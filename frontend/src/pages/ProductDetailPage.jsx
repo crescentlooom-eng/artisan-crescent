@@ -526,10 +526,10 @@ export default function ProductDetailPage() {
             )}
 
             <div className="mt-10 flex items-center gap-4">
-              <div className="flex items-center border" style={{ borderColor: "rgba(184,192,200,0.3)" }}>
-                <button onClick={() => setQty(Math.max(1, qty - 1))} className="px-3 py-3" style={{ color: "var(--cl-text)" }}><Minus size={14} /></button>
+                            <div className="flex items-center border" style={{ borderColor: "rgba(184,192,200,0.3)" }}>
+                <button disabled className="px-3 py-3 opacity-30 cursor-not-allowed" style={{ color: "var(--cl-text)" }}><Minus size={14} /></button>
                 <span className="px-4 text-sm w-10 text-center" style={{ color: "var(--cl-text)" }} data-testid="product-qty">{qty}</span>
-                <button onClick={() => setQty(qty + 1)} className="px-3 py-3" style={{ color: "var(--cl-text)" }}><Plus size={14} /></button>
+                <button disabled className="px-3 py-3 opacity-30 cursor-not-allowed" style={{ color: "var(--cl-text)" }}><Plus size={14} /></button>
               </div>
               <button data-testid="product-wishlist-button" onClick={onWish} aria-label="Wishlist" className="p-3 border" style={{ borderColor: has(product.id) ? "#B8C0C8" : "rgba(184,192,200,0.3)", color: has(product.id) ? "#B8C0C8" : "var(--cl-text)" }}>
                 <Heart size={16} fill={has(product.id) ? "currentColor" : "none"} />
