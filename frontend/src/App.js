@@ -100,7 +100,6 @@ function SaleCountdownBar() {
 function StorefrontLayout({ children }) {
   return (
     <>
-      <SaleCountdownBar />
       <CursorDot />
       <Navbar />
       <main><PageTransition>{children}</PageTransition></main>
