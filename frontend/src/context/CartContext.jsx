@@ -42,9 +42,8 @@ export const CartProvider = ({ children }) => {
       const key = product.id + "::" + (variantId || "") + "::" + (size || "");
       const idx = prev.findIndex((x) => x.key === key);
       let next;
-      if (idx >= 0) {
-        next = [...prev];
-        next[idx] = { ...next[idx], quantity: next[idx].quantity + quantity };
+            if (idx >= 0) {
+        return prev; // already in bag at quantity 1 — do nothing
       } else {
         next = [
           ...prev,
@@ -75,8 +74,8 @@ export const CartProvider = ({ children }) => {
   };
 
   const removeItem = (key) => setItems((prev) => prev.filter((x) => x.key !== key));
-  const updateQty = (key, qty) =>
-    setItems((prev) => prev.map((x) => (x.key === key ? { ...x, quantity: Math.max(1, qty) } : x)));
+    const updateQty = (key, qty) =>
+    setItems((prev) => prev.map((x) => (x.key === key ? { ...x, quantity: 1 } : x)));
   const clear = () => { setItems([]); setCouponCode(null); };
 
   const subtotal = useMemo(() => items.reduce((s, i) => s + i.price * i.quantity, 0), [items]);
