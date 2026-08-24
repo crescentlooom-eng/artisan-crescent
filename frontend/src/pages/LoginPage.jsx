@@ -142,9 +142,9 @@ export default function LoginPage() {
         </div>
       </div>
 
-            {/* Right — image */}
-      <div className="hidden lg:block relative" style={{ background: "#0B0E1A" }}>
-        <img src="/login-model.png" alt="Crescent Loom" className="w-full h-full object-contain" />
+                  {/* Right — image */}
+      <div className="hidden lg:block relative" style={{ background: theme === "light" ? "#F5EDE3" : "#0B0E1A" }}>
+        <img src={theme === "light" ? "/login-model-light.png" : "/login-model.png"} alt="Crescent Loom" className="w-full h-full object-contain" />
       </div>
     </div>
   );
