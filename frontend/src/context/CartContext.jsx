@@ -27,11 +27,11 @@ export const CartProvider = ({ children }) => {
   const getPrismQty = (list) =>
     list.filter((x) => x.category === "designer").reduce((s, x) => s + x.quantity, 0);
 
-  const addItem = (product, { size = null, quantity = 1 } = {}) => {
+    const addItem = (product, { size = null, quantity = 1, variantId = null } = {}) => {
     const prevPrismQty = getPrismQty(items);
 
     setItems((prev) => {
-      const key = product.id + "::" + (size || "");
+            const key = product.id + "::" + (variantId || "") + "::" + (size || "");
       const idx = prev.findIndex((x) => x.key === key);
       let next;
       if (idx >= 0) {
@@ -43,6 +43,7 @@ export const CartProvider = ({ children }) => {
           {
             key,
             product_id: product.id,
+            variantId,
             name: product.name,
             slug: product.slug,
             price: product.salePrice || product.price,
