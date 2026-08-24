@@ -121,11 +121,11 @@ export default function HomePage() {
 
             {/* ================= HERO ================= */}
       <section className="px-6 md:px-12 pb-10 max-w-3xl mx-auto text-center">
-        <span
+                <span
           className="inline-block text-[11px] tracking-[0.2em] uppercase px-4 py-1.5 rounded-full border mb-6"
           style={{ borderColor: "var(--cl-border)", color: "var(--cl-subtext)" }}
         >
-          New Season Arrivals
+          Rakhi Sale Ends In {rakhiCountdown.days}d {String(rakhiCountdown.hours).padStart(2, "0")}h {String(rakhiCountdown.minutes).padStart(2, "0")}m {String(rakhiCountdown.seconds).padStart(2, "0")}s
         </span>
         <h1 className="font-serif-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.08] mb-6" style={{ fontWeight: 400 }}>
           Where quiet speaks,<br />detail carries the room.
