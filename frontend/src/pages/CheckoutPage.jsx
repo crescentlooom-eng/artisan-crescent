@@ -20,7 +20,7 @@ const loadRazorpayScript = () =>
 const COD_TOKEN_AMOUNT = 49;
 
 export default function CheckoutPage() {
-  const { items, subtotal, clear, updateQty, removeItem } = useCart();
+  const { items, subtotal, clear, updateQty, removeItem, couponCode, couponDiscount, applyCoupon, removeCoupon } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [processing, setProcessing] = useState(false);
@@ -29,6 +29,7 @@ export default function CheckoutPage() {
   const [loom, setLoom] = useState(null);
   const [redeemCards, setRedeemCards] = useState(0);
   const [paymentMode, setPaymentMode] = useState("prepaid");
+  const [couponInput, setCouponInput] = useState("");
   const [shipping, setShipping] = useState({
     full_name: user?.name || "",
     phone: "",
@@ -52,11 +53,17 @@ export default function CheckoutPage() {
     }
   }, [user]);
 
+  const handleApplyCoupon = (code) => {
+    const result = applyCoupon(code || couponInput);
+    if (result.success) { toast.success(result.message); setCouponInput(""); }
+    else { toast.error(result.message); }
+  };
+
   const perCard = loom?.per_card_inr || 5;
   const minRedeem = loom?.min_redeem || 3;
   const balance = loom?.balance || 0;
   const discount = redeemCards >= minRedeem ? redeemCards * perCard : 0;
-  const total = Math.max(0, subtotal - discount);
+  const total = Math.max(0, subtotal - discount - couponDiscount);
 
   if (items.length === 0) {
     return (
@@ -216,6 +223,46 @@ export default function CheckoutPage() {
           </section>
 
           <section>
+            <h2 className="font-serif-display text-2xl md:text-3xl mb-6" style={{ color: "var(--cl-text)" }}>Coupon Code</h2>
+            {couponCode ? (
+              <div className="border p-6 flex items-center justify-between" style={{ borderColor: "#B8C0C8" }}>
+                <div>
+                  <div className="text-[11px] tracking-[0.3em] uppercase" style={{ color: "#B8C0C8" }}>Applied</div>
+                  <div className="font-serif-display text-xl mt-1" style={{ color: "var(--cl-text)" }}>{couponCode} · −{formatINR(couponDiscount)}</div>
+                </div>
+                <button type="button" onClick={removeCoupon} className="text-[11px] tracking-[0.25em] uppercase gold-underline" style={{ color: "var(--cl-text)", opacity: 0.8 }}>Remove</button>
+              </div>
+            ) : (
+              <div className="border p-6" style={{ borderColor: "rgba(184,192,200,0.2)" }}>
+                <button
+                  type="button"
+                  onClick={() => handleApplyCoupon("RAKHI20")}
+                  className="inline-flex items-center gap-2 text-[11px] tracking-[0.2em] uppercase border px-4 py-2 mb-4"
+                  style={{ borderColor: "#B8C0C8", color: "#B8C0C8" }}
+                >
+                  RAKHI20 <span style={{ opacity: 0.7 }}>· Apply</span>
+                </button>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={couponInput}
+                    onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                    placeholder="Enter coupon code"
+                    className="flex-1 text-sm bg-transparent border px-3 py-2"
+                    style={{ borderColor: "var(--cl-border)", color: "var(--cl-text)" }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleApplyCoupon()}
+                    className="px-4 py-2 text-xs tracking-[0.2em] uppercase border shrink-0"
+                    style={{ borderColor: "var(--cl-text)", color: "var(--cl-text)" }}
+                  >Apply</button>
+                </div>
+              </div>
+            )}
+          </section>
+
+          <section>
             <h2 className="font-serif-display text-2xl md:text-3xl mb-6" style={{ color: "var(--cl-text)" }}>Payment</h2>
             <div className="space-y-3">
               {[
@@ -276,6 +323,12 @@ export default function CheckoutPage() {
               <div className="flex items-center justify-between text-sm mt-2" style={{ color: "#B8C0C8" }} data-testid="checkout-loom-discount-row">
                 <span>Loom Credits ({redeemCards} × ₹{perCard})</span>
                 <span>−{formatINR(discount)}</span>
+              </div>
+            )}
+            {couponDiscount > 0 && (
+              <div className="flex items-center justify-between text-sm mt-2" style={{ color: "#B8C0C8" }}>
+                <span>Coupon ({couponCode})</span>
+                <span>−{formatINR(couponDiscount)}</span>
               </div>
             )}
             <div className="divider-thin my-6" />
