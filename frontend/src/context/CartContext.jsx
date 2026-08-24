@@ -72,14 +72,20 @@ export const CartProvider = ({ children }) => {
     setItems((prev) => prev.map((x) => (x.key === key ? { ...x, quantity: Math.max(1, qty) } : x)));
   const clear = () => setItems([]);
 
-  const subtotal = useMemo(() => {
-    return items.reduce((s, i) => {
-      let payableQty = i.quantity;
-      if (i.category === "designer" && i.quantity >= PRISM_FREE_THRESHOLD) {
-        payableQty = i.quantity - PRISM_FREE_COUNT;
-      }
-      return s + i.price * payableQty;
-    }, 0);
+    const subtotal = useMemo(() => {
+    const designerItems = items.filter((i) => i.category === "designer");
+    const otherItems = items.filter((i) => i.category !== "designer");
+
+    const designerQty = designerItems.reduce((s, i) => s + i.quantity, 0);
+    const designerRaw = designerItems.reduce((s, i) => s + i.price * i.quantity, 0);
+    const discount = designerQty >= PRISM_FREE_THRESHOLD
+      ? PRISM_FREE_COUNT * (designerItems[0]?.price || 0)
+      : 0;
+    const designerTotal = designerRaw - discount;
+
+    const otherTotal = otherItems.reduce((s, i) => s + i.price * i.quantity, 0);
+
+    return designerTotal + otherTotal;
   }, [items]);
 
   const count = useMemo(() => items.reduce((s, i) => s + i.quantity, 0), [items]);
