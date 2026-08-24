@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Sparkles, PenTool, Heart } from "lucide-react";
 import useScrollReveal from "@/hooks/useScrollReveal";
+import { useTheme } from "@/context/ThemeContext";
 
 const TEAM = [
   { name: "Raghav Malhotra", role: "Co-Founder" },
@@ -9,10 +10,9 @@ const TEAM = [
   { name: "Kinshuk Malhotra", role: "Co-Founder" },
 ];
 
-const HERO_IMG = "https://customer-assets.emergentagent.com/job_artisan-crescent/artifacts/t9hvhdc6_designer%20green%201.png";
-
 export default function AboutPage() {
   useScrollReveal();
+    const { theme } = useTheme();
 
   return (
     <div data-testid="about-page" className="page-fade pt-28 md:pt-32 pb-24">
@@ -34,7 +34,7 @@ export default function AboutPage() {
             </p>
           </div>
           <div className="reveal-up rounded-2xl overflow-hidden" style={{ transitionDelay: "100ms" }}>
-            <img src={HERO_IMG} alt="Crescent Loom" className="w-full h-full object-cover" style={{ aspectRatio: "4/3" }} />
+            <img src={theme === "light" ? "/about-hero-light.png" : "/about-hero.png"} alt="Crescent Loom" className="w-full h-full object-cover" style={{ aspectRatio: "4/3" }} />
           </div>
         </div>
 
