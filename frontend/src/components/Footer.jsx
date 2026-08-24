@@ -2,6 +2,15 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 export default function Footer() {
+    const [email, setEmail] = React.useState("");
+  const handleSubscribe = () => {
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      alert("Please enter a valid email address");
+      return;
+    }
+    window.location.href = `mailto:crescent.looom@gmail.com?subject=Newsletter Signup&body=Please subscribe this email: ${encodeURIComponent(email.trim())}`;
+    setEmail("");
+  };
   return (
     <>
       <footer className="relative mt-8 border-t border-[var(--cl-border)] text-[var(--cl-text)]" style={{ backgroundColor: "var(--cl-bg)" }}>
@@ -59,13 +68,17 @@ export default function Footer() {
               <li><Link to="/returns" className="hover:text-[#B8C0C8]">Returns & Exchanges</Link></li>
               <li><Link to="/shipping" className="hover:text-[#B8C0C8]">Shipping Info</Link></li>
             </ul>
-            <div className="flex items-center border border-[var(--cl-border)] rounded-full pl-4 pr-1.5 py-1.5 max-w-xs">
+                        <div className="flex items-center border border-[var(--cl-border)] rounded-full pl-4 pr-1.5 py-1.5 max-w-xs">
               <input
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
                 placeholder="Enter your email"
                 className="flex-1 bg-transparent text-sm outline-none text-[var(--cl-text)] placeholder:text-[var(--cl-subtext)]"
               />
               <button
+                onClick={handleSubscribe}
                 aria-label="Submit email"
                 className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
                 style={{ background: "var(--cl-text)", color: "var(--cl-bg)" }}
