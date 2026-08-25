@@ -38,12 +38,10 @@ export default function Navbar() {
   };
 
   return (
-                <header
-      data-testid="navbar"
-            className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] ${
-        scrolled ? "py-3 bg-[var(--cl-bg)]/90 backdrop-blur-md" : "py-6 bg-transparent"
-      }`}
-    >
+                      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-32 -z-10"
+        style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.45), transparent)" }}
+      />
             <div className="max-w-none mx-auto px-4 sm:px-6 md:px-10 flex items-center justify-between">
         {/* Left nav */}
         <nav className="hidden md:flex items-center gap-8 text-[11px] tracking-[0.25em] uppercase text-[var(--cl-text)]/85">
