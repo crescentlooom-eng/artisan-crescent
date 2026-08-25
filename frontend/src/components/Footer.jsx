@@ -1,8 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function Footer() {
-    const [email, setEmail] = React.useState("");
+  const { theme } = useTheme();
+  const [email, setEmail] = React.useState("");
   const handleSubscribe = () => {
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       alert("Please enter a valid email address");
