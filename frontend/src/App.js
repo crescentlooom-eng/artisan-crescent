@@ -13,7 +13,6 @@ import { AdminAuthProvider } from "@/context/AdminAuthContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
-import CursorDot from "@/components/CursorDot";
 import PageTransition from "@/components/PageTransition";
 import SplashScreen from "@/components/SplashScreen";
 
@@ -100,7 +99,6 @@ function SaleCountdownBar() {
 function StorefrontLayout({ children }) {
   return (
     <>
-      <CursorDot />
       <Navbar />
       <main><PageTransition>{children}</PageTransition></main>
       <Footer />
@@ -108,7 +106,6 @@ function StorefrontLayout({ children }) {
     </>
   );
 }
-
 function AppRouter() {
   const location = useLocation();
   const isUnlocked = useIsUnlocked();
