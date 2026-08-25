@@ -40,8 +40,8 @@ export default function Navbar() {
   return (
                 <header
       data-testid="navbar"
-      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] bg-transparent ${
-        scrolled ? "py-3" : "py-6"
+            className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+        scrolled ? "py-3 bg-[var(--cl-bg)]/90 backdrop-blur-md" : "py-6 bg-transparent"
       }`}
     >
             <div className="max-w-none mx-auto px-4 sm:px-6 md:px-10 flex items-center justify-between">
