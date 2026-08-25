@@ -17,10 +17,8 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 grid md:grid-cols-[1.6fr_1fr_1fr_1fr] gap-8 md:gap-12">
           {/* Brand column */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--cl-text)" strokeWidth="1.5">
-                <path d="M15.5 3.5a9 9 0 1 0 5 16.1A9.5 9.5 0 0 1 15.5 3.5z" fill="var(--cl-text)" stroke="none" />
-              </svg>
+                        <div className="flex items-center gap-2 mb-4">
+              <img src={theme === "light" ? "/logo-black.png" : "/logo-white.png"} alt="Crescent Loom" className="h-6 w-auto" />
               <span className="font-serif-display text-lg tracking-wide">CRESCENT LOOM</span>
             </div>
             <p className="text-[var(--cl-subtext)] text-sm leading-relaxed max-w-xs">
