@@ -207,8 +207,8 @@ export default function ProductDetailPage() {
     setProduct(p);
     setPincode(""); setPincodeResult(null); setPincodeError("");
     if (p) {
-      if (window.fbq) {
-        window.fbq('track', 'ViewContent', { content_name: p.name, content_ids: [p.id], content_type: 'product', value: p.price, currency: 'INR' });
+            if (window.fbq) {
+        window.fbq('track', 'ViewContent', { content_name: p.name, content_ids: [p.id], content_type: 'product', value: p.salePrice || p.price, currency: 'INR' });
       }
       const requestedVariant = searchParams.get("variant");
       const initialIdx = requestedVariant
@@ -260,9 +260,9 @@ export default function ProductDetailPage() {
     return { finalProduct, meta };
   };
 
-  const onAdd = () => {
+    const onAdd = () => {
     if (window.fbq) {
-      window.fbq('track', 'AddToCart', { content_name: product.name + (variant ? ' · ' + variant.name : ''), content_ids: [product.id], content_type: 'product', value: product.price * qty, currency: 'INR' });
+      window.fbq('track', 'AddToCart', { content_name: product.name + (variant ? ' · ' + variant.name : ''), content_ids: [product.id], content_type: 'product', value: (product.salePrice || product.price) * qty, currency: 'INR' });
     }
     const { finalProduct, meta } = buildCartItem();
     addItem(finalProduct, meta);
