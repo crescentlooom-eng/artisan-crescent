@@ -364,7 +364,7 @@ export default function ProductDetailPage() {
 
               <div className="mt-8 divider-thin" />
               <div className="mt-6 space-y-2">
-                {["Delivered within 3–5 days · Delhi NCR", "Return & Exchange · 7 days", "Made in India"].map((point) => (
+                                {["Delivered within 3–5 days · India", "Return & Exchange · 7 days", "Made in India"].map((point) => (
                   <div key={point} className="flex items-center gap-2 text-[11px] tracking-[0.25em] uppercase" style={{ color: "var(--cl-subtext)" }}>
                     <span className="w-1 h-1 rounded-full flex-shrink-0" style={{ background: "#B8C0C8" }} />
                     {point}
