@@ -50,7 +50,7 @@ export const PRODUCTS = [
         id: "polo-c3",
         name: "Graphite Black",
         color_hex: "#2A2A2D",
-        out_of_stock_sizes: ["L"],
+        out_of_stock_sizes: ["M", "L"],
         images: ["/polo-c3-1.png", "/polo-c3-2.png", "/polo-c3-3.png", "/polo-c3-4.png"],
         imagesLight: ["/polo-c3-light-1.png", "/polo-c3-light-2.png", "/polo-c3-light-3.png", "/polo-c3-light-4.png"],
         in_stock: true,
