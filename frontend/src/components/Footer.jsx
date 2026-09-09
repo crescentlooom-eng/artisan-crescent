@@ -111,7 +111,7 @@ export default function Footer() {
           backdropFilter: "blur(12px)",
           WebkitBackdropFilter: "blur(12px)",
           border: "1px solid rgba(184,192,200,0.35)",
-          color: "#FFFFFF",
+          color: theme === "light" ? "#0B0E1A" : "#FFFFFF",
         }}
         aria-label="WhatsApp"
       >
