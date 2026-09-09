@@ -18,31 +18,6 @@ const CATEGORY_IMAGES_LIGHT = {
   designer: "/category-prism-light.png",
   basics: "/category-essentials-light.png",
 };
-function useRakhiCountdown(targetDate) {
-  const [timeLeft, setTimeLeft] = React.useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-
-  React.useEffect(() => {
-    const target = new Date(targetDate).getTime();
-    const tick = () => {
-      const diff = target - Date.now();
-      if (diff <= 0) {
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-        return;
-      }
-      setTimeLeft({
-        days: Math.floor(diff / 86400000),
-        hours: Math.floor((diff / 3600000) % 24),
-        minutes: Math.floor((diff / 60000) % 60),
-        seconds: Math.floor((diff / 1000) % 60),
-      });
-    };
-    tick();
-    const interval = setInterval(tick, 1000);
-    return () => clearInterval(interval);
-  }, [targetDate]);
-
-  return timeLeft;
-}
 function TrendCard({ product, index, theme }) {
   const { has, toggle } = useWishlist();
   const isWished = has(product.id);
@@ -86,8 +61,7 @@ export default function HomePage() {
   const [trending, setTrending] = useState([]);
   const [showGreeting, setShowGreeting] = useState(false);
     const { user } = useAuth();
-  const { theme } = useTheme();
-    const rakhiCountdown = useRakhiCountdown("2026-08-30T23:59:00+05:30");
+const { theme } = useTheme();
   const archScrollRef = React.useRef(null);
   const archCenterItemRef = React.useRef(null);
 
@@ -148,11 +122,7 @@ export default function HomePage() {
             {/* ================= HERO ================= */}
       <section className="px-6 md:px-12 pb-10 max-w-3xl mx-auto text-center">
                 <span
-          className="inline-block text-[11px] tracking-[0.2em] uppercase px-4 py-1.5 rounded-full border mb-6"
-          style={{ borderColor: "var(--cl-border)", color: "var(--cl-subtext)" }}
-        >
-          Rakhi Sale Ends In {rakhiCountdown.days}d {String(rakhiCountdown.hours).padStart(2, "0")}h {String(rakhiCountdown.minutes).padStart(2, "0")}m {String(rakhiCountdown.seconds).padStart(2, "0")}s
-        </span>
+          <section className="px-6 md:px-12 pb-10 max-w-3xl mx-auto text-center">
         <h1 className="font-serif-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.08] mb-6" style={{ fontWeight: 400 }}>
           Where quiet speaks,<br />detail carries the room.
         </h1>
@@ -254,23 +224,6 @@ export default function HomePage() {
           </div>
         </section>
       )}
-
-            {/* ==================== PROMO BANNER ==================== */}
-      <section className="px-6 md:px-12 max-w-none mx-auto pb-14">
-        <Link to="/shop" className="group rounded-2xl overflow-hidden relative block" style={{ background: theme === "light" ? "#F5EDE3" : "#0B0E1A" }}>
-          <img
-            src={theme === "light" ? "/promo-banner-light.png" : "/promo-banner.png"}
-            alt="Rakshabandhan Special — Shop the Rakhi Sale"
-            className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-105"
-          />
-          <span
-            className="hidden sm:inline-flex absolute bottom-8 left-1/2 -translate-x-1/2 items-center gap-2 text-sm font-medium px-6 py-3 rounded-full shadow-lg whitespace-nowrap"
-            style={{ background: theme === "light" ? "#7A1F2B" : "#B8860B", color: "#fff" }}
-          >
-            Shop the Rakhi Sale <ArrowRight size={14} />
-          </span>
-        </Link>
-      </section>
             {/* ================= TESTIMONIALS (placeholder copy — swap for real reviews) ================= */}
       <section className="px-6 md:px-12 max-w-none mx-auto pb-14">
         <h2 className="font-serif-display text-2xl mb-5">What our customers say</h2>
