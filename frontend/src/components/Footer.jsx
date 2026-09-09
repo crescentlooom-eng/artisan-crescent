@@ -107,8 +107,11 @@ export default function Footer() {
         rel="noopener noreferrer"
         className="fixed bottom-6 right-6 z-50 rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
         style={{
-          background: theme === "light" ? "#0B0E1A" : "#B8C0C8",
-          color: theme === "light" ? "#F5F0E8" : "#0B0E1A",
+          background: "var(--cl-header-bg)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          border: "1px solid rgba(184,192,200,0.35)",
+          color: "#FFFFFF",
         }}
         aria-label="WhatsApp"
       >
