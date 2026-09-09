@@ -120,9 +120,7 @@ const { theme } = useTheme();
       )}
 
             {/* ================= HERO ================= */}
-      <section className="px-6 md:px-12 pb-10 max-w-3xl mx-auto text-center">
-                <span
-          <section className="px-6 md:px-12 pb-10 max-w-3xl mx-auto text-center">
+       <section className="px-6 md:px-12 pb-10 max-w-3xl mx-auto text-center">
         <h1 className="font-serif-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.08] mb-6" style={{ fontWeight: 400 }}>
           Where quiet speaks,<br />detail carries the room.
         </h1>
