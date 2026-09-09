@@ -11,7 +11,6 @@ export const PRODUCTS = [
     slug: "textured-polo-tee",
     category: "polo",
     price: 399,
-    salePrice: 329,
     description:
             "A study in quiet texture. Cut from breathable cotton with a subtly woven surface — understated detail for those who notice.",
     sizes: ["M", "L", "XL"],
@@ -183,7 +182,6 @@ export const PRODUCTS = [
     slug: "essential-tee",
         category: "basics",
     price: 299,
-    salePrice: 199,
     description: "The foundation of a considered wardrobe. Pure cotton, clean lines, no excess — made to be worn often and loved longer.",
         sizes: ["S", "M"],
     colors: [],
