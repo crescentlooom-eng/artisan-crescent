@@ -102,10 +102,14 @@ export default function Footer() {
         </div>
       </footer>
 
-      <a href="https://wa.me/919810924300"
+       <a href="https://wa.me/919810924300"
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+        className="fixed bottom-6 right-6 z-50 rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+        style={{
+          background: theme === "light" ? "#0B0E1A" : "#B8C0C8",
+          color: theme === "light" ? "#F5F0E8" : "#0B0E1A",
+        }}
         aria-label="WhatsApp"
       >
         <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
