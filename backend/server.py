@@ -213,10 +213,14 @@ class Product(BaseModel):
     slug: str
     category: str  # tops, bottoms, outerwear, accessories
     price: float
+    salePrice: Optional[float] = None
     description: str
     images: List[str] = []  # fallback / hero images when no variants
+    imagesLight: List[str] = []
     sizes: List[str] = ["XS", "S", "M", "L", "XL"]
     colors: List[str] = []
+    keywords: List[str] = []
+    highlights: dict = {}
     variants: List[Variant] = []
     material: Optional[str] = None
     in_stock: bool = True
@@ -229,10 +233,14 @@ class ProductCreate(BaseModel):
     slug: str
     category: str
     price: float
+    salePrice: Optional[float] = None
     description: str
     images: List[str] = []
+    imagesLight: List[str] = []
     sizes: List[str] = ["XS", "S", "M", "L", "XL"]
     colors: List[str] = []
+    keywords: List[str] = []
+    highlights: dict = {}
     variants: List[Variant] = []
     material: Optional[str] = None
     featured: bool = False
