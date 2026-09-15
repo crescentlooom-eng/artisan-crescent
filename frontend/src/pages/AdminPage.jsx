@@ -4,12 +4,13 @@ import { api, formatINR } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 import { Plus, Edit2, Trash2, X, Star } from "lucide-react";
-import VariantEditor from "@/components/admin/VariantEditor";
+import VariantEditor, { VariantImageUploader } from "@/components/admin/VariantEditor";
 import LoomCreditsAdmin from "@/components/admin/LoomCreditsAdmin";
 
 const EMPTY = {
-  name: "", slug: "", category: "polo", price: 0, description: "",
-  images: [], sizes: ["M", "L", "XL"], colors: [], material: "",
+  name: "", slug: "", category: "polo", price: 0, salePrice: "", description: "",
+  images: [], imagesLight: [], sizes: ["M", "L", "XL"], colors: [], material: "",
+  keywords: [], highlights: { sleeve: "", fabric: "", neck_type: "", pattern: "" },
   variants: [], featured: false, new_arrival: false,
 };
 
@@ -22,8 +23,12 @@ function ProductForm({ initial, onClose, onSaved }) {
     const payload = {
       ...form,
       price: Number(form.price),
+      salePrice: form.salePrice === "" || form.salePrice === null ? null : Number(form.salePrice),
       sizes: typeof form.sizes === "string" ? form.sizes.split(",").map((s) => s.trim()).filter(Boolean) : form.sizes,
       colors: typeof form.colors === "string" ? form.colors.split(",").map((s) => s.trim()).filter(Boolean) : form.colors,
+      keywords: typeof form.keywords === "string" ? form.keywords.split(",").map((s) => s.trim()).filter(Boolean) : (form.keywords || []),
+      imagesLight: form.imagesLight || [],
+      highlights: form.highlights || {},
       variants: form.variants || [],
     };
     try {
@@ -59,14 +64,30 @@ function ProductForm({ initial, onClose, onSaved }) {
             </select>
           </div>
           <div><label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Price (INR)</label><input type="number" value={form.price} onChange={(e) => set("price", e.target.value)} /></div>
+          <div><label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Sale Price (optional)</label><input type="number" value={form.salePrice ?? ""} placeholder="Leave blank for no sale" onChange={(e) => set("salePrice", e.target.value)} /></div>
           <div><label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Material</label><input value={form.material || ""} onChange={(e) => set("material", e.target.value)} /></div>
+          <div><label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Keywords (comma-separated)</label><input value={Array.isArray(form.keywords) ? form.keywords.join(", ") : (form.keywords || "")} onChange={(e) => set("keywords", e.target.value)} /></div>
           <div className="col-span-2"><label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Description</label><textarea value={form.description} onChange={(e) => set("description", e.target.value)} rows={3} /></div>
           <div className="col-span-2"><label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Sizes (comma-separated)</label><input value={Array.isArray(form.sizes) ? form.sizes.join(", ") : form.sizes} onChange={(e) => set("sizes", e.target.value)} /></div>
+          <div><label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Highlight: Sleeve</label><input value={form.highlights?.sleeve || ""} onChange={(e) => set("highlights", { ...form.highlights, sleeve: e.target.value })} placeholder="e.g. Half Sleeve" /></div>
+          <div><label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Highlight: Fabric</label><input value={form.highlights?.fabric || ""} onChange={(e) => set("highlights", { ...form.highlights, fabric: e.target.value })} placeholder="e.g. 100% Cotton" /></div>
+          <div><label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Highlight: Neck Type</label><input value={form.highlights?.neck_type || ""} onChange={(e) => set("highlights", { ...form.highlights, neck_type: e.target.value })} placeholder="e.g. Polo Neck" /></div>
+          <div><label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8]">Highlight: Pattern</label><input value={form.highlights?.pattern || ""} onChange={(e) => set("highlights", { ...form.highlights, pattern: e.target.value })} placeholder="e.g. Textured Weave" /></div>
           <label className="flex items-center gap-2 text-sm text-[#F5F0E8]"><input type="checkbox" className="!w-auto" checked={form.featured} onChange={(e) => set("featured", e.target.checked)} /> Featured</label>
           <label className="flex items-center gap-2 text-sm text-[#F5F0E8]"><input type="checkbox" className="!w-auto" checked={form.new_arrival} onChange={(e) => set("new_arrival", e.target.checked)} /> New Arrival</label>
         </div>
         <div className="mt-6">
           <VariantEditor variants={form.variants || []} onChange={(v) => set("variants", v)} />
+        </div>
+        <div className="mt-6">
+          <label className="text-[10px] tracking-[0.3em] uppercase text-[#8A8FA8]">Product-level Light Theme Images (fallback if no variants)</label>
+          <div className="mt-1">
+            <VariantImageUploader
+              images={form.imagesLight || []}
+              onChange={(imgs) => set("imagesLight", imgs)}
+              variantName="product-light"
+            />
+          </div>
         </div>
         <div className="flex gap-3 mt-8">
           <button onClick={save} data-testid="admin-product-save" className="btn-gold flex-1">Save</button>
