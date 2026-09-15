@@ -203,6 +203,8 @@ class Variant(BaseModel):
     name: str  # e.g. "Black", "Print 01"
     color_hex: Optional[str] = None
     images: List[str] = []
+    imagesLight: List[str] = []
+    out_of_stock_sizes: List[str] = []
     in_stock: bool = True
 
 class Product(BaseModel):
