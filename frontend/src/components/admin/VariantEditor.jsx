@@ -72,7 +72,7 @@ export default function VariantEditor({ variants, onChange }) {
     onChange(next);
   };
   const remove = (i) => onChange(variants.filter((_, j) => j !== i));
-  const add = () => onChange([...variants, { id: `v_${Math.random().toString(36).slice(2,10)}`, name: `Variant ${variants.length+1}`, color_hex: "", images: [] }]);
+const add = () => onChange([...variants, { id: `v_${Math.random().toString(36).slice(2,10)}`, name: `Variant ${variants.length+1}`, color_hex: "", images: [], imagesLight: [], out_of_stock_sizes: [] }]);
 
   return (
     <div className="border border-[#B8C0C8]/15 p-4">
@@ -100,11 +100,34 @@ export default function VariantEditor({ variants, onChange }) {
                 </button>
               </div>
             </div>
-            <VariantImageUploader
-              images={v.images || []}
-              onChange={(imgs) => update(i, { images: imgs })}
-              variantName={v.name?.toLowerCase().replace(/\s+/g, "-") || i}
-            />
+            <div className="mb-3">
+              <label className="text-[10px] tracking-[0.3em] uppercase text-[#8A8FA8]">Dark Theme Images</label>
+              <div className="mt-1">
+                <VariantImageUploader
+                  images={v.images || []}
+                  onChange={(imgs) => update(i, { images: imgs })}
+                  variantName={v.name?.toLowerCase().replace(/\s+/g, "-") || i}
+                />
+              </div>
+            </div>
+            <div className="mb-3">
+              <label className="text-[10px] tracking-[0.3em] uppercase text-[#8A8FA8]">Light Theme Images (optional — falls back to dark)</label>
+              <div className="mt-1">
+                <VariantImageUploader
+                  images={v.imagesLight || []}
+                  onChange={(imgs) => update(i, { imagesLight: imgs })}
+                  variantName={`${v.name?.toLowerCase().replace(/\s+/g, "-") || i}-light`}
+                />
+              </div>
+            </div>
+            <div>
+              <label className="text-[10px] tracking-[0.3em] uppercase text-[#8A8FA8]">Out-of-Stock Sizes (comma-separated, e.g. L, XL)</label>
+              <input
+                value={(v.out_of_stock_sizes || []).join(", ")}
+                onChange={(e) => update(i, { out_of_stock_sizes: e.target.value.split(",").map((s) => s.trim()).filter(Boolean) })}
+                data-testid={`variant-oos-sizes-${i}`}
+              />
+            </div>
           </div>
         ))}
       </div>
