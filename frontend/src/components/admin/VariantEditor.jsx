@@ -5,7 +5,7 @@ import { Upload, X, Plus, Loader2 } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-function VariantImageUploader({ images, onChange, variantName }) {
+export function VariantImageUploader({ images, onChange, variantName }) {
   const [uploading, setUploading] = useState(false);
   const inputRef = useRef(null);
 
