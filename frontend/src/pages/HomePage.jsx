@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Play, Truck, PackageCheck, ShieldCheck, Headphones, Heart, Star } from "lucide-react";
-import { productImage, formatINR, expandForCatalog } from "@/lib/api";
-import { listProducts, PRODUCTS } from "@/data/products";
+import { productImage, formatINR, expandForCatalog, api } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { useTheme } from "@/context/ThemeContext";
@@ -66,10 +65,13 @@ const { theme } = useTheme();
   const archCenterItemRef = React.useRef(null);
 
         useEffect(() => {
-    const poloCards = expandForCatalog(PRODUCTS.filter((p) => p.category === "polo")).slice(0, 3);
-    const prismCards = expandForCatalog(PRODUCTS.filter((p) => p.category === "designer")).slice(0, 2);
-    const essentialCards = expandForCatalog(PRODUCTS.filter((p) => p.category === "basics")).slice(0, 1);
-    setTrending([...poloCards, ...prismCards, ...essentialCards]);
+    api.get("/products").then((r) => {
+      const all = r.data || [];
+      const poloCards = expandForCatalog(all.filter((p) => p.category === "polo")).slice(0, 3);
+      const prismCards = expandForCatalog(all.filter((p) => p.category === "designer")).slice(0, 2);
+      const essentialCards = expandForCatalog(all.filter((p) => p.category === "basics")).slice(0, 1);
+      setTrending([...poloCards, ...prismCards, ...essentialCards]);
+    }).catch(() => {});
   }, []);
 
   useEffect(() => {
