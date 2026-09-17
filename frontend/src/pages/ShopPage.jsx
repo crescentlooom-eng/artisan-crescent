@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { PRODUCTS, listProducts } from "@/data/products";
-import { expandForCatalog } from "@/lib/api";
+import { listProducts } from "@/data/products";
+import { expandForCatalog, api } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
 import useScrollReveal from "@/hooks/useScrollReveal";
 import { ChevronDown, ChevronUp, SlidersHorizontal, X } from "lucide-react";
@@ -22,6 +22,10 @@ const PER_PAGE = 9;
 
 export default function ShopPage() {
   const [params, setParams] = useSearchParams();
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    api.get("/products").then((r) => setProducts(r.data || [])).catch(() => {});
+  }, []);
   const [sort, setSort] = useState("newest");
   const [sizes, setSizes] = useState([]);
   const [colors, setColors] = useState([]);
@@ -33,18 +37,19 @@ export default function ShopPage() {
   const category = params.get("category") || "all";
   const q = params.get("q") || "";
 
-  const allCards = useMemo(() => expandForCatalog(PRODUCTS), []);
+  const allCards = useMemo(() => expandForCatalog(products), [products]);
   const priceBounds = useMemo(() => {
-    const prices = PRODUCTS.map((p) => p.price);
+    if (!products.length) return { min: 0, max: 0 };
+    const prices = products.map((p) => p.price);
     return { min: Math.min(...prices), max: Math.max(...prices) };
-  }, []);
+  }, [products]);
   useEffect(() => { if (maxPrice === null) setMaxPrice(priceBounds.max); }, [priceBounds, maxPrice]);
 
   const allSizes = useMemo(() => {
     const order = ["XS", "S", "M", "L", "XL", "XXL", "Free Size"];
-    const set = new Set(PRODUCTS.flatMap((p) => p.sizes || []));
+    const set = new Set(products.flatMap((p) => p.sizes || []));
     return order.filter((s) => set.has(s));
-  }, []);
+  }, [products]);
 
   const allColors = useMemo(() => {
     const set = new Map();
@@ -61,7 +66,7 @@ export default function ShopPage() {
   }, [allCards]);
 
   const filtered = useMemo(() => {
-    const base = listProducts({ category: category === "all" ? undefined : category, q: q || undefined });
+    const base = listProducts(products, { category: category === "all" ? undefined : category, q: q || undefined });
     let list = expandForCatalog(base);
 
     const seen = new Set();
@@ -78,7 +83,7 @@ export default function ShopPage() {
     if (sort === "price-asc") list = [...list].sort((a, b) => a.price - b.price);
     if (sort === "price-desc") list = [...list].sort((a, b) => b.price - a.price);
     return list;
-  }, [category, q, sizes, colors, maxPrice, sort]);
+    }, [category, q, sizes, colors, maxPrice, sort, products]);
 
   useScrollReveal([filtered, page]);
   useEffect(() => { setPage(1); }, [category, q, sizes, colors, maxPrice, sort]);
