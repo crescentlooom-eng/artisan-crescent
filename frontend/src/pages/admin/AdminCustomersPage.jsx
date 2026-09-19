@@ -212,8 +212,20 @@ export default function AdminCustomersPage() {
       <h1 className="font-serif-display text-3xl md:text-4xl text-[#F5F0E8]">Everyone who&rsquo;s touched the loom.</h1>
 
       <div className="flex items-center gap-4 mt-8">
-        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search name, email or phone…" className="max-w-md" data-testid="customers-search-input" />
-        <button onClick={() => setAddOpen(true)} className="btn-gold whitespace-nowrap" data-testid="add-customer-button">+ Add Customer</button>
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Search name, email or phone…"
+          data-testid="customers-search-input"
+          className="max-w-md w-full bg-transparent border-b border-[#B8C0C8]/25 text-[#F5F0E8] py-2 outline-none focus:border-[#B8C0C8] placeholder:text-[#8A8FA8]"
+        />
+        <button
+          onClick={() => setAddOpen(true)}
+          data-testid="add-customer-button"
+          className="whitespace-nowrap text-[11px] tracking-[0.3em] uppercase px-5 py-3 border border-[#B8C0C8]/40 text-[#B8C0C8] hover:bg-[#B8C0C8] hover:text-[#0B0E1A] transition-colors"
+        >
+          + Add Customer
+        </button>
       </div>
 
       <div className="mt-8 border border-[#B8C0C8]/15 overflow-x-auto">
