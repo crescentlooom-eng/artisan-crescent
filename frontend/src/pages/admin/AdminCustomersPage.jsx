@@ -1,14 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { api, formatINR } from "@/lib/api";
-import { ChevronRight, X, Plus, Minus } from "lucide-react";
+import { ChevronRight, X, Plus, Minus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
-function CustomerDetail({ userId, onClose, onChanged }) {
+function CustomerDetail({ userId, onClose, onChanged, onDeleted }) {
   const [data, setData] = useState(null);
   const [adjustOpen, setAdjustOpen] = useState(false);
   const [change, setChange] = useState(1);
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const deleteCustomer = async () => {
+    if (!confirm(`Delete ${data?.user?.name || "this customer"}? This cannot be undone.`)) return;
+    setDeleting(true);
+    try {
+      await api.delete(`/admin/customers/${userId}`);
+      toast.success("Customer removed");
+      onDeleted();
+    } catch (e) {
+      toast.error(e?.response?.data?.detail || "Could not delete customer");
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   const load = async () => {
     const r = await api.get(`/admin/customers/${userId}`);
@@ -46,7 +61,12 @@ function CustomerDetail({ userId, onClose, onChanged }) {
                 <h3 className="font-serif-display text-2xl md:text-3xl text-[#F5F0E8] mt-1">{data.user.name}</h3>
                 <div className="text-sm text-[#8A8FA8] mt-1">{data.user.email}</div>
               </div>
-              <button onClick={onClose} className="text-[#8A8FA8] hover:text-[#B8C0C8]"><X /></button>
+              <div className="flex items-center gap-4">
+                <button onClick={deleteCustomer} disabled={deleting} className="text-red-400 hover:text-red-300 disabled:opacity-50" data-testid="delete-customer-button" title="Delete customer">
+                  <Trash2 size={18} />
+                </button>
+                <button onClick={onClose} className="text-[#8A8FA8] hover:text-[#B8C0C8]"><X /></button>
+              </div>
             </div>
             <div className="grid grid-cols-3 gap-3 p-6">
               <div className="border border-[#B8C0C8]/15 p-4">
@@ -158,7 +178,7 @@ export default function AdminCustomersPage() {
         {filtered.length === 0 && <div className="p-10 text-center text-[#8A8FA8] text-sm">No customers found.</div>}
       </div>
 
-      {selected && <CustomerDetail userId={selected} onClose={() => setSelected(null)} onChanged={load} />}
+            {selected && <CustomerDetail userId={selected} onClose={() => setSelected(null)} onChanged={load} onDeleted={() => { setSelected(null); load(); }} />}
     </div>
   );
 }
