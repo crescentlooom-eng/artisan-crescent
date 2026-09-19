@@ -490,10 +490,10 @@ export default function ProductDetailPage() {
                           </thead>
                           <tbody style={{ color: "var(--cl-text)", opacity: 0.8 }}>
                             {product.slug === "textured-polo-tee" && <>
-                              <tr className="border-t" style={{ borderColor: "var(--cl-border)" }}><td className="py-3">M</td><td>36</td><td>26.5</td><td>15.5</td></tr>
-                              <tr className="border-t" style={{ borderColor: "var(--cl-border)" }}><td className="py-3">L</td><td>37</td><td>26.5</td><td>17</td></tr>
-                              <tr className="border-t" style={{ borderColor: "var(--cl-border)" }}><td className="py-3">XL</td><td>40</td><td>28.5</td><td>17</td></tr>
-                            </>}
+  <tr className="border-t" style={{ borderColor: "var(--cl-border)" }}><td className="py-3">Small</td><td>36</td><td>26.5</td><td>15.5</td></tr>
+  <tr className="border-t" style={{ borderColor: "var(--cl-border)" }}><td className="py-3">Medium</td><td>37</td><td>26.5</td><td>17</td></tr>
+  <tr className="border-t" style={{ borderColor: "var(--cl-border)" }}><td className="py-3">Large</td><td>40</td><td>28.5</td><td>17</td></tr>
+</>}
                                                         {product.slug === "essential-tee" && <>
                               <tr className="border-t" style={{ borderColor: "var(--cl-border)" }}><td className="py-3">S</td><td>35</td><td>25.2</td><td>15</td></tr>
                               <tr className="border-t" style={{ borderColor: "var(--cl-border)" }}><td className="py-3">M</td><td>37</td><td>25.5</td><td>16.5</td></tr>
