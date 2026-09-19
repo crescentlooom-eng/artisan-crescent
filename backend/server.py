@@ -1256,6 +1256,33 @@ async def admin_delete_customer(user_id: str, admin=Depends(require_admin)):
     await db.loom_credit_txns.delete_many({"user_id": user_id})
     return {"ok": True}
 
+class AdminCreateCustomerReq(BaseModel):
+    name: str
+    email: str
+    phone: Optional[str] = None
+
+@api_router.post("/admin/customers")
+async def admin_create_customer(body: AdminCreateCustomerReq, admin=Depends(require_admin)):
+    email = body.email.strip().lower()
+    if not EMAIL_RE.match(email):
+        raise HTTPException(status_code=400, detail="Please enter a valid email address")
+    existing = await db.users.find_one({"email": email})
+    if existing:
+        raise HTTPException(status_code=409, detail="A customer with this email already exists")
+    user_id = f"user_{uuid.uuid4().hex[:12]}"
+    doc = {
+        "user_id": user_id,
+        "email": email,
+        "name": body.name.strip(),
+        "picture": None,
+        "is_admin": False,
+        "phone": re.sub(r"\D", "", body.phone or "") or None,
+        "auth_provider": "manual_admin",
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.users.insert_one(doc)
+    return {"ok": True, "user_id": user_id}
+
 @api_router.get("/admin/customers/{user_id}")
 async def admin_customer_detail(user_id: str, admin=Depends(require_admin)):
     u = await db.users.find_one({"user_id": user_id}, {"_id": 0})
