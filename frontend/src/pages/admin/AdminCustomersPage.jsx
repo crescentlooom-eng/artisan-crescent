@@ -32,15 +32,31 @@ function AddCustomerModal({ onClose, onAdded }) {
         <div className="space-y-4">
           <div>
             <label className="text-[10px] tracking-[0.3em] uppercase text-[#8A8FA8]">Name</label>
-            <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} data-testid="add-customer-name" />
+            <input
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              data-testid="add-customer-name"
+              className="w-full bg-transparent border-b border-[#B8C0C8]/25 text-[#F5F0E8] py-2 outline-none focus:border-[#B8C0C8]"
+            />
           </div>
           <div>
             <label className="text-[10px] tracking-[0.3em] uppercase text-[#8A8FA8]">Email</label>
-            <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} data-testid="add-customer-email" />
+            <input
+              type="email"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              data-testid="add-customer-email"
+              className="w-full bg-transparent border-b border-[#B8C0C8]/25 text-[#F5F0E8] py-2 outline-none focus:border-[#B8C0C8]"
+            />
           </div>
           <div>
             <label className="text-[10px] tracking-[0.3em] uppercase text-[#8A8FA8]">Phone (optional)</label>
-            <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} data-testid="add-customer-phone" />
+            <input
+              value={form.phone}
+              onChange={(e) => setForm({ ...form, phone: e.target.value })}
+              data-testid="add-customer-phone"
+              className="w-full bg-transparent border-b border-[#B8C0C8]/25 text-[#F5F0E8] py-2 outline-none focus:border-[#B8C0C8]"
+            />
           </div>
           <button onClick={submit} disabled={saving} className="btn-gold w-full mt-2 disabled:opacity-50" data-testid="add-customer-submit">
             {saving ? "Adding..." : "Add Customer"}
