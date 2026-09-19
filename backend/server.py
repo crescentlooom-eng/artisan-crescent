@@ -1245,6 +1245,17 @@ async def admin_customers(admin=Depends(require_admin)):
     out.sort(key=lambda x: x["total_spent"], reverse=True)
     return out
 
+@api_router.delete("/admin/customers/{user_id}")
+async def admin_delete_customer(user_id: str, admin=Depends(require_admin)):
+    result = await db.users.delete_one({"user_id": user_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    # Clean up associated data so nothing orphaned remains
+    await db.wishlist.delete_many({"user_id": user_id})
+    await db.addresses.delete_many({"user_id": user_id})
+    await db.loom_credit_txns.delete_many({"user_id": user_id})
+    return {"ok": True}
+
 @api_router.get("/admin/customers/{user_id}")
 async def admin_customer_detail(user_id: str, admin=Depends(require_admin)):
     u = await db.users.find_one({"user_id": user_id}, {"_id": 0})
