@@ -43,7 +43,11 @@ export default function ShopPage() {
     const prices = products.map((p) => p.price);
     return { min: Math.min(...prices), max: Math.max(...prices) };
   }, [products]);
-  useEffect(() => { if (maxPrice === null) setMaxPrice(priceBounds.max); }, [priceBounds, maxPrice]);
+  useEffect(() => {
+  if (products.length > 0 && maxPrice === null) {
+    setMaxPrice(priceBounds.max);
+  }
+}, [priceBounds, maxPrice, products]);
 
   const allSizes = useMemo(() => {
     const order = ["XS", "S", "M", "L", "XL", "XXL", "Free Size"];
