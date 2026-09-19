@@ -41,13 +41,18 @@ function AdjustModal({ row, onClose, onSaved }) {
             value={change}
             onChange={(e) => setChange(parseInt(e.target.value || "0", 10))}
             data-testid="admin-loom-adjust-input"
-            className="text-center"
+            className="text-center bg-transparent border-b border-[#B8C0C8]/25 text-[#F5F0E8] py-2 outline-none focus:border-[#B8C0C8] flex-1"
           />
           <button onClick={() => setChange(change + 1)} className="px-3 py-3 border border-[#B8C0C8]/30 text-[#B8C0C8]"><Plus size={14} /></button>
         </div>
 
         <label className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8] mt-6 block">Note (optional)</label>
-        <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Reason for adjustment" />
+        <input
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          placeholder="Reason for adjustment"
+          className="w-full bg-transparent border-b border-[#B8C0C8]/25 text-[#F5F0E8] py-2 outline-none focus:border-[#B8C0C8] placeholder:text-[#8A8FA8]"
+        />
 
         <div className="flex gap-3 mt-8">
           <button onClick={submit} disabled={saving} className="btn-gold flex-1 disabled:opacity-50" data-testid="admin-loom-adjust-save">
