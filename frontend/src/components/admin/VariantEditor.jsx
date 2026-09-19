@@ -101,24 +101,11 @@ const add = () => onChange([...variants, { id: `v_${Math.random().toString(36).s
               </div>
             </div>
             <div className="mb-3">
-              <label className="text-[10px] tracking-[0.3em] uppercase text-[#8A8FA8]">Dark Theme Images</label>
-              <div className="mt-1">
-                <VariantImageUploader
-                  images={v.images || []}
-                  onChange={(imgs) => update(i, { images: imgs })}
-                  variantName={v.name?.toLowerCase().replace(/\s+/g, "-") || i}
-                />
-              </div>
-            </div>
-            <div className="mb-3">
-              <label className="text-[10px] tracking-[0.3em] uppercase text-[#8A8FA8]">Light Theme Images (optional — falls back to dark)</label>
-              <div className="mt-1">
-                <VariantImageUploader
-                  images={v.imagesLight || []}
-                  onChange={(imgs) => update(i, { imagesLight: imgs })}
-                  variantName={`${v.name?.toLowerCase().replace(/\s+/g, "-") || i}-light`}
-                />
-              </div>
+              <VariantImageUploader
+                images={v.images || []}
+                onChange={(imgs) => update(i, { images: imgs })}
+                variantName={v.name?.toLowerCase().replace(/\s+/g, "-") || i}
+              />
             </div>
             <div>
               <label className="text-[10px] tracking-[0.3em] uppercase text-[#8A8FA8]">Out-of-Stock Sizes (comma-separated, e.g. L, XL)</label>
