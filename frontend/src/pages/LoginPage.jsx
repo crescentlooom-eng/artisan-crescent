@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme } from "@/context/ThemeContext";
-import { api, productImage } from "@/lib/api";
-import { getProductBySlug } from "@/data/products";
+import { api } from "@/lib/api";
 import { Loader2, Mail, Lock, User } from "lucide-react";
 
 // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
@@ -18,8 +17,7 @@ export default function LoginPage() {
   const [err, setErr] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const heroProduct = getProductBySlug("prism-wear-tee") || getProductBySlug("textured-polo-tee");
-  const heroImg = heroProduct ? productImage(heroProduct) : null;
+  // (unused hero image lookup removed — was never rendered)
 
   const handleGoogle = () => {
     // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
