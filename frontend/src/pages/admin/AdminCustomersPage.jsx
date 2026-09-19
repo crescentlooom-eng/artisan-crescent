@@ -3,6 +3,54 @@ import { api, formatINR } from "@/lib/api";
 import { ChevronRight, X, Plus, Minus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
+function AddCustomerModal({ onClose, onAdded }) {
+  const [form, setForm] = useState({ name: "", email: "", phone: "" });
+  const [saving, setSaving] = useState(false);
+
+  const submit = async () => {
+    if (!form.name.trim() || !form.email.trim()) return toast.error("Name and email are required");
+    setSaving(true);
+    try {
+      await api.post("/admin/customers", form);
+      toast.success("Customer added");
+      onAdded();
+      onClose();
+    } catch (e) {
+      toast.error(e?.response?.data?.detail || "Could not add customer");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-[#0B0E1A] border border-[#B8C0C8]/25 max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="font-serif-display text-2xl text-[#F5F0E8]">Add Customer</h3>
+          <button onClick={onClose} className="text-[#8A8FA8] hover:text-[#B8C0C8]"><X /></button>
+        </div>
+        <div className="space-y-4">
+          <div>
+            <label className="text-[10px] tracking-[0.3em] uppercase text-[#8A8FA8]">Name</label>
+            <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} data-testid="add-customer-name" />
+          </div>
+          <div>
+            <label className="text-[10px] tracking-[0.3em] uppercase text-[#8A8FA8]">Email</label>
+            <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} data-testid="add-customer-email" />
+          </div>
+          <div>
+            <label className="text-[10px] tracking-[0.3em] uppercase text-[#8A8FA8]">Phone (optional)</label>
+            <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} data-testid="add-customer-phone" />
+          </div>
+          <button onClick={submit} disabled={saving} className="btn-gold w-full mt-2 disabled:opacity-50" data-testid="add-customer-submit">
+            {saving ? "Adding..." : "Add Customer"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function CustomerDetail({ userId, onClose, onChanged, onDeleted }) {
   const [data, setData] = useState(null);
   const [adjustOpen, setAdjustOpen] = useState(false);
@@ -128,6 +176,7 @@ export default function AdminCustomersPage() {
   const [rows, setRows] = useState([]);
   const [q, setQ] = useState("");
   const [selected, setSelected] = useState(null);
+  const [addOpen, setAddOpen] = useState(false);
 
   const load = async () => {
     const r = await api.get("/admin/customers");
@@ -146,7 +195,10 @@ export default function AdminCustomersPage() {
       <div className="text-[11px] tracking-[0.4em] uppercase text-[#B8C0C8] mb-3">Customers</div>
       <h1 className="font-serif-display text-3xl md:text-4xl text-[#F5F0E8]">Everyone who&rsquo;s touched the loom.</h1>
 
-      <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search name, email or phone…" className="mt-8 max-w-md" data-testid="customers-search-input" />
+      <div className="flex items-center gap-4 mt-8">
+        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search name, email or phone…" className="max-w-md" data-testid="customers-search-input" />
+        <button onClick={() => setAddOpen(true)} className="btn-gold whitespace-nowrap" data-testid="add-customer-button">+ Add Customer</button>
+      </div>
 
       <div className="mt-8 border border-[#B8C0C8]/15 overflow-x-auto">
         <table className="w-full text-left text-sm min-w-[700px]">
@@ -179,6 +231,7 @@ export default function AdminCustomersPage() {
       </div>
 
             {selected && <CustomerDetail userId={selected} onClose={() => setSelected(null)} onChanged={load} onDeleted={() => { setSelected(null); load(); }} />}
+      {addOpen && <AddCustomerModal onClose={() => setAddOpen(false)} onAdded={load} />}
     </div>
   );
 }
