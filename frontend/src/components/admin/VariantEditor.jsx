@@ -100,11 +100,14 @@ const add = () => onChange([...variants, { id: `v_${Math.random().toString(36).s
                 </button>
               </div>
             </div>
-            <div className="mb-3">
-              <VariantImageUploader
-                images={v.images || []}
-                onChange={(imgs) => update(i, { images: imgs })}
-                variantName={v.name?.toLowerCase().replace(/\s+/g, "-") || i}
+             <div className="mb-3">
+              <label className="text-[10px] tracking-[0.3em] uppercase text-[#8A8FA8]">Image URLs (comma-separated)</label>
+              <input
+                value={(v.images || []).join(", ")}
+                onChange={(e) => update(i, { images: e.target.value.split(",").map((s) => s.trim()).filter(Boolean) })}
+                placeholder="Paste image links here"
+                className="w-full bg-transparent border-b border-[#B8C0C8]/25 text-[#F5F0E8] py-2 outline-none focus:border-[#B8C0C8] placeholder:text-[#8A8FA8]"
+                data-testid={`variant-images-input-${i}`}
               />
             </div>
             <div>
