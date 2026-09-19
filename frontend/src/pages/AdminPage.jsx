@@ -79,9 +79,6 @@ function ProductForm({ initial, onClose, onSaved }) {
         <div className="mt-6">
           <VariantEditor variants={form.variants || []} onChange={(v) => set("variants", v)} />
         </div>
-        <div className="mt-6">
-          <VariantEditor variants={form.variants || []} onChange={(v) => set("variants", v)} />
-        </div>
         <div className="flex gap-3 mt-8">
           <button onClick={save} data-testid="admin-product-save" className="btn-gold flex-1">Save</button>
           <button onClick={onClose} className="text-[11px] tracking-[0.3em] uppercase text-[#8A8FA8] px-6">Cancel</button>
