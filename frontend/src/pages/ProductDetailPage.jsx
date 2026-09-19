@@ -145,6 +145,10 @@ export default function ProductDetailPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { theme } = useTheme();
+  const [allProducts, setAllProducts] = useState([]);
+  useEffect(() => {
+    api.get("/products").then((r) => setAllProducts(r.data || [])).catch(() => {});
+  }, []);
   const [product, setProduct] = useState(null);
   const [size, setSize] = useState(null);
   const [qty, setQty] = useState(1);
@@ -203,7 +207,8 @@ export default function ProductDetailPage() {
   useEffect(() => { fetchReviews(); }, [slug]);
 
   useEffect(() => {
-    const p = getProductBySlug(slug);
+    if (!allProducts.length) return;
+    const p = getProductBySlug(allProducts, slug);
     setProduct(p);
     setPincode(""); setPincodeResult(null); setPincodeError("");
     if (p) {
@@ -223,7 +228,7 @@ export default function ProductDetailPage() {
       setSize(firstAvailable);
       setActiveImg(0);
 
-      const otherProducts = listProducts({}).filter((x) => x.id !== p.id);
+      const otherProducts = listProducts(allProducts, {}).filter((x) => x.id !== p.id);
       const expandedOthers = otherProducts.flatMap((op) =>
         op.variants?.length > 0
           ? op.variants.map((v) => ({
@@ -235,7 +240,7 @@ export default function ProductDetailPage() {
       );
       setRelated(expandedOthers.slice(0, 4));
     }
-  }, [slug, searchParams]);
+  }, [slug, searchParams, allProducts]);
 
   const variant = product?.variants?.[variantIdx];
   const images = useMemo(() => {
