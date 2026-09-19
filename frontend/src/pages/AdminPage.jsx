@@ -4,7 +4,7 @@ import { api, formatINR } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 import { Plus, Edit2, Trash2, X, Star } from "lucide-react";
-import VariantEditor, { VariantImageUploader } from "@/components/admin/VariantEditor";
+import VariantEditor from "@/components/admin/VariantEditor";
 import LoomCreditsAdmin from "@/components/admin/LoomCreditsAdmin";
 
 const EMPTY = {
@@ -80,14 +80,7 @@ function ProductForm({ initial, onClose, onSaved }) {
           <VariantEditor variants={form.variants || []} onChange={(v) => set("variants", v)} />
         </div>
         <div className="mt-6">
-          <label className="text-[10px] tracking-[0.3em] uppercase text-[#8A8FA8]">Product-level Light Theme Images (fallback if no variants)</label>
-          <div className="mt-1">
-            <VariantImageUploader
-              images={form.imagesLight || []}
-              onChange={(imgs) => set("imagesLight", imgs)}
-              variantName="product-light"
-            />
-          </div>
+          <VariantEditor variants={form.variants || []} onChange={(v) => set("variants", v)} />
         </div>
         <div className="flex gap-3 mt-8">
           <button onClick={save} data-testid="admin-product-save" className="btn-gold flex-1">Save</button>
