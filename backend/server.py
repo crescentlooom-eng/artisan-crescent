@@ -45,6 +45,10 @@ db = client[os.environ['DB_NAME']]
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
 
+@app.get("/api/health")
+async def health_check():
+    return {"status": "ok"}
+
 # Optional Razorpay client
 try:
     import razorpay
