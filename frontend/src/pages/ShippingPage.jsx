@@ -36,7 +36,7 @@ export default function ShippingPage() {
 
       <Section title="Delivery Time">
         <p>
-          Orders are typically delivered within <strong style={{ color: "var(--cl-text)" }}>2–4 business days</strong> of placement.
+          Orders are typically delivered within <strong>3–5 business days</strong> of placement.
         </p>
         <ul className="space-y-2 mt-2">
           {[
