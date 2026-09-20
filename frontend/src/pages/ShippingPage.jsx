@@ -21,7 +21,7 @@ export default function ShippingPage() {
 
       <Section title="Delivery Areas">
         <p>
-          We currently deliver within <strong style={{ color: "var(--cl-text)" }}>Delhi NCR</strong> only. This includes Delhi, Noida, Greater Noida, Gurgaon, Faridabad, and Ghaziabad.
+          We deliver <strong>all over India</strong>.
         </p>
         <p className="text-xs tracking-wide" style={{ color: "var(--cl-subtext)", opacity: 0.7 }}>
           Pan-India shipping is coming soon. Stay tuned.
