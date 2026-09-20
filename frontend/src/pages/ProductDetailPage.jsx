@@ -251,6 +251,16 @@ export default function ProductDetailPage() {
     return [];
   }, [product, variant, theme]);
 
+  // Preload every variant's images (both themes) so switching is instant
+  useEffect(() => {
+    if (!product?.variants?.length) return;
+    const allUrls = product.variants.flatMap((v) => [...(v.images || []), ...(v.imagesLight || [])]);
+    allUrls.forEach((url) => {
+      const img = new Image();
+      img.src = url;
+    });
+  }, [product]);
+
   if (!product) {
     return <div className="pt-40 text-center tracking-[0.3em] uppercase text-sm" style={{ color: "var(--cl-subtext)" }}>Loading...</div>;
   }
